@@ -1,0 +1,31 @@
+$borderColor = #d0d6d9
+.table{
+   width: 100%
+}
+.table>thead>tr{
+   line-height 44px
+   border 1px solid $borderColor; 
+   text-align: center
+   color #fff
+   font-size 1.1em
+   background: #00a9ba
+}
+.table>thead>tr>th{
+  border-right:1px solid $borderColor  
+}
+.table>tbody>tr{
+  line-height: 38px  
+  border 1px solid $borderColor; 
+  text-align: center
+  color #444
+  font-size 1em
+}
+.table>tbody>tr>th{
+  border-right:1px solid $borderColor  
+}
+.table>tbody>tr:nth-of-type(2n){
+  background: #fafafa
+}
+.table>tfoot>tr{
+  border:1px solid $borderColor  
+}
