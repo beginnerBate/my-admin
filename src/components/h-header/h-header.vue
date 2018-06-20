@@ -27,7 +27,7 @@
     color #fff
     font-size 1.6em
     letter-spacing 4px
-    text-shadow 1px 1px 5px #067af5
+    text-shadow 1px 1px 5px #009d9a
     vertical-align -1ex 
     i 
       font-size 1.7em

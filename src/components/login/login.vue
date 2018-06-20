@@ -1,47 +1,134 @@
 <template>
   <div class="login">
+    <!-- 错误提示信息 -->
+    <transition name="tip-fade">
+      <div v-if="tipShow" class="login-tip">
+        <span v-if="failShow" class="login-fail">用户名或者密码错误!</span>
+        <span v-if="errShow" class="login-err">网络错误,登录超时!</span>
+        <span v-if="okShow" class="login-ok">登录成功</span>
+      </div>
+    </transition>
+    <!-- login -->
     <div class="login-header">
       <h1>自助终端后台管理系统</h1>
     </div>
     <div class="login-con">
       <form autocomplete="off">
-        <div class="login-form">
-          <label for="username">用户名</label><input type="text" placeholder="请输入用户名" v-model="username">
+        <div class=" login-form form-item-icon">
+          <label for="username" class="fa fa-user"></label><input type="text" placeholder="请输入用户名" v-model="username">
+        </div>
+        <div class="login-form form-item-icon">
+          <label for="password" class="fa fa-lock"></label><input type="password" placeholder="请输入密码" v-model="password">
         </div>
         <div class="login-form">
-          <label for="password">密 码</label><input type="password" placeholder="请输入密码" v-model="password">
-        </div>
-        <div class="login-form">
-          <button :disabled="!disabled" class="btn sub" @click="toLogin()">确定</button>
+          <button v-if="btnShow" :disabled="!disabled" class="btn sub" @click="toLogin()">确定</button>
+          <button v-if="!btnShow" class="btn sub"><i class="fa fa-spinner fa-spin fa-1x fa-fw"></i> 登录中</button>
         </div>
       </form>
     </div>
+    <!-- canvas背景 -->
+    <canvas ref="canvas"></canvas>
   </div>
 </template>
 
 <script>
+  import Round_item from 'common/js/Round_item'
   export default {
     data() {
       return {
         username: '',
-        password: ''
+        password: '',
+        btnShow:true,
+        failShow:false,
+        errShow:false,
+        okShow:false,
       }
+    },
+    mounted () {
+      this.showCanvasBackground()
     },
     computed: {
       disabled() {
         return !!this.username && !!this.password 
+      },
+      tipShow() {
+        return this.failShow || this.errShow || this.okShow
       }
     },
     methods: {
       toLogin () {
-        this.$router.push('/home')
-      }
+        this.btnShow = false
+        // 模拟登录
+        setTimeout(function(){
+          //--------------------------登录失败 start------------------
+          // 1.提示用户名或着密码错误,请重新登录,一秒之后自动消失
+
+          // this.failShow = true
+          // setTimeout(function(){
+          //   this.failShow = false
+          // }.bind(this),1500)
+          
+          // 2.设置this.btnShow = true
+
+          // this.btnShow = true
+          //--------------------------登录失败 ends------------------
+
+          //--------------------------登录成功 start------------------
+          // 1. 提示登录成功
+
+            //  this.okShow = true
+          // 2. 存储登录信息
+            this.$store.commit('setLoginInfo','登陆信息')
+          // 3. 进入后台管理系统首页
+         //--------------------------登录成功 ends------------------
+
+         //--------------------------网络超时 start------------------
+        //  1. 提示网络超时请重新登录,一秒之后自动消失
+          this.errShow = true
+          setTimeout(function(){
+            this.errShow = false
+          }.bind(this),1500)
+          
+          // 2.设置this.btnShow = true
+
+          this.btnShow = true
+         //--------------------------网络超时 ends------------------          
+        }.bind(this), 3000)
+        // this.$router.push('/home')
+      },
+      showCanvasBackground(){
+        var canvas = this.$refs.canvas
+        var content = canvas.getContext('2d')
+        canvas.style.position = 'fixed'
+        canvas.style.top = 0
+        canvas.style.zIndex = -1
+        // 设置高度和宽度
+        var WIDTH = canvas.width = document.body.clientWidth
+        var HEIGHT = canvas.height = document.body.clientHeight
+        var initRoundPopulation = 40
+        var round = []
+        for (var i = 0; i < initRoundPopulation; i++) {
+            round[i] = new Round_item(i, Math.random() * WIDTH, Math.random() * HEIGHT,content);
+            round[i].draw();
+        }
+        animate()
+        function animate() {
+            content.clearRect(0, 0, WIDTH, HEIGHT);
+
+            for (var i in round) {
+                round[i].move();
+            }
+            requestAnimationFrame(animate)
+        }
+      },
+
     }
   }
 </script>
 <style lang="stylus" scoped>
+@import '~~common/stylus/form.styl'
+@import '~~common/stylus/transition.styl'
 .login
-  background: linear-gradient(to bottom,  #3897f7, #0575e6)
   height 100%
 .login-header
   overflow hidden
@@ -58,27 +145,39 @@
   margin-right auto
   background #fff
   border-radius 8px
-  box-shadow 1px 1px 8px #005cb9
+  box-shadow 1px 1px 8px #007b70
   form
     display block
     padding: 1.6em 3em;
 .login-form
-  padding .8em 0
-  label
-    width 70px
-    display inline-block
-    vertical-align -0.8ex
-    color #888
+  padding .6em 0
   input 
-    // width 300px
-    border-radius 4px
+    width 100%
   .btn
     margin 0 auto
     display block
-    width 120px
-.tip
+    width 372px
+    margin-bottom 1em
+canvas 
+  background #009688
+  background: linear-gradient(to bottom,  #009688, #00e2cd, #009688)
+.login-tip
   position absolute
-  font-size 0.8em
-  color red
-  margin 10px
+  width 100%
+  height 100px
+  font-size 0.96em
+  text-align center
+  margin 2em
+  span 
+    padding .5em 1.5em
+    border-radius 4px
+    background-color #fff
+    box-shadow: 1px 1px 5px #01463f
+    letter-spacing 2px
+.login-fail
+  color #e21203
+.login-ok
+  color #00a200
+.login-err
+  color #e21203
 </style>

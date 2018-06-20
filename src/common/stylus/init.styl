@@ -75,13 +75,14 @@ a {
 	overflow hidden
 	}
 input:not([type='search']){
-	  height: 20px;
+	  // height: 20px;
     line-height: 20px;
-    width: 260px;
+    width: 320px;
     padding: 9px 5px;
     border: 1px solid #d0d6d9;
     vertical-align: top;
 		outline: none;
+    box-sizing: border-box;
 }
 .btn{
   color:#f1f1f1;
@@ -144,13 +145,13 @@ input:not([type='search']){
 // 提交按钮
 /* 危险按钮 */
 .btn.sub{
-  background: rgba(56, 151, 247,0.9);  
+  background: rgba(0, 186, 169,0.9);  
 }
 .btn.sub:active{
-  background: rgba(56, 151, 247,1);
+  background: rgba(0, 186, 169,1);
 }
 .btn.sub:disabled{
-  background: rgba(56, 151, 247,0.7);
+  background: rgba(0, 186, 169,0.5);
 }
 // 搜索按钮
 .search-item{
