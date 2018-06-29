@@ -48,6 +48,7 @@ button::-moz-focus-inner{
 /* 网页字体 */
 html { 
 	font: menu;
+  font-family: '微软雅黑'
 	width: 100%;
 	height:100%;
 }
@@ -84,75 +85,6 @@ input:not([type='search']){
 		outline: none;
     box-sizing: border-box;
 }
-.btn{
-  color:#f1f1f1;
-  font-size: 16px;
-  letter-spacing: 3px;
-  outline: none;
-  -webkit-appearance: none;
-  border:1px solid;
-  padding: 9px 18px;
-  border-radius: 4px;
-  box-sizing: border-box;
-  background: rgba(19, 150, 19,0.8);
-  display: inline-block;
-}
-.btn.normal{
-  padding: 0.3em 0.5em
-  font-size: .86em;
-   display: inline;
-   cursor pointer
-}
-.btn:disabled{
-  color: #fff;
-  background: rgba(19, 150, 19,0.6);
-  cursor: no-drop;
-}
-.btn:active,.btn:hover{
-  color: #fff;
-  background: rgba(19, 150, 19,1)
-}
-/* 信息按钮 */
-.btn.info{
-  background: rgba(169, 169, 169, 0.8);
-}
-.btn.info:disabled{
-  background: rgba(169, 169, 169, 0.6);
-}
-.btn.info:active{
-  background: rgba(169, 169, 169,1);
-}
-/* 警告按钮 */
-.btn.warning{
-  background: rgba(212, 141, 7, 0.8);  
-}
-.btn.warning:active{
-  background: rgba(212, 141, 7, 1);
-}
-.btn.warning:disabled{
-  background: rgba(212, 141, 7, 0.6);
-}
-/* 危险按钮 */
-.btn.danger{
-  background: rgba(214, 103, 112,0.8);  
-}
-.btn.danger:active{
-  background: rgba(214, 103, 112,1);
-}
-.btn.danger:disabled{
-  background: rgba(214, 103, 112,0.6);
-}
-// 提交按钮
-/* 危险按钮 */
-.btn.sub{
-  background: rgba(0, 186, 169,0.9);  
-}
-.btn.sub:active{
-  background: rgba(0, 186, 169,1);
-}
-.btn.sub:disabled{
-  background: rgba(0, 186, 169,0.5);
-}
 // 搜索按钮
 .search-item{
   display: inline-block
@@ -176,3 +108,15 @@ input:not([type='search']){
   border-bottom-left-radius: 0
   color #888
 }
+.left{
+  float left  
+}
+.right{
+  float right
+}
+.con{
+  padding 1em 0.8em
+  overflow hidden  
+}
+
+@import './icon.styl'

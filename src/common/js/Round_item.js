@@ -7,7 +7,7 @@ function Round_item(index, x, y,content) {
   this.y = y;
   this.r = Math.random() * 12 + 1;
   var alpha = (Math.floor(Math.random() * 10) + 1) / 10 / 2;
-  this.color = "rgba(255,255,255," + alpha + ")";
+  this.color = "rgba(11,56,121," + alpha + ")";
 }
 
 Round_item.prototype.draw = function () {

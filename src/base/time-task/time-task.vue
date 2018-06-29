@@ -1,0 +1,51 @@
+<template>
+    <div>
+      <p>
+        <span><img src="./timer.png" alt=""></span>
+        <span class="title">操作倒计时</span>
+        <span class="count">{{count}}</span>
+      </p>
+    </div>
+</template>
+<script>
+export default {
+  props: {
+    time: {
+      default: 120
+    },
+  },
+  data() {
+    return {
+      count: ''
+    }
+  },
+  created() {
+    this._countDown();
+  },
+  methods: {
+    _countDown() {
+      this.count = this.time
+      let interval = setInterval(() => {
+        this.count--;
+        if (this.count == 0) {
+          clearInterval(interval);
+        }
+      }, 1000);
+    }
+  }
+};
+</script>
+<style lang="stylus" scoped>
+.title
+  vertical-align 0.6em
+  font-size 1.1em
+  letter-spacing 2px
+.count
+  vertical-align 0.4em
+  font-size 1.4em
+  letter-spacing 2px
+  color #ff6666 
+  font-weight 600
+  text-shadow: 1px 1px 4px #013d8e;
+</style>
+

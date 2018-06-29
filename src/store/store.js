@@ -4,7 +4,7 @@ import loS from '@/common/js/loStorage'
 
 // 在使用vuex之前使用，先初始化相关数据
 const init = [
-    {name: 'menuIdx', value: -1},
+    {name: 'menuIdx', value: 0},
     {name:'loginInfo', value:''}
 ]
 loS.initData(init)

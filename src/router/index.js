@@ -1,50 +1,63 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from 'components/login/login'
 import Home from 'components/home/home'
-import HUser from 'components/h-user/h-user'
-import HOrder from 'components/h-order/h-order'
-import HRegist from 'components/h-regist/h-regist'
-import HPayment from 'components/h-payment/h-payment'
-import HModify from 'components/h-modify/h-modify'
+import SDepartment from 'components/s-department/s-department'
+import SDoctor from 'components/s-doctor/s-doctor'
+import DoctorInfo from 'components/doctor-info/doctor-info'
+import UserInfo from 'components/user-info/user-info'
+import InfoConfirm from 'components/info-confirm/info-confirm'
+import PaymentMethod from 'components/payment-method/payment-method'
+import Payment from 'components/payment/payment'
+import Finish from 'components/finish/finish'
 Vue.use(Router)
 export default new Router({
   routes: [
     {
       path: "/",
-      name: "index",
-      redirect: '/login'
-    },
-    {
-      path:'/login',
-      name:"Login",
-      component: Login
-    },
-    {
-      path: '/home',
-      name:"Home",
+      name: "home",
       component: Home,
+      redirect:"/department",
       children:[
         {
-          path:'user',
-          component:HUser
+          path:'department',
+          name:"department",
+          component: SDepartment
         },
         {
-          path:'order',
-          component:HOrder
+          path:'doctor',
+          name:"doctor",
+          component: SDoctor
         },
         {
-          path:'regist',
-          component:HRegist
+          path:'doctor-info',
+          name:"doctorInfo",
+          component: DoctorInfo
+        },
+        {
+          path:'user-info',
+          name:"userInfo",
+          component: UserInfo
+        },
+        {
+          path:'info-confirm',
+          name:"infoConfirm",
+          component: InfoConfirm
+        },
+        {
+          path:'payment-method',
+          name:"paymentMethod",
+          component: PaymentMethod
         },
         {
           path:'payment',
-          component:HPayment
+          name:"payment",
+          component: Payment
         },
         {
-          path:'modify',
-          component:HModify
-        }
+          path:'finish',
+          name:"finish",
+          component: Finish
+        },
       ]
     }
   ]
