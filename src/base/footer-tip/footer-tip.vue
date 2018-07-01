@@ -1,0 +1,18 @@
+<template>
+  <div class="footer-tip">
+    <p>温馨提示: 欢迎您使用***门诊自助服务终端系统,使用完毕后请取走您的物品!</p>
+  </div>
+</template>
+<style lang="stylus" scoped>
+.footer-tip
+  position fixed
+  bottom 0
+  width 100%
+  border-top-left-radius 40px
+  border-top-right-radius 40px
+  background #e3e3e3
+  p
+    padding 0.3em
+    padding-left 2em
+    letter-spacing 2px
+</style>

@@ -14,10 +14,13 @@
 
 <script>
 export default {
-  computed:{
-    list() {
-      return JSON.parse(this.$store.state.leftNav)
+  props: {
+    list: {
+      type: Array,
+      default: []
     },
+  },
+  computed:{
     menuIdx() {
       return this.$store.state.menuIdx
     }

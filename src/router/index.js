@@ -9,6 +9,9 @@ import InfoConfirm from 'components/info-confirm/info-confirm'
 import PaymentMethod from 'components/payment-method/payment-method'
 import Payment from 'components/payment/payment'
 import Finish from 'components/finish/finish'
+// 当日挂号
+import ChooseOne from 'components/reg-today/choose-one'
+import RegToday from 'components/reg-today/reg-today'
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -16,7 +19,7 @@ export default new Router({
       path: "/",
       name: "home",
       component: Home,
-      redirect:"/department",
+      // redirect:"/department",
       children:[
         {
           path:'department',
@@ -59,6 +62,19 @@ export default new Router({
           component: Finish
         },
       ]
+    },
+    {
+      path:'/regtoday',
+      name:'regtoday',
+      component:RegToday,
+      redirect:'/regtoday/choose-one',
+      children:[
+        {
+          path:"choose-one",
+          component: ChooseOne
+        }
+      ]
     }
+
   ]
 })

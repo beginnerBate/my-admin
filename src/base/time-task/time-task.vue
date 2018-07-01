@@ -28,6 +28,7 @@ export default {
       let interval = setInterval(() => {
         this.count--;
         if (this.count == 0) {
+          this.$emit('outTime')
           clearInterval(interval);
         }
       }, 1000);

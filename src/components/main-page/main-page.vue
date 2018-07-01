@@ -18,7 +18,8 @@
     <div class="home-right">
       <div class="home-right-content">
         <!-- router-view -->
-        <router-view></router-view>
+        <!-- <router-view></router-view> -->
+        <slot></slot>
       </div>
     </div>
     <!-- home-footer -->

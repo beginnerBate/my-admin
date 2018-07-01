@@ -29,7 +29,7 @@
     created () {
       // 导航设置 这里适合action
       var list = JSON.stringify([{text:"选择科室"},{text:"选择医生"},{text:"支付挂号费"},{text:"完成挂号"}])
-      this.$store.dispatch('pageSet',[0,'预约挂号',list])
+      this.$store.dispatch('pageSet',[0,'当日挂号',list])
       this.getData()     
     },
     components:{
@@ -63,7 +63,7 @@
         }
       },
       toSelectDoctor () {
-        this.$router.push({ path: 'doctor' })
+        this.$router.push({ name: 'choosetwo' })
       },
     }
   }
