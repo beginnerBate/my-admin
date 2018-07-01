@@ -6,7 +6,8 @@
 # 3. 支付挂号费
 # 4. 完成挂号
 ## Build Setup
-
+> 基础组件
+1. 分页组件
 ``` bash
 # install dependencies
 npm install

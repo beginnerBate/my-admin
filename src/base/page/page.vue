@@ -1,15 +1,8 @@
 <template>
-  <nav>
-    <ul class="page">
-      <li :class="{'disabled': current ==1}"><a href="javascript:;" @click="setCurrent(current -1)"><i class="fa fa-angle-double-left"></i></a></li>
-      <li :class="{'disabled': current ==1}"><a href="javascript:;" @click="setCurrent(1)">首页</a></li>
-      <li v-for="(p, index) in grouplist" :key="index" :class="{'active': current == p.val}">
-        <a href="javascript:;" @click="setCurrent(p.val)">{{p.text}}</a>
-      </li>
-      <li :class="{'disabled': current == page}"><a href="javascript:;" @click="setCurrent(page)">尾页</a></li>
-      <li :class="{'disabled': current == page}"><a href="javascript:;" @click="setCurrent(current +1)"><i class="fa fa-angle-double-right"></i></a></li>
-    </ul>
-  </nav>
+    <div class="list-footer">
+      <div><span class="my-btn" :class="{'disabled':current==1}" @click="setCurrent(current -1)"><i>上一页</i></span></div>
+      <div><span class="my-btn" :class="{'disabled':current==page}" @click="setCurrent(current+1)"><i>下一页</i></span></div>
+    </div>
 </template>
 <script>
 export default {
@@ -43,44 +36,6 @@ export default {
   computed: {
     page() { //  总页数
       return Math.ceil(this.total / this.display )
-    },
-    grouplist () {
-      // 获取分页页码
-      let len = this.page
-      let temp = []
-      let list = []
-      let count = Math.floor(this.pagegroun/2)
-      let center = this.current
-      if (len <= this.pagegroun) {
-        while (len--) {
-          temp.push({text: this.page - len, val: this.page - len})
-        }
-        return temp
-      }
-      while(len--) {
-        temp.push(this.page - len)
-      }
-      // console.log(temp,center,temp.indexOf(center))
-      var idx = temp.indexOf(center)
-      if (idx < count ){
-        center = center + count - idx
-      }
-      if ( this.current > this.page - count) {
-         center = this.page - count
-      }
-      temp = temp.splice(center- count -1,this.pagegroun)
-      do {
-        let t = temp.shift()
-        list.push({
-          text: t,
-          val: t
-        })
-      } while (temp.length)
-      if(this.page > this.pagegroun) {
-        this.current > count+1 ? (list.unshift({text:'...',val: list[0].val-1})): ''
-        this.current < this.page - count ? list.push({text:'...',val: list[list.length -1].val+1}) :''
-      }
-      return list
     }
   },
   methods: {
@@ -90,39 +45,40 @@ export default {
         this.$emit('pagechange', this.current)
       }
     }
-  },
+  }
 }
 </script>
 <style lang="stylus" scoped>
-.page
-  overflow hidden
-  display table
-  margin 0
-  height 50px
-  li
-    float left
-    height 35px
-    border-radius 5px
-    margin 6px
-    color #666
-    a
-      display block
-      width  30px
-      height 30px
-      text-align center 
-      line-height 30px
-      font-size 12px
-      border-radius 5px
-      text-decoration none 
-  li:hover
-    background #00a9ba
-    a
-      color: #ffffff
-.active
-  background #00a9ba
-  color: #ffffff 
-  a
-    color: #ffffff
+$color-btn-bg = #95ca00     
+$color-btn-bg-g = #c7ccc6     
+$color-btn-font = #fff     
+$color-btn-boder = #90ab98   
+$color-btn-shadow = #82a6c6
+.my-btn
+  display: inline-block
+  width: 196px
+  padding: 0.3em 0
+  text-align center
+  font-size: 2em
+  color $color-btn-font
+  background-color $color-btn-bg
+  border-radius: 12px
+  border-bottom: 3px solid $color-btn-boder
+  box-shadow: 0px 3px 0px $color-btn-shadow
+.my-btn.disabled
+  background-color $color-btn-bg-g
+  box-shadow: 0px 3px 0px #6f6f6f
+  border-bottom: 3px solid #616161
+.list-footer
+  padding-top: 1.5em;
+  position: absolute
+  bottom: 10px
+  width: 100%
+.list-footer>div
+  display inline-block
+  width: 40%
+  text-align: center
+  margin-left: 8%
 </style>
 
 
