@@ -20,7 +20,7 @@
       return {
         list:[],
         pageList:[],
-        rows:20,
+        rows:24,
         page:1,
         pageCount:1,
         total:0

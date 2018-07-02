@@ -78,7 +78,7 @@ export default {
     li>div.line
       position absolute
       width 2px
-      height calc(100% - 3.34em)
+      height 100%
       top 3.34em
       left 42px
       background-color $color-theme-l

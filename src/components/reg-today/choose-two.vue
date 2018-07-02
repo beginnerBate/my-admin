@@ -13,18 +13,69 @@
             <div>
               <span>
                 <i>张蕙兰</i>
+                <p><i>主治医师</i> <i>挂号费: 20元</i></p>
+                <!-- 此处不能换行 -->
+              </span><span>
+                <i>上午</i>
+                <i>下午</i>
+                <i>余号:100</i>
+                <i class="disabled">未开放</i>
               </span>
+            </div>
+          </li>          <li>
+            <div>
               <span>
-                <i>主治医师</i>
-              </span>
-              <span>
-                <i>挂号费: 20元</i>
-              </span>
-              <span>
-                <i @click="toDoctorinfo()">预 约</i>
+                <i>张蕙兰</i>
+                <p><i>主治医师</i> <i>挂号费: 20元</i></p>
+                <!-- 此处不能换行 -->
+              </span><span>
+                <i class="active">上午</i>
+                <i>下午</i>
+                <i>余号:100</i>
+                <i class="active" @click='toDoctorinfo'>预约</i>
               </span>
             </div>
           </li>          
+          <li>
+            <div>
+              <span>
+                <i>张蕙兰</i>
+                <p><i>主治医师</i> <i>挂号费: 20元</i></p>
+                <!-- 此处不能换行 -->
+              </span><span>
+                <i>上午</i>
+                <i>下午</i>
+                <i>余号:100</i>
+                <i class="disabled">未开放</i>
+              </span>
+            </div>
+          </li>          <li>
+            <div>
+              <span>
+                <i>张蕙兰</i>
+                <p><i>主治医师</i> <i>挂号费: 20元</i></p>
+                <!-- 此处不能换行 -->
+              </span><span>
+                <i>上午</i>
+                <i>下午</i>
+                <i>余号:100</i>
+                <i class="disabled">未开放</i>
+              </span>
+            </div>
+          </li>          <li>
+            <div>
+              <span>
+                <i>张蕙兰</i>
+                <p><i>主治医师</i> <i>挂号费: 20元</i></p>
+                <!-- 此处不能换行 -->
+              </span><span>
+                <i>上午</i>
+                <i>下午</i>
+                <i>余号:100</i>
+                <i class="disabled">未开放</i>
+              </span>
+            </div>
+          </li>
         </ul>
         <!-- 分页 -->
         <page :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
@@ -38,14 +89,17 @@
   export default {
     data() {
       return {
-        rows:4,
+        rows:5,
         page:1,
         pageCount:1,
-        total:0,
+        total:5,
         list:[],
         specialistData:[],
         ordinaryData:[]        
       }
+    },
+    components:{
+      Page
     },
     created () {
       this.$store.commit('setMenuIdx',1)
@@ -53,19 +107,20 @@
     },
     mounted () {
     },
-    components:{
-      Page
-    },
     computed: {
       tipShow() {
         return this.failShow
       }
     },
     methods: {
+      //
+      pagechange($event) {
+        this.page = $event
+      },
       // 获取科室医生
       getList(){
         setTimeout(()=>{
-          for (var i=0;i<110;i++) {
+          for (var i=0;i<6;i++) {
             this.list.push({value:i})
            }
            this.pageCount = Math.ceil(this.list.length/this.rows)
@@ -90,15 +145,13 @@
         }
       },
       toDoctorinfo() {
-        this.$router.push({path:"/doctor-info"})
+        this.$router.push({name:"getinfo"})
       }
     }
   }
 </script>
 <style lang="stylus" scoped>
 @import '~~common/stylus/form.styl'
-@import '~~common/stylus/transition.styl'
-@import '~~common/stylus/pagination.styl'
 .login
   height 100%
 .doctor-header
@@ -142,25 +195,44 @@
   div>span
     display inline-block
   div>span:first-child
-    width 20%
-    padding-left 40px
+    width 40%
     &>i:first-child
       font-size 1.4em
+      padding-left 1em
+    &>p
+      padding-left 1.4em
     p>i:first-child
       padding-right 20px
   div>span:nth-child(2)
-    width: 25%;
-    font-size: 1.1em;
-  div>span:nth-child(3)
-    width 30%;
-    font-size: 1.4em;
+    width: 60%;
+    vertical-align: 1em;
+    font-size: 1em;
+    i
+      display inline-block
+      text-align center
+      margin 0 1em
+      width 100px
+      border-radius 8px
+      background #ffffff
+      color #0a3876
+      padding 0.35em 0
+      border-bottom 3px solid #9e9e9e
+      box-shadow 0px 3px #607d8b
+      font-size 1.2em
+    i.disabled
+      background #e4e4e4
+    i.active
+      background #95ca00
+      color #fff
   div>span:nth-child(4)
     width 15%;
     text-align center
+    vertical-align: 1.5ch;
     font-size: 1.1em;
     i 
-      background #36c7fe
+      background green
       padding 0.35em 0.75em
       border-radius 4px
-      display inline-block
+    i.on
+      background #d4d4d4
 </style>

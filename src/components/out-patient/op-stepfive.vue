@@ -1,9 +1,5 @@
 <template>
   <div class="login">
-    <!-- doctor header -->
-    <div class="con">
-      <div class="btn left"><span>支付方式</span></div>
-    </div>
     <!-- 预约信息 -->
     <div class="con">
       <!-- 用户信息 -->
@@ -13,21 +9,12 @@
           <span>门诊ID:123456</span>
         </p>
       </div>
-      <!-- 医生信息 -->
-      <div class="doctor-info">
-        <p>挂号科室: 内科</p>
-        <p>门诊医生: 张蕙兰</p>
-        <p>挂号费: 13元</p>
-      </div>
-      <!-- 支付方式 -->
+      <!-- 扫码支付 -->
       <div class="payment">
-        <span class="txt">支付方式:</span>
-        <span class="pay-method" v-for="(item,index) in list" 
-          :key="index" 
-          :class="{'active': index==i}"
-          @click="selectItem(index)">
-          <i class="pay-icon" :class="item.icon"></i><i>{{item.text}}</i>
-        </span>
+        <div class="payment-img">
+          <img src="" alt="">
+        </div>
+        <p>打开手机微信,扫一扫完成支付!</p>
       </div>
     </div>
   </div>
@@ -60,18 +47,22 @@
     },
     created () {
       this.$store.commit('setMenuIdx',2)
+      // this.getData()
     },
     mounted () {
+      // 模拟付款
+      setTimeout(()=>{
+          this.$router.push({name:"opstepsix"})
+      },3000)
     },
     computed: {
     },
     methods: {
       selectItem(index) {
        this.i = index
-       this.toNext()
       },
       toNext() {
-        this.$router.push({path:"payment"})
+        this.$router.push({name:"opstepsix"})
       }
     }
   }
@@ -97,18 +88,16 @@
   font-size 1.1em
   padding 0em 0.5em
 .payment
-  padding-left 0.6em
-  .txt
-    font-size 2em
+  text-align center
+  .payment-img
+    width 320px
+    height 320px
+    border 4px solid $color-a4
+    border-radius 20px
+    margin 0 auto
+  p
     color $color-font
+    font-size 1.1em
     letter-spacing 3px
-  .pay-method
-    display inline-block
-    padding 0.2em 0.2em
-    margin: 5px;
-    border 2px solid $color-font
-    i:last-child
-      vertical-align 5px
-    &.active
-      border 2px solid red
+    padding-top 1em
 </style>

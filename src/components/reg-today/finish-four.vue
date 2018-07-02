@@ -21,6 +21,16 @@
   export default {
     created () {
       this.$store.commit('setMenuIdx',3)
+      // this.getData()
+    },
+    mounted () {
+    },
+    computed: {
+    },
+    methods: {
+      selectItem(index) {
+       this.i = index
+      }
     }
   }
 </script>

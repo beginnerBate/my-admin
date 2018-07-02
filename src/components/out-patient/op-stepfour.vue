@@ -1,9 +1,5 @@
 <template>
   <div class="login">
-    <!-- doctor header -->
-    <div class="con">
-      <div class="btn left"><span>支付方式</span></div>
-    </div>
     <!-- 预约信息 -->
     <div class="con">
       <!-- 用户信息 -->
@@ -15,9 +11,7 @@
       </div>
       <!-- 医生信息 -->
       <div class="doctor-info">
-        <p>挂号科室: 内科</p>
-        <p>门诊医生: 张蕙兰</p>
-        <p>挂号费: 13元</p>
+        <p><span>总缴费金额:</span> <span>￥150元</span></p>
       </div>
       <!-- 支付方式 -->
       <div class="payment">
@@ -45,11 +39,7 @@
           {
             text:'支付宝支付',
             icon:'icon-zfb'
-          },
-          {
-            text:'银行卡支付',
-            icon:'icon-yhk'
-          },          
+          },         
           {
             text:'余额支付',
             icon:'icon-ye'
@@ -71,7 +61,7 @@
        this.toNext()
       },
       toNext() {
-        this.$router.push({path:"payment"})
+        this.$router.push({name:"opstepfive"})
       }
     }
   }
@@ -89,15 +79,19 @@
   border-radius 8px
   color $color-font
 .doctor-info>p
-  font-size 1.4em
-  margin 0.5em 0
+  font-size 2.4em
+  margin 2em 0
+  text-align center
   color $color-font
   padding-left 0.6em
+  span:last-child
+    color $color-a10
 .user-info>p>span
   font-size 1.1em
   padding 0em 0.5em
 .payment
   padding-left 0.6em
+  text-align center
   .txt
     font-size 2em
     color $color-font

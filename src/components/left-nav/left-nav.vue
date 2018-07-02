@@ -70,13 +70,13 @@ export default {
         background-color $color-theme-ll
       &>span:nth-child(2)
         padding 0.36em 0.72em
-        font-size 1.5em
-        letter-spacing 3px
+        padding-left 0.2em
+        font-size 2em
+        letter-spacing 2px
     li>div.line
       position absolute
       width 2px
-      height calc(100% - 3.34em)
-      top 3.34em
+      height 100%
       left 42px
       background-color $color-theme-l
 </style>

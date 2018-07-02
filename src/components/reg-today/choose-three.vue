@@ -71,7 +71,7 @@
        this.toNext()
       },
       toNext() {
-        this.$router.push({path:"payment"})
+        this.$router.push({name:"paymoney"})
       }
     }
   }

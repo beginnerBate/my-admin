@@ -92,7 +92,7 @@
 .home-middle
   overflow hidden
   .home-left
-    width 280px
+    width 340px
     position fixed
     top 110px
     bottom 0px
@@ -101,7 +101,7 @@
     position fixed
     top 110px
     bottom 126px
-    left 280px
+    left 340px
     right:1em;
     .home-right-content
       width 100%
