@@ -2,80 +2,27 @@
   <div class="login">
     <!-- doctor header -->
     <div class="doctor-header">
-      <div class="btn left"><span>外科</span></div>
-      <div class="btn right"><span><i @click="toSpecialist()">专家</i><i>/</i><i @click="toOrdinary()">普通</i></span></div>
+      <div class="btn left"><span>{{departName}}</span></div>
+      <div class="btn right"><span><i @click="toSpecialist()" :class="{'active':type == 'specialist'}">专家</i><i>/</i><i @click="toOrdinary()" :class="{'active':type == 'ordinary'}">普通</i></span></div>
     </div>
     <!-- department -->
     <div class="doctor" ref="doctor">
       <div class="doctor-content" ref="doctorContent">
-        <ul class="doctor-list">         
-          <li>
+        <ul class="doctor-list">              
+          <li v-for="(item, index) in pageList" :key="index" v-if="pageList.length">
             <div>
               <span>
-                <i>张蕙兰</i>
-                <p><i>主治医师</i> <i>挂号费: 20元</i></p>
+                <i>{{item.docName}}</i>
                 <!-- 此处不能换行 -->
               </span><span>
-                <i>上午</i>
-                <i>下午</i>
-                <i>余号:100</i>
-                <i class="disabled">未开放</i>
-              </span>
-            </div>
-          </li>          <li>
-            <div>
-              <span>
-                <i>张蕙兰</i>
-                <p><i>主治医师</i> <i>挂号费: 20元</i></p>
-                <!-- 此处不能换行 -->
-              </span><span>
-                <i class="active">上午</i>
-                <i>下午</i>
-                <i>余号:100</i>
+                <i>挂号费: {{item.sumRegister}}元</i>
+                </span><span>
+                <i class="pb">下午</i>
+                <i>{{item.surplusNumber|yh}}</i>
                 <i class="active" @click='toDoctorinfo'>预约</i>
               </span>
             </div>
           </li>          
-          <li>
-            <div>
-              <span>
-                <i>张蕙兰</i>
-                <p><i>主治医师</i> <i>挂号费: 20元</i></p>
-                <!-- 此处不能换行 -->
-              </span><span>
-                <i>上午</i>
-                <i>下午</i>
-                <i>余号:100</i>
-                <i class="disabled">未开放</i>
-              </span>
-            </div>
-          </li>          <li>
-            <div>
-              <span>
-                <i>张蕙兰</i>
-                <p><i>主治医师</i> <i>挂号费: 20元</i></p>
-                <!-- 此处不能换行 -->
-              </span><span>
-                <i>上午</i>
-                <i>下午</i>
-                <i>余号:100</i>
-                <i class="disabled">未开放</i>
-              </span>
-            </div>
-          </li>          <li>
-            <div>
-              <span>
-                <i>张蕙兰</i>
-                <p><i>主治医师</i> <i>挂号费: 20元</i></p>
-                <!-- 此处不能换行 -->
-              </span><span>
-                <i>上午</i>
-                <i>下午</i>
-                <i>余号:100</i>
-                <i class="disabled">未开放</i>
-              </span>
-            </div>
-          </li>
         </ul>
         <!-- 分页 -->
         <page :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
@@ -89,82 +36,105 @@
   export default {
     data() {
       return {
-        rows:5,
+        rows:4,
         page:1,
         pageCount:1,
-        total:5,
-        list:[],
-        specialistData:[],
-        ordinaryData:[]        
+        total:0,
+        type:'specialist',
+        pageList:[],     
+      }
+    },
+    created () {
+      this.pageList = []   
+      this.$store.commit('setMenuIdx',1)
+    },
+    mounted () {
+      this.getPageData()
+    },
+    filters: {
+      yh: function(value) {
+        return value? '余号'+value : '不限号';
+      }
+    },
+    watch: {
+      list(newValue, oldValue) {
+        this.getPageData()
       }
     },
     components:{
       Page
     },
-    created () {
-      this.$store.commit('setMenuIdx',1)
-      this.getList()
-    },
-    mounted () {
-    },
     computed: {
-      tipShow() {
-        return this.failShow
+      departName() {
+        return this.$store.state.bookReg.departName
+      },
+      departId() {
+        return this.$store.state.bookReg.departId
+      },
+      list () {
+        return this.$store.state.bookReg.dayDoctorList
       }
     },
     methods: {
-      //
-      pagechange($event) {
-        this.page = $event
-      },
       // 获取科室医生
-      getList(){
-        setTimeout(()=>{
-          for (var i=0;i<6;i++) {
-            this.list.push({value:i})
-           }
-           this.pageCount = Math.ceil(this.list.length/this.rows)
-           this.total = this.list.length
-          //  this.getPageData()
-          },1000)
+      getPageData() {
+        var startIndex, endIndex;
+        var mydata = []
+        // 根据类型获取医生
+        if (this.type=='specialist') {
+          mydata = this.list.expertDocs || []
+        }else if( this.type = 'ordinary') {
+          mydata = this.list.ordinaryDocs || []
+        }
+        console.log('fff',this.list)
+        this.total = mydata.length 
+
+        startIndex = (this.page-1)*this.rows
+        endIndex = (this.page)*this.rows
+
+        this.pageList = mydata.filter((val,index)=>{
+              if(index < endIndex && index>=startIndex) {
+                return true
+              }
+          })
       },
       toSpecialist(){
-        
+        this.type = 'specialist'
+        this.page = 1
+        this.getPageData()
       },
       toOrdinary(){
-
+        this.type = 'ordinary'
+        this.page = 1
+        this.getPageData()
       },
-      nextPage() {
-        if (this.page<this.pageCount) {
-          this.page++
-        }
+      // 分页获取数据
+      pagechange($event) {
+         this.page = $event
+         this.getPageData()
       },
-      prePage() {
-        if (this.page>1) {
-          this.page--
-        }
-      },
-      toDoctorinfo() {
-        this.$router.push({name:"getinfo"})
+      toDoctorinfo($event) {
+        $event.departId = this.departId
+        this.$store.dispatch('getBookDoctorsInfo',$event)
+        this.$router.push({name:"regselectcard"})
       }
     }
   }
 </script>
 <style lang="stylus" scoped>
-@import '~~common/stylus/form.styl'
 .login
   height 100%
 .doctor-header
   padding 1em 0.8em
   overflow hidden
 .btn
-  width 213px
+  min-width 213px
   display inline-block
   background #8ba5bc
   background: linear-gradient(to top, #92abc1, #8ba5bc, #8ba5bc, #8ba5bc)
   letter-spacing 4px
   text-align center
-  padding 0.7em 0
+  padding 0.7em 0.2em
   color #fff;
   border-radius 12px
   span 
@@ -174,11 +144,11 @@
   display inline-block
   width 100%
   border-radius 12px
-  i:first-child
-    color:#cf1810  
+  i.active
+    color:#f66  
   i:nth-child(2)
     color:#678784
-  i:nth-child(3)
+  i
     color:#989ba0
 .doctor
   height calc(100% - 100px)
@@ -192,10 +162,11 @@
     border-radius 6px
     padding 0.6em
     color #ffffff
+    font-size: 1.2em
   div>span
     display inline-block
   div>span:first-child
-    width 40%
+    width 20%
     &>i:first-child
       font-size 1.4em
       padding-left 1em
@@ -204,10 +175,17 @@
     p>i:first-child
       padding-right 20px
   div>span:nth-child(2)
-    width: 60%;
-    vertical-align: 1em;
+    font-size 1.2em
+  div>span:nth-child(3)
+    width: 60%
+    text-align right 
     font-size: 1em;
-    i
+    i 
+      padding-right 30px
+      font-size 1.1em
+    i.pb
+      color #95ca00
+    i.active
       display inline-block
       text-align center
       margin 0 1em
@@ -219,9 +197,6 @@
       border-bottom 3px solid #9e9e9e
       box-shadow 0px 3px #607d8b
       font-size 1.2em
-    i.disabled
-      background #e4e4e4
-    i.active
       background #95ca00
       color #fff
   div>span:nth-child(4)

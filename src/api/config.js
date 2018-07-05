@@ -1,11 +1,7 @@
 import axios from 'axios'
 import loS from '@/common/js/loStorage'
-export const ERR_OK = 200
-
-export function getUrl (port="port") {
-  return axios.get('static/config.json').then((res)=>{
-    return Promise.resolve(res.data[port])
-  })
+export function getUrl () {
+  return Promise.resolve('http://10.0.0.88:8080/hss-restapi/')
 }
 
 export function param(data) {

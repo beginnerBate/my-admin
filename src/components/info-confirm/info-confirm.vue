@@ -1,29 +1,25 @@
 <template>
   <div class="login">
-    <!-- doctor header -->
-    <div class="con">
-      <div class="btn left"><span>预约确认</span></div>
-    </div>
     <!-- 预约信息 -->
     <div class="con">
       <!-- 医生信息 -->
       <div class="info-wrapper doctor-info">
-        <p>专家: 张蕙兰</p>
-        <p>科室: 内科</p>
-        <p>预约时间: 2018-05-22 周三 下午</p>
-        <p>挂号费: 13元</p>
+        <p>专家: {{bookDoctor.ysxm}}</p>
+        <p>科室: {{departName}}</p>
+        <p>预约时间: {{booktime.date}} {{booktime.week}} {{booktime.pb}}</p>
+        <p>挂号费: {{bookDoctor.sumRegister}}元</p>
       </div>
       <!-- 用户信息 -->
       <div class="info-wrapper user-info">
         <p>
-          <span>姓名:叶威</span>
-          <span>门诊ID:123456</span>
-          <span>身份证号:3689541225XX12XXXX</span>
+          <span>姓名: {{user.name}}</span>
+          <span>就诊卡号: {{user.jzId}}</span><br>
+          <span>身份证号: {{user.cardNumber}}</span>
         </p>
       </div>
       <!-- button -->
       <div class="button-wrapper">
-        <span class="btn-sub" :class="{'disabled':i==-1}" @click="toNext()"><i>确认预约</i></span>
+        <span class="btn-sub" :class="{'disabled':i==-1}" @click="toNext()"><i>确 认</i></span>
       </div>
     </div>
   </div>
@@ -44,6 +40,18 @@
     mounted () {
     },
     computed: {
+      bookDoctor() {
+        return this.$store.state.bookReg.bookDoctor
+      },
+      departName() {
+        return this.$store.state.bookReg.departName
+      },
+      booktime () {
+        return this.$store.state.bookReg.booktime
+      },
+      user () {
+        return this.$store.state.bookReg.user
+      }
     },
     methods: {
       getData() {
@@ -75,14 +83,16 @@
   border-radius 8px
   color $color-font
 .doctor-info>p
-  font-size 1.18em
+  font-size 2em
   margin 0.5em 0
 .user-info>p>span
-  font-size 1.1em
+  font-size 1.8em
   padding 0em 0.5em
+  line-height: 1.8em;
 .button-wrapper
   position absolute
   bottom 1.2em
   width 100%
   text-align center
+  font-size 1.4em
 </style>

@@ -2,11 +2,15 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import loS from '@/common/js/loStorage'
 
+//获取模块
+import bookReg from './modules/book-reg'
+import outPatient from './modules/out-patient'
+
 // 在使用vuex之前使用，先初始化相关数据
 const init = [
     {name: 'menuIdx', value: 0},
     {name: 'navTxt', value:''},
-    {name: 'leftNav', value:[]},
+    {name: 'leftNav', value:JSON.stringify([])},
     {name:'loginInfo', value:''}
 ]
 loS.initData(init)
@@ -43,6 +47,10 @@ const actions = {
     }
 }
 export default new Vuex.Store({
+    modules: {
+        bookReg,
+        outPatient
+    },
     state,
     mutations,
     actions

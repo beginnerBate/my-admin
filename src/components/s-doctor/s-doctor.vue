@@ -2,26 +2,27 @@
   <div class="login">
     <!-- doctor header -->
     <div class="doctor-header">
-      <div class="btn left"><span>外科</span></div>
-      <div class="btn right"><span><i @click="toSpecialist()">专家</i><i>/</i><i @click="toOrdinary()">普通</i></span></div>
+      <div class="btn left"><span>{{name}}</span></div>
+      <div class="btn right"><span>
+        <i @click="toSpecialist()" :class="{'active':type == 'specialist'}">专家</i><i>/</i><i @click="toOrdinary()" :class="{'active':type == 'ordinary'}">普通</i></span></div>
     </div>
     <!-- department -->
     <div class="doctor" ref="doctor">
       <div class="doctor-content" ref="doctorContent">
         <ul class="doctor-list">         
-          <li>
+          <li v-for="(item, index) in pageList" :key="index" v-if="pageList.length">
             <div>
               <span>
-                <i>张蕙兰</i>
+                <i>{{item.ysxm}}</i>
               </span>
               <span>
-                <i>主治医师</i>
+                <i>{{item.docTitle}}</i>
               </span>
               <span>
-                <i>挂号费: 20元</i>
+                <i>挂号费: {{item.sumRegister}}元</i>
               </span>
               <span>
-                <i @click="toDoctorinfo()">预 约</i>
+                <i @click="toDoctorinfo(item)">预 约</i>
               </span>
             </div>
           </li>          
@@ -35,6 +36,7 @@
 
 <script>
   import Page from 'base/page/page'
+  import {getDepartmentDocs} from 'api/guahao.js'
   export default {
     data() {
       return {
@@ -42,61 +44,82 @@
         page:1,
         pageCount:1,
         total:0,
-        list:[],
-        specialistData:[],
-        ordinaryData:[]        
+        type:'specialist',
+        pageList:[],     
       }
     },
     created () {
+      this.pageList = []   
       this.$store.commit('setMenuIdx',1)
-      this.getList()
     },
     mounted () {
+      this.getPageData()
+    },
+    watch: {
+      list(newValue, oldValue) {
+        this.getPageData()
+      }
     },
     components:{
       Page
     },
     computed: {
-      tipShow() {
-        return this.failShow
+      name() {
+        return this.$store.state.bookReg.departName
+      },
+      departId() {
+        return this.$store.state.bookReg.departId
+      },
+      list () {
+        return this.$store.state.bookReg.doctorList
       }
     },
     methods: {
       // 获取科室医生
-      getList(){
-        setTimeout(()=>{
-          for (var i=0;i<110;i++) {
-            this.list.push({value:i})
-           }
-           this.pageCount = Math.ceil(this.list.length/this.rows)
-           this.total = this.list.length
-          //  this.getPageData()
-          },1000)
+      getPageData() {
+        var startIndex, endIndex;
+        var mydata = []
+        // 根据类型获取医生
+        if (this.type=='specialist') {
+          mydata = this.list.expertDocsList || []
+        }else if( this.type = 'ordinary') {
+          mydata = this.list.ordinaryDocsList || []
+        }
+        this.total = mydata.length 
+
+        startIndex = (this.page-1)*this.rows
+        endIndex = (this.page)*this.rows
+
+        this.pageList = mydata.filter((val,index)=>{
+              if(index < endIndex && index>=startIndex) {
+                return true
+              }
+          })
       },
       toSpecialist(){
-        
+        this.type = 'specialist'
+        this.page = 1
+        this.getPageData()
       },
       toOrdinary(){
-
+        this.type = 'ordinary'
+        this.page = 1
+        this.getPageData()
       },
-      nextPage() {
-        if (this.page<this.pageCount) {
-          this.page++
-        }
+      // 分页获取数据
+      pagechange($event) {
+         this.page = $event
+         this.getPageData()
       },
-      prePage() {
-        if (this.page>1) {
-          this.page--
-        }
-      },
-      toDoctorinfo() {
+      toDoctorinfo($event) {
+        $event.departId = this.departId
+        this.$store.dispatch('getBookDoctorsInfo',$event)
         this.$router.push({path:"/doctor-info"})
       }
     }
   }
 </script>
 <style lang="stylus" scoped>
-@import '~~common/stylus/form.styl'
 @import '~~common/stylus/transition.styl'
 @import '~~common/stylus/pagination.styl'
 .login
@@ -105,13 +128,13 @@
   padding 1em 0.8em
   overflow hidden
 .btn
-  width 213px
+  min-width 213px
   display inline-block
   background #8ba5bc
   background: linear-gradient(to top, #92abc1, #8ba5bc, #8ba5bc, #8ba5bc)
   letter-spacing 4px
   text-align center
-  padding 0.7em 0
+  padding 0.7em 1em
   color #fff;
   border-radius 12px
   span 
@@ -121,11 +144,11 @@
   display inline-block
   width 100%
   border-radius 12px
-  i:first-child
-    color:#cf1810  
+  i.active
+    color:#ff6666  
   i:nth-child(2)
     color:#678784
-  i:nth-child(3)
+  i
     color:#989ba0
 .doctor
   height calc(100% - 100px)

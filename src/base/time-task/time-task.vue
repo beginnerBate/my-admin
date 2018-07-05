@@ -1,7 +1,7 @@
 <template>
     <div>
       <p>
-        <span><img src="./timer.png" alt=""></span>
+        <span class="img-wrapper"><img src="./timer.png" alt=""></span>
         <span class="title">操作倒计时</span>
         <span class="count">{{count}}</span>
       </p>
@@ -37,6 +37,12 @@ export default {
 };
 </script>
 <style lang="stylus" scoped>
+.img-wrapper
+  display inline-block
+  width 55px
+  img 
+    width 100%
+    height auto
 .title
   vertical-align 0.6em
   font-size 1.1em

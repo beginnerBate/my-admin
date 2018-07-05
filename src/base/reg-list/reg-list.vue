@@ -1,7 +1,7 @@
 <template>
   <ul class="department-list">         
     <li  v-for="(item, index) in pageList" :key="index">
-      <div @click="selectItem(index)"><span>{{item.value}}</span></div>
+      <div @click="selectItem(item)"><span><i>{{item.name}}</i></span></div>
     </li>
   </ul>
 </template>
@@ -14,8 +14,8 @@
       }
     },
     methods: {
-      selectItem(index) {
-        this.$emit('selectreg')
+      selectItem(item) {
+        this.$emit('selectreg',item)
       }
     },
   }
@@ -36,14 +36,16 @@
       width:100%
       text-align center
       font-weight 500
-      letter-spacing 4px
       text-shadow 1px 1px 3px #d9dbde
       box-sizing border-box
       border-bottom 3px solid #96a3b3
       box-shadow  0px 3px 0px #84a3c2
       cursor pointer
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      vertical-align top
+      height 120px
+      line-height 100px
+      i 
+        line-height: 1.5em;
+        display: inline-block;
 </style>
 

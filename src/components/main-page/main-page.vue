@@ -52,8 +52,8 @@
         }
       },
       close(){
-        if(typeof window.external.closeThis == 'function') {
-          window.external.closeThis()
+        if(typeof window.external.CloseThis == 'function') {
+          window.external.CloseThis()
         }
       },
       outTime() {
@@ -89,6 +89,7 @@
      font-size 1.8em
 .home-timer
   float right 
+  font-size 1.6em
 .home-middle
   overflow hidden
   .home-left
@@ -110,7 +111,7 @@
       border-radius 8px
 .home-footer
   position fixed
-  bottom 30px
+  bottom 37px
   right 0
   div
     display inline-block

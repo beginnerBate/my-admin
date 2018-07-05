@@ -15,39 +15,70 @@
 </template>
 
 <script>
+  import {userAuth} from 'api/user'
   export default {
     data() {
       return {
         list:[],
-        i:1
+        i:1,
+        cardType:'',
+        cardNumber:'',
+        flag:false
       }
     },
     created () {
       this.$store.commit('setMenuIdx',1)
-      this.getData()
     },
     mounted () {
       setTimeout(()=>{
-          this.$router.push({path:'info-confirm'})
+          if  (typeof getUserInfo == 'function') {
+            this.cardType = getUserInfo().cardType
+            this.cardNumber = getUserInfo().cardNumber         
+          }
       },3000)
+    },
+    watch: {
+      cardNumber(newValue) {
+        if(newValue && this.cardType) {
+          this.flag = true
+        }
+      },
+      flag(value){
+        if (value === true) {
+          this.toUserAuth()
+        }
+      }
     },
     computed: {
     },
     methods: {
-      getData() {
-        for (var i=0;i<10;i++) {
-          this.list.push({value:"余号100"})
-        }
-      },
-      selectItem(index) {
-        if (!(index%2==0)){
-          this.i = index
-        }
+      toUserAuth() {
+        var that = this
+          userAuth({cardType:this.cardType, cardNumber: this.cardNumber})
+          .then(function(res){
+             if (res.code == 200) {
+              // 提交用户信息和token
+              that.$store.dispatch('getUserInfo',{
+                                    token:res.token,
+                                    name:res.patientInfo.name,
+                                    jzId:res.patientInfo.jzId,
+                                    cardNumber: that.cardNumber
+                                  })
+              // 跳转到信息确认页面
+              that.toNext()
+             }
+          }).catch(function (err) {
+            console.log(err)
+          })
       },
       toNext() {
         this.$router.push({path:"info-confirm"})
       }
     }
+  }
+  // 模拟 getUserInfo
+  function getUserInfo () {
+    return {cardType:'1',cardNumber:"320325199507895264"}
   }
 </script>
 <style lang="stylus" scoped>
@@ -67,5 +98,5 @@
   padding-top 1em
   color $color-font
   letter-spacing 2.5px
-  font-size 1.2em
+  font-size 1.8em
 </style>

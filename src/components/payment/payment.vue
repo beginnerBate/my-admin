@@ -5,66 +5,69 @@
       <!-- 用户信息 -->
       <div class="info-wrapper user-info">
         <p>
-          <span>姓名:叶威</span>
-          <span>门诊ID:123456</span>
+          <span>姓名:{{user.name}}</span>
+          <span>门诊ID:{{user.jzId}}</span>
         </p>
       </div>
-      <!-- 扫码支付 -->
-      <div class="payment">
-        <div class="payment-img">
-          <img src="" alt="">
-        </div>
-        <p>打开手机微信,扫一扫完成支付!</p>
-      </div>
+      <!-- 支付 -->
+      <ui-wx v-if="paymentTypeId ==2" :src="payInfo.QRcode"></ui-wx>
+      <ui-ye v-if="paymentTypeId ==''"></ui-ye>
+      <ui-zfb v-if="paymentTypeId ==3"></ui-zfb>
     </div>
   </div>
 </template>
 
 <script>
+  import UiWx from './ui-wx'
+  import UiYe from './ui-ye'
+  import UiZfb from './ui-zfb'
   export default {
-    data() {
-      return {
-        list:[
-          {
-            text:'微信支付',
-            icon:'icon-wx'
-          },
-          {
-            text:'支付宝支付',
-            icon:'icon-zfb'
-          },
-          {
-            text:'银行卡支付',
-            icon:'icon-yhk'
-          },          
-          {
-            text:'余额支付',
-            icon:'icon-ye'
-          }
-        ],
-        i:-1
-      }
-    },
     created () {
       this.$store.commit('setMenuIdx',2)
-      // this.getData()
     },
-    mounted () {
-      // 模拟付款
-      setTimeout(()=>{
-          this.$router.push({path:'finish'})
-      },3000)
+    components:{
+      UiWx,
+      UiYe,
+      UiZfb
     },
     computed: {
+      user () {
+        return this.$store.state.bookReg.user
+      },
+      paymentTypeId() {
+        return  this.$store.state.bookReg.paymentTypeId
+      },
+      payInfo () {
+        return this.$store.state.bookReg.payInfo
+      },
+      departId () {
+        return this.$store.state.bookReg.departId
+      },
+      departName () {
+        return this.$store.state.bookReg.departName
+      },
+      bookDoctor () {
+        return this.$store.state.bookReg.bookDoctor
+      }
     },
     methods: {
-      selectItem(index) {
-       this.i = index
-      },
-      toNext() {
-        this.$router.push({path:"info-confirm"})
+      getWxPayOrder() {
+        var mydata = {
+          orderId: this.payInfo.orderId,
+          payType: this.payInfo.payType,
+          sumRegister:0.1, // 测试
+          //registrationFee: this.bookDoctor.sumRegister, //测试的时候修改挂号费
+          docId: this.bookDoctor.ysId,
+          ksId: this.departId,
+          ksName:this.departName,
+          hm: this.bookDoctor.hm,
+          xmId: this.bookDoctor.projectId,
+          docName: this.bookDoctor.ysxm,
+          patName: this.user.name,
+          patSex: this.user.sex
+        }
       }
-    }
+    },
   }
 </script>
 <style lang="stylus" scoped>
@@ -84,20 +87,7 @@
   margin 0.5em 0
   color $color-font
   padding-left 0.6em
-.user-info>p>span
-  font-size 1.1em
+.user-info span
+  font-size 1.8em
   padding 0em 0.5em
-.payment
-  text-align center
-  .payment-img
-    width 320px
-    height 320px
-    border 4px solid $color-a4
-    border-radius 20px
-    margin 0 auto
-  p
-    color $color-font
-    font-size 1.1em
-    letter-spacing 3px
-    padding-top 1em
 </style>

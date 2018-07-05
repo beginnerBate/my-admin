@@ -11,7 +11,10 @@
       </div>
       <!-- 扫码支付 -->
       <div class="payment">
-        <p>挂号完成,请取走挂号单号!</p>
+        <div class="payment-img">
+          <img src="" alt="">
+        </div>
+        <p>确认支付</p>
       </div>
     </div>
   </div>
@@ -19,8 +22,38 @@
 
 <script>
   export default {
+    data() {
+      return {
+        list:[
+          {
+            text:'微信支付',
+            icon:'icon-wx'
+          },
+          {
+            text:'支付宝支付',
+            icon:'icon-zfb'
+          },
+          {
+            text:'银行卡支付',
+            icon:'icon-yhk'
+          },          
+          {
+            text:'余额支付',
+            icon:'icon-ye'
+          }
+        ],
+        i:-1
+      }
+    },
     created () {
-      this.$store.commit('setMenuIdx',3)
+      this.$store.commit('setMenuIdx',2)
+      // this.getData()
+    },
+    mounted () {
+    },
+    computed: {
+    },
+    methods: {
     }
   }
 </script>
@@ -37,7 +70,7 @@
   border-radius 8px
   color $color-font
 .doctor-info>p
-  font-size 1.8em
+  font-size 1.4em
   margin 0.5em 0
   color $color-font
   padding-left 0.6em
@@ -46,9 +79,15 @@
   padding 0em 0.5em
 .payment
   text-align center
+  .payment-img
+    width 320px
+    height 320px
+    border 4px solid $color-a4
+    border-radius 20px
+    margin 0 auto
   p
     color $color-font
-    font-size 2.5em
+    font-size 1.6em
     letter-spacing 3px
-    padding-top 4em
+    padding-top 1em
 </style>

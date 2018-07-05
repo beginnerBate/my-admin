@@ -2,7 +2,7 @@
   <div class="select-card">
     <ul>
       <li v-for="(item,index) in list" :key="index">
-        <img :src="item.icon" @click="slectcard(item.remark)">
+        <img :src="item.icon" @click="slectcard(item.cardType)">
       </li>
     </ul>
   </div>
@@ -14,19 +14,23 @@ export default {
       list: [
         {
           remark:"身份证",
-          icon:require('./sfz.png')
+          icon:require('./sfz.png'),
+          cardType:1
         },        
         {
           remark:"医保卡",
-          icon:require("./ybk.png")
+          icon:require("./ybk.png"),
+          cardType:2
         },        
         {
           remark:"居民健康卡",
-          icon:require("./jkk.png")
+          icon:require("./jkk.png"),
+          cardType:3
         },        
         {
           remark:"就诊卡",
-          icon:require("./jzk.png")
+          icon:require("./jzk.png"),
+          cardType:4
         },
       ]
     }

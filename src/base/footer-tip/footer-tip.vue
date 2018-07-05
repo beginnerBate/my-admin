@@ -12,7 +12,9 @@
   border-top-right-radius 40px
   background #e3e3e3
   p
-    padding 0.3em
+    padding 0.35em
     padding-left 2em
     letter-spacing 2px
+    font-size 1.13em
+    color #333
 </style>

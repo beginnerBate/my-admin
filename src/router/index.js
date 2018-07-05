@@ -13,6 +13,7 @@ import Finish from 'components/finish/finish'
 import RegToday from 'components/reg-today/reg-today'
 import ChooseOne from 'components/reg-today/choose-one'
 import ChooseTwo from 'components/reg-today/choose-two'
+import RegCardType from 'components/reg-today/cardType'
 import GetInfo from 'components/reg-today/get-info'
 import ChooseThree from 'components/reg-today/choose-three'
 import PayMoney from 'components/reg-today/pay-money'
@@ -100,8 +101,13 @@ export default new Router({
           name:'choosetwo'
         },
         {
+          path:'select-card',
+          name:'regselectcard',
+          component: RegCardType
+        },
+        {
           path:'get-info',
-          name:'getinfo',
+          name:'reggetinfo',
           component: GetInfo
         },
         {
