@@ -34,6 +34,11 @@ import BoStepthree from 'components/book-no/bo-stepthree'
 import BoStepfour from 'components/book-no/bo-stepfour'
 // 自助查询
 import SelfQuery from 'components/self-query/self-query'
+import SelfQuerylist from 'components/self-query/self-querylist'
+import SqStepone from 'components/self-query/sq-stepone'
+import SqSteptwo from 'components/self-query/sq-steptwo'
+import SqStepthree from 'components/self-query/sq-stepthree'
+import SqStepfour from 'components/self-query/sq-stepfour'
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -194,6 +199,34 @@ export default new Router({
     {
       path:"/self-query",
       component:SelfQuery,
+      redirect:'/self-query/SelfQuerylist',
+      children:[
+        {
+          path:"SelfQuerylist",
+          name:'selfquerylist',
+          component:SelfQuerylist
+        },
+        {
+          path:"SqStepone",
+          name:'sqstepone',
+          component:SqStepone
+        },
+        {
+          path:"SqSteptwo",
+          name:'sqsteptwo',
+          component:SqSteptwo
+        },
+        {
+          path:"SqStepthree",
+          name:'sqstepthree',
+          component:SqStepthree
+        },
+        {
+          path:"SqStepfour",
+          name:'sqstepfour',
+          component:SqStepfour
+        }
+      ]
     }
 
   ]

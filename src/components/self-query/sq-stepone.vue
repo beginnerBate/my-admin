@@ -1,17 +1,26 @@
 <template>
-    <div>
-    <p><span>历史消费明细</span></p>
-    <p><span>就诊记录</span></p>
-    <p><span>公共查询</span></p>
-  </div>
+  <select-card @selectcard='selectcard($event)'></select-card>
 </template>
+
 <script>
-export default {
-  created() {
-          // 导航设置 这里适合action
-      var list = JSON.stringify([])
-      this.$store.dispatch('pageSet',[-1,'门诊缴费',list])
+  import SelectCard from 'base/select-card/select-card'
+  export default {
+    components: {
+      SelectCard
+    },
+    methods: {
+      selectcard($event) {
+        // 1. 保存setCardType
+        this.$store.commit('setCardType',$event)
+        // 2. 发送setCardType到客户端
+    
+        // 3.跳到用户信息验证页面
+        this.$router.push({name:'sqsteptwo'})
+      }
+    }
   }
-}
 </script>
 
+<style scoped>
+
+</style>

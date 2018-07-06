@@ -5,7 +5,7 @@ import loS from '@/common/js/loStorage'
 //获取模块
 import bookReg from './modules/book-reg'
 import outPatient from './modules/out-patient'
-
+import selfQuery from './modules/self-query'
 // 在使用vuex之前使用，先初始化相关数据
 const init = [
     {name: 'menuIdx', value: 0},
@@ -49,7 +49,8 @@ const actions = {
 export default new Vuex.Store({
     modules: {
         bookReg,
-        outPatient
+        outPatient,
+        selfQuery
     },
     state,
     mutations,

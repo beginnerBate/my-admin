@@ -9,11 +9,10 @@
            <thead>
              <tr>
                <th>序号</th>
-               <th>科室</th>
-               <th>医生</th>
-               <th>号别</th>
-               <th>挂号费</th>
-               <th>就诊时间</th>
+               <th>消费类型</th>
+               <th>消费名称</th>
+               <th>消费金额</th>
+               <th>消费时间</th>
                <th>操作</th>
              </tr>
            </thead>
@@ -26,13 +25,7 @@
                <th>{{item.numberType}}</th>
                <th>{{item.sumRegister}}</th>
                <th>{{item.vistTime}}</th>
-               <th>
-                 <input type="checkbox" 
-                 :id="'checkbox'+index" 
-                 class="checkbox" 
-                 :value="item.localRegRecordId"
-                 v-model="checkedValue"
-                 ><label :for="'checkbox'+index" class="labelbox"><i></i></label></th>
+               <th><span>详情</span></th>
              </tr>
            </tbody>
          </table>
@@ -43,7 +36,7 @@
            </div>
          </div>
          <!-- 分页 -->
-         <page :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
+         <page :total= 'total' :display='rows' @pagechange='pagechange($event)' class="page-wrapper"></page>
        </div>
     </div>
   </div>
@@ -51,7 +44,7 @@
 
 <script>
   import Page from 'base/page/page'
-  import {numberInfoList} from 'api/bookno.js'
+  import {hisPayRecord} from 'api/selfquery.js'
   export default {
     data() {
       return {
@@ -82,7 +75,7 @@
     },
     methods: {
       getList() {
-        numberInfoList(this.token).then((res)=>{
+        hisPayRecord(this.token).then((res)=>{
           console.log(res)
           if(res.code == "200"){
             this.list = res.data
@@ -157,9 +150,10 @@ table
       background #fafafa
 .money-content
   position absolute
-  bottom 100px
+  bottom 10px
   text-align center 
-  width 100%
+  width 45%
+  left 55%
 .money-txt
   font-size 2em
   color $color-font
@@ -168,4 +162,6 @@ table
 .money-btn .btn-sub
   font-size 2em
   margin-left 50px
+.page-wrapper
+  width 55% !important
 </style>

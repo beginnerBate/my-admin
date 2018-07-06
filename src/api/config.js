@@ -1,7 +1,8 @@
 import axios from 'axios'
 import loS from '@/common/js/loStorage'
+
 export function getUrl () {
-  return Promise.resolve('http://10.0.0.88:8080/hss-restapi/')
+  return Promise.resolve(baseURL)
 }
 
 export function param(data) {

@@ -2,7 +2,7 @@
   <div class="op-stepthree">
     <div class="op-content">
        <div class="op-user-info">
-         <p><span>姓名: XXX</span><span>门诊ID: XXXXX</span></p>
+         <p><span>姓名: {{user.name}}</span><span>门诊ID: {{user.jzId}}</span></p>
        </div>
        <div class="op-list">
          <table>
@@ -20,11 +20,11 @@
            <tbody>
              <tr v-for='(item,index) in tableData' :key="index">
                <th>{{(page -1)*rows +index+1}}</th>
-               <th>{{item.type}}</th>
+               <th>{{item.orderType}}</th>
                <th>{{item.project}}</th>
-               <th>{{item.num}}</th>
+               <th>{{item.number}}</th>
                <th>{{item.price}}</th>
-               <th>{{item.num * item.price}}</th>
+               <th>{{item.amountReceivable}}</th>
              </tr>
            </tbody>
          </table>
@@ -47,13 +47,14 @@
 
 <script>
   import Page from 'base/page/page'
+  import {payProjectList} from 'api/outpatient'
   export default {
     data() {
       return {
-        rows:7,
+        rows:6,
         page:1,
         pageCount:1,
-        total:0,
+        totalCost:'',
         list: [],
         tableData:[]
       }
@@ -65,14 +66,28 @@
     components:{
       Page
     },
+    computed: {
+      user() {
+        return this.$store.state.bookReg.user 
+      },
+      token() {
+        return this.$store.state.bookReg.token
+      }
+    },
     methods: {
       getList() {
-        for (var i = 0; i< 30; i++) {
-          this.list.push({type:`类别${i}`,project:"项目"+i+1+"",num:2,price:12})
-        }
-        this.pageCount = Math.ceil(this.list.length/this.rows)
-        this.total = this.list.length
-        this.getPageData()
+        payProjectList(this.token).then((res)=>{
+           if (res.code == 200) {
+             this.list = res.data.docList
+             this.totalCost = res.data.totalCostMap.totalCost
+             this.pageCount = Math.ceil(this.list.length/this.rows)
+             this.total = this.list.length
+             this.getPageData()
+           }
+        }).catch((err)=>{
+          console.log(err)
+        })
+
       },
       pagechange($event) {
         this.page = $event
@@ -83,7 +98,7 @@
         var endIndex = (this.page)*this.rows
         if (this.rows <= this.total) {
           this.tableData = this.list.filter((val,index)=>{
-            if(index<=endIndex && index>startIndex) {
+            if(index<endIndex && index>=startIndex) {
               return true
             }
           })

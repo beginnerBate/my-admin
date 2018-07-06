@@ -15,8 +15,11 @@
     },
     methods: {
       selectcard($event) {
-        console.log($event)
-        //  选择之后跳转到op-steptwo
+        // 1. 保存setCardType
+        this.$store.commit('setCardType',$event)
+        // 2. 发送setCardType到客户端
+    
+        // 3.跳到用户信息验证页面
         this.$router.push({name:'opsteptwo'})
       }
     }

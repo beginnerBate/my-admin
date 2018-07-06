@@ -13,7 +13,80 @@
     </div>
   </div>
 </template>
+
+<script>
+  import {userAuth} from 'api/user'
+  export default {
+    data() {
+      return {
+        list:[],
+        i:1,
+        cardNumber:'',
+        flag:false
+      }
+    },
+    created () {
+      this.$store.commit('setMenuIdx',1)
+    },
+    mounted () {
+      setTimeout(()=>{
+          if  (typeof getUserInfo == 'function') {
+            this.cardNumber = getUserInfo().cardNumber         
+          }
+      },3000)
+    },
+    watch: {
+      cardNumber(newValue) {
+        if(newValue && this.cardType) {
+          this.flag = true
+        }
+      },
+      flag(value){
+        if (value === true) {
+          this.toUserAuth()
+        }
+      }
+    },
+    computed: {
+      cardType() {
+        return this.$store.state.bookReg.cardType
+      }
+    },
+    methods: {
+      toUserAuth() {
+        var that = this
+          userAuth({cardType:this.cardType, cardNumber: this.cardNumber})
+          .then(function(res){
+             if (res.code == 200) {
+              // 提交用户信息和token
+              that.$store.dispatch('getUserInfo',{
+                                    token:res.token,
+                                    name:res.patientInfo.name,
+                                    jzId:res.patientInfo.jzId,
+                                    cardNumber: that.cardNumber
+                                  })
+              // 跳转到信息确认页面
+              that.toNext()
+             }
+          }).catch(function (err) {
+            console.log(err)
+          })
+      },
+      toNext() {
+        // this.$router.push({path:"info-confirm"})
+        this.$emit('authpass')
+      }
+    }
+  }
+  // 模拟 getUserInfo
+  function getUserInfo () {
+    return {cardNumber:"123456789987654321"}
+  }
+</script>
 <style lang="stylus" scoped>
+@import '~~common/stylus/form.styl'
+@import '~~common/stylus/variables.styl'
+@import '~~common/stylus/button.styl'
 .login
   height 100%
 .user-info
@@ -25,7 +98,7 @@
 .button-wrapper
   text-align center
   padding-top 1em
-  color #fff
+  color $color-font
   letter-spacing 2.5px
-  font-size 1.2em
+  font-size 1.8em
 </style>

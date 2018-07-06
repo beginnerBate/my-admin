@@ -1,5 +1,5 @@
 <template>
-  <user-identity></user-identity>
+  <user-identity @authpass="toNext()"></user-identity>
 </template>
 
 <script>
@@ -11,10 +11,10 @@
     created () {
       this.$store.commit('setMenuIdx',1)
     },
-    mounted() {
-      setTimeout(()=>{
+    methods: {
+      toNext() {
         this.$router.push({name:"bostepthree"})
-      },2000)
+      }
     }
   }
 </script>
