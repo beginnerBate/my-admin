@@ -25,9 +25,9 @@
           <i class="pay-icon" :class="item.icon"></i><i>{{item.text}}</i>
         </span>
       </div>
-            <!-- button -->
+      <!-- button -->
       <div class="button-wrapper">
-        <span class="btn-sub" :class="{'disabled':i==-1}" @click="toNext()"><i>确认预约</i></span>
+        <span class="btn-sub" :class="{'disabled':i==-1}" @click="toNext()"><i>确 认</i></span>
       </div>
     </div>
   </div>
@@ -98,19 +98,13 @@ import {createOrder}  from 'api/pay.js'
         var mydata = {
           payType:this.item.payType,
           paymentTypeId: this.item.paymentTypeId,
-          patName: this.user.name,
-          detpName: this.departName,
-          docName: this.bookDoctor.ysxm,
-          visitTime: this.booktime.date,
-          numberType: this.bookDoctor.numberType,
-          //registrationFee: this.bookDoctor.sumRegister, //测试的时候修改挂号费
-          registrationFee:0.1,
-          isBook: 1
+          visitTime: this.booktime.date,     
+          hm: this.bookDoctor.hm
         }
         var that = this
         createOrder(mydata,this.token).then(function(res){
           if (res.code == 200) {
-            console.log(mydata.paymentTypeId)
+            console.log(mydata)
             if (mydata.paymentTypeId == 2) {
                 // 微信支付
                 that.$store.commit('setPaymentTypeId',2)
@@ -124,12 +118,13 @@ import {createOrder}  from 'api/pay.js'
             }else {
                 // 余额支付
                 that.$store.commit('setPaymentTypeId','')
-                that.$store.commit('setPayInfo',{res:mydata.orderId,payType:mydata.payType})
+                that.$store.commit('setPayInfo',{orderId:res.orderId,payType:mydata.payType})
                 that.$router.push({path:"payment"})
             }
             // this.$router.push({path:"payment"}) 
           }else if(res.code == 'AF401') {
             console.log('认证失败')
+            this.$router.push({path:'user-info'})
           }
         }).catch(function(res){
           console.log(res)

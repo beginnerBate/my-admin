@@ -1,6 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from 'components/home/home'
+// 注册建档
+import RegBook from 'components/reg-book/reg-book'
+import RbStepone from 'components/reg-book/rb-stepone'
+import RbSteptwo from 'components/reg-book/rb-steptwo'
+import RbStepthree from 'components/reg-book/rb-stepthree'
+// 预约挂号
 import SDepartment from 'components/s-department/s-department'
 import SDoctor from 'components/s-doctor/s-doctor'
 import DoctorInfo from 'components/doctor-info/doctor-info'
@@ -226,6 +232,28 @@ export default new Router({
           name:'sqstepfour',
           component:SqStepfour
         }
+      ]
+    },
+    {
+      path:"/regbook",
+      component:RegBook,
+      redirect:'/regbook/RbStepone',
+      children:[
+        {
+          path:"RbStepone",
+          name:"rbstepone",
+          component:RbStepone
+        },        
+        {
+          path:"RbSteptwo",
+          name:"rbsteptwo",
+          component:RbSteptwo
+        },
+        {
+          path:"RbStepthree",
+          name:"rbstepthree",
+          component:RbStepthree
+        },
       ]
     }
 

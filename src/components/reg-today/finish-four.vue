@@ -5,8 +5,8 @@
       <!-- 用户信息 -->
       <div class="info-wrapper user-info">
         <p>
-          <span>姓名:叶威</span>
-          <span>门诊ID:123456</span>
+          <span>姓名:{{user.name}}</span>
+          <span>就诊卡号:{{user.jzId}}</span>
         </p>
       </div>
       <!-- 扫码支付 -->
@@ -26,12 +26,10 @@
     mounted () {
     },
     computed: {
-    },
-    methods: {
-      selectItem(index) {
-       this.i = index
+      user () {
+        return this.$store.state.bookReg.user
       }
-    }
+    },
   }
 </script>
 <style lang="stylus" scoped>
@@ -52,7 +50,7 @@
   color $color-font
   padding-left 0.6em
 .user-info>p>span
-  font-size 1.1em
+  font-size 1.8em
   padding 0em 0.5em
 .payment
   text-align center

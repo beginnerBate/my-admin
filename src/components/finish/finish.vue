@@ -5,13 +5,13 @@
       <!-- 用户信息 -->
       <div class="info-wrapper user-info">
         <p>
-          <span>姓名:叶威</span>
-          <span>门诊ID:123456</span>
+          <span>姓名: {{user.name}}</span>
+          <span>门诊ID: {{user.jzId}}</span>
         </p>
       </div>
       <!-- 扫码支付 -->
       <div class="payment">
-        <p>挂号完成,请取走挂号单号!</p>
+        <p>预约成功,请取走预约单号!</p>
       </div>
     </div>
   </div>
@@ -21,6 +21,11 @@
   export default {
     created () {
       this.$store.commit('setMenuIdx',3)
+    },
+    computed:{
+      user () {
+        return this.$store.state.bookReg.user
+      },
     }
   }
 </script>

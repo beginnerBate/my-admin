@@ -12,7 +12,7 @@
       <!-- 支付 -->
       <ui-wx v-if="paymentTypeId ==2" :src="payInfo.QRcode"></ui-wx>
       <ui-ye v-if="paymentTypeId ==''"></ui-ye>
-      <ui-zfb v-if="paymentTypeId ==3"></ui-zfb>
+      <ui-zfb v-if="paymentTypeId ==3" :src="payInfo.QRcode"></ui-zfb>
     </div>
   </div>
 </template>
@@ -21,7 +21,13 @@
   import UiWx from './ui-wx'
   import UiYe from './ui-ye'
   import UiZfb from './ui-zfb'
+  import {wxPayOrder,zfbPayOrder,yePayOrder} from 'api/pay'
   export default {
+    data() {
+      return {
+        timer: ''
+      }
+    },
     created () {
       this.$store.commit('setMenuIdx',2)
     },
@@ -40,34 +46,80 @@
       payInfo () {
         return this.$store.state.bookReg.payInfo
       },
-      departId () {
-        return this.$store.state.bookReg.departId
-      },
-      departName () {
-        return this.$store.state.bookReg.departName
-      },
-      bookDoctor () {
-        return this.$store.state.bookReg.bookDoctor
+      token() {
+        return this.$store.state.bookReg.token
       }
     },
     methods: {
       getWxPayOrder() {
+        // 清除定时器
         var mydata = {
-          orderId: this.payInfo.orderId,
-          payType: this.payInfo.payType,
-          sumRegister:0.1, // 测试
-          //registrationFee: this.bookDoctor.sumRegister, //测试的时候修改挂号费
-          docId: this.bookDoctor.ysId,
-          ksId: this.departId,
-          ksName:this.departName,
-          hm: this.bookDoctor.hm,
-          xmId: this.bookDoctor.projectId,
-          docName: this.bookDoctor.ysxm,
-          patName: this.user.name,
-          patSex: this.user.sex
+          orderId: this.payInfo.orderId
         }
+        wxPayOrder(mydata,this.token).then((res)=>{
+          console.log(res)
+          if (res.code == 200) {
+            // 请求成功
+            this.$router.push({path:'finish'})
+          }else{
+            // 重新请求
+            this.getWxPayOrder()
+          }
+        }).catch((err)=>{
+          console.log('err')
+        })
+      },
+      getZfbPayOrder () {
+        var mydata = {
+          orderId: this.payInfo.orderId
+        }
+        zfbPayOrder(mydata,this.token).then((res)=>{
+          console.log(res)
+          if (res.code == 200) {
+            // 请求成功
+            this.$router.push({path:'finish'})
+          }else{
+            // 重新请求
+            this.getZfbPayOrder()
+          }
+        }).catch((err)=>{
+          console.log('err')
+        })
+      },
+      getYePayOrder() {
+        var mydata = {
+          orderId: this.payInfo.orderId
+        }
+        console.log(mydata)
+        yePayOrder(mydata,this.token).then((res)=>{
+          console.log(res)
+          if (res.code == 200) {
+            // 请求成功
+            this.$router.push({path:'finish'})
+          }else{
+            // 重新请求
+            // this.getYePayOrder()
+          }
+        }).catch((err)=>{
+          console.log('err')
+        })        
       }
     },
+    mounted(){
+      // 订单查询
+      if (this.paymentTypeId ==2) {
+        this.timer = setTimeout(()=>{
+          this.getWxPayOrder()
+        },1000)
+      }else if (this.paymentTypeId ==3) {
+        this.timer = setTimeout(()=>{
+          this.getZfbPayOrder()
+        },1000)
+      }else{
+        // 余额支付
+        this.getYePayOrder()
+      }
+    }
   }
 </script>
 <style lang="stylus" scoped>

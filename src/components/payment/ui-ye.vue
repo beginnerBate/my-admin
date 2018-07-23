@@ -2,20 +2,6 @@
   <div class="login">
     <!-- 预约信息 -->
     <div class="con">
-      <!-- 用户信息 -->
-      <div class="info-wrapper user-info">
-        <p>
-          <span>姓名:叶威</span>
-          <span>门诊ID:123456</span>
-        </p>
-      </div>
-      <!-- 扫码支付 -->
-      <div class="payment">
-        <div class="payment-img">
-          <img src="" alt="">
-        </div>
-        <p>确认支付</p>
-      </div>
     </div>
   </div>
 </template>

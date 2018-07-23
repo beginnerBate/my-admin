@@ -11,7 +11,10 @@
 <script>
   export default {
     props: {
-      src: ''
+      src: {
+        type: String,
+        default: ''
+      },
     },
     created () {
       this.$store.commit('setMenuIdx',2)
@@ -27,9 +30,10 @@
   .payment-img
     width 320px
     height 320px
-    border 4px solid $color-a4
-    border-radius 20px
     margin 0 auto
+    img 
+      border 4px solid $color-a4
+      border-radius 20px
   p
     color $color-font
     font-size 1.6em

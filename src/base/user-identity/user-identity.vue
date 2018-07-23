@@ -67,20 +67,26 @@
                                   })
               // 跳转到信息确认页面
               that.toNext()
+             }else {
+               that.toError()
              }
           }).catch(function (err) {
             console.log(err)
+            that.toError()
           })
       },
       toNext() {
         // this.$router.push({path:"info-confirm"})
         this.$emit('authpass')
+      },
+      toError() {
+        this.$emit('authno')
       }
     }
   }
   // 模拟 getUserInfo
   function getUserInfo () {
-    return {cardNumber:"123456789987654321"}
+    return {cardNumber:"123456789098765432"}
   }
 </script>
 <style lang="stylus" scoped>

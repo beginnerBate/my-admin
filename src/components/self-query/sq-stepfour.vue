@@ -3,14 +3,17 @@
     <div class="op-content">
        <div class="op-user-info">
          <p><span>姓名: {{user.name}}</span><span>就诊卡号: {{user.jzId}}</span></p>
+         <ul><li></li></ul>
        </div>
        <div class="op-list">
          <table>
            <thead>
              <tr>
                <th>序号</th>
-               <th>病人姓名</th>
-               <th>科室姓名</th>
+               <th>医生姓名</th>
+               <th>科室名称</th>
+               <th>挂号类别</th>
+               <th>挂号费</th>
                <th>就诊时间</th>
              </tr>
            </thead>
@@ -18,9 +21,11 @@
            <tbody>
              <tr v-for='(item,index) in tableData' :key="index">
                <th>{{(page-1)*rows +index+1}}</th>
-               <th>{{item.patName}}</th>
+               <th>{{item.docName}}</th>
                <th>{{item.deptName}}</th>
-               <th>{{item.DiagnosisTime|formatDate}}</th>
+               <th>{{item.numberType}}</th>
+               <th>{{item.sumRegister}} 元</th>
+               <th>{{item.visitTime|formatDate}}</th>
              </tr>
            </tbody>
          </table>
@@ -72,7 +77,7 @@
     filters: {
       formatDate: function(value) {
         var mydate = new Date(value)
-        return formatDate(mydate,'yy-mm-dd hh:MM:ss');
+        return formatDate(mydate,'yyyy-MM-dd hh:mm:ss');
       }
     },
     methods: {

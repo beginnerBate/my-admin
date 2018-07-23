@@ -62,7 +62,7 @@
                                     token:res.token,
                                     name:res.patientInfo.name,
                                     jzId:res.patientInfo.jzId,
-                                    cardNumber: that.cardNumber
+                                    cardNumber: res.patientInfo.idNumber
                                   })
               // 跳转到信息确认页面
               that.toNext()

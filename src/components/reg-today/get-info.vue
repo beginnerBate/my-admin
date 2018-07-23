@@ -1,5 +1,5 @@
 <template>
-  <user-identity></user-identity>
+  <user-identity @authpass='next()'></user-identity>
 </template>
 
 <script>
@@ -8,10 +8,10 @@
     components:{
       UserIdentity
     },
-    mounted() {
-      setTimeout(()=>{
-        this.$router.push({name:"choosethree"})
-      },2000)
+    methods:{
+      next() {
+        this.$router.push({name:'choosethree'})
+      }
     }
   }
 </script>

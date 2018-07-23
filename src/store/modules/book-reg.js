@@ -7,6 +7,7 @@
 // {payInfo} 支付信息
 //------------------当日挂号------------------
 // {dayDoctorList} 当日可挂号医生列表
+// {dayDoctorInfo} 当日挂号医生信息
 // -------------------cardType------------------------
 // {cardType} 证件类型
 import { getDepartmentDocs, getBookDoctors,getDayDoctorList} from 'api/guahao.js'
@@ -22,6 +23,7 @@ const state = {
   payInfo:"",
   paymentTypeId:"",
   dayDoctorList:[],
+  dayDoctorInfo:"",
   cardType:""
 }
 // mutations
@@ -58,6 +60,9 @@ const mutations = {
   },
   setDayDoctorList (state, code) {
     state.dayDoctorList = code
+  },
+  setDayDoctorInfo (state, code) {
+    state.dayDoctorInfo = code
   },
   setCardType (state, code) {
     state.cardType = code

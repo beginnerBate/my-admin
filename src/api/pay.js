@@ -1,5 +1,6 @@
 import axios from 'axios'
-import {getUrl,param} from './config'
+import {getUrl} from './config'
+import qs from "qs";
 
 // 1.挂号缴费模块
 export function createOrder (data,token) {
@@ -24,9 +25,10 @@ export function createOrder (data,token) {
 export function wxPayOrder (data, token) {
   return getUrl().then(function(baseURL){
     var url = baseURL + 'ot/register/wxPayOrderQuery' 
-    return axios.post(url,data,{
+    return axios.post(url,qs.stringify(data),{
       headers:{
-        token:token
+        token:token,
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     }).then(function(res){
       return Promise.resolve(res.data)
@@ -36,3 +38,36 @@ export function wxPayOrder (data, token) {
   })
 }
 // 4. 挂号缴费订单查询(支付宝)
+export function zfbPayOrder (data, token) {
+  return getUrl().then(function(baseURL){
+    var url = baseURL + 'ot/outpatientPayment/aliPayOrderQuery' 
+    return axios.post(url,qs.stringify(data),{
+      headers:{
+        token:token,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then(function(res){
+      return Promise.resolve(res.data)
+    }).catch(function(err){
+      return Promise.reject(err)
+    })
+  })
+}
+
+// 5. 挂号缴费订单查询(余额)
+export function yePayOrder (data, token) {
+  return getUrl().then(function(baseURL){
+    var url = baseURL + 'ot/register/preDepositPay' 
+    console.log(qs.stringify(data))
+    return axios.post(url,qs.stringify(data),{
+      headers:{
+        token:token,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then(function(res){
+      return Promise.resolve(res.data)
+    }).catch(function(err){
+      return Promise.reject(err)
+    })
+  })
+}

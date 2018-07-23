@@ -1,23 +1,18 @@
 <template>
   <div class="login">
-    <!-- doctor header -->
-    <div class="con">
-      <div class="btn left"><span>支付方式</span></div>
-    </div>
-    <!-- 预约信息 -->
     <div class="con">
       <!-- 用户信息 -->
       <div class="info-wrapper user-info">
         <p>
-          <span>姓名:叶威</span>
-          <span>门诊ID:123456</span>
+          <span>姓名:{{user.name}}</span>
+          <span>就诊卡号:{{user.jzId}}</span>
         </p>
       </div>
       <!-- 医生信息 -->
       <div class="doctor-info">
-        <p>挂号科室: 内科</p>
-        <p>门诊医生: 张蕙兰</p>
-        <p>挂号费: 13元</p>
+        <p>挂号科室: {{departName}}</p>
+        <p>门诊医生: {{dayDoctorInfo.docName}}</p>
+        <p>挂号费: {{dayDoctorInfo.sumRegister}}元</p>
       </div>
       <!-- 支付方式 -->
       <div class="payment">
@@ -25,37 +20,46 @@
         <span class="pay-method" v-for="(item,index) in list" 
           :key="index" 
           :class="{'active': index==i}"
-          @click="selectItem(index)">
+          @click="selectItem(index,item)">
           <i class="pay-icon" :class="item.icon"></i><i>{{item.text}}</i>
         </span>
+      </div>
+          <!-- button -->
+      <div class="button-wrapper">
+        <span class="btn-sub" :class="{'disabled':i==-1}" @click="toNext()"><i>确 认</i></span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import {createOrder}  from 'api/pay.js'
   export default {
     data() {
       return {
         list:[
           {
             text:'微信支付',
-            icon:'icon-wx'
+            icon:'icon-wx',
+            payType:1,
+            paymentTypeId:2
           },
           {
             text:'支付宝支付',
-            icon:'icon-zfb'
-          },
-          {
-            text:'银行卡支付',
-            icon:'icon-yhk'
-          },          
+            icon:'icon-zfb',
+            payType:1,
+            paymentTypeId:3
+          },        
           {
             text:'余额支付',
-            icon:'icon-ye'
+            icon:'icon-ye',
+            payType:0,
+            paymentTypeId:''
+
           }
         ],
-        i:-1
+        i:-1,
+        item:""
       }
     },
     created () {
@@ -64,14 +68,61 @@
     mounted () {
     },
     computed: {
+      user () {
+        return this.$store.state.bookReg.user
+      },
+      departName() {
+        return this.$store.state.bookReg.departName
+      },
+      dayDoctorInfo () {
+        return this.$store.state.bookReg.dayDoctorInfo
+      },
+      token() {
+        return this.$store.state.bookReg.token
+      }
     },
     methods: {
-      selectItem(index) {
-       this.i = index
-       this.toNext()
+      selectItem(index,item) {
+        this.i = index
+        this.item = item
       },
       toNext() {
-        this.$router.push({name:"paymoney"})
+        if (this.i==-1)return
+        this.createOrder()
+      },
+      createOrder() {
+        var mydata = {
+          payType:this.item.payType,
+          paymentTypeId: this.item.paymentTypeId,
+          // visitTime: ,     
+          hm: this.dayDoctorInfo.number
+        }
+        var that = this
+        createOrder(mydata,this.token).then(function(res){
+          if (res.code == 200) {
+            console.log(mydata)
+            if (mydata.paymentTypeId == 2) {
+                // 微信支付
+                that.$store.commit('setPaymentTypeId',2)
+                that.$store.commit('setPayInfo',{orderId:res.orderId,QRcode:res.QRcode,payType:mydata.payType})
+                that.$router.push({name:"paymoney"})
+            }else if(mydata.paymentTypeId ==3) {
+                // 支付宝支付
+                that.$store.commit('setPaymentTypeId',3)
+                that.$store.commit('setPayInfo',{orderId:res.orderId,QRcode:res.QRcode,payType:mydata.payType})
+                that.$router.push({name:"paymoney"})
+            }else {
+                // 余额支付
+                that.$store.commit('setPaymentTypeId','')
+                that.$store.commit('setPayInfo',{orderId:res.orderId,payType:mydata.payType})
+                that.$router.push({name:"paymoney"})
+            }
+          }else if(res.code == 'AF401') {
+            console.log('认证失败')
+          }
+        }).catch(function(res){
+          console.log(res)
+        }) 
       }
     }
   }
@@ -89,12 +140,12 @@
   border-radius 8px
   color $color-font
 .doctor-info>p
-  font-size 1.4em
+  font-size 2em
   margin 0.5em 0
   color $color-font
   padding-left 0.6em
 .user-info>p>span
-  font-size 1.1em
+  font-size 1.8em
   padding 0em 0.5em
 .payment
   padding-left 0.6em
@@ -111,4 +162,10 @@
       vertical-align 5px
     &.active
       border 2px solid red
+.button-wrapper
+  position absolute
+  bottom 1.2em
+  width 100%
+  text-align center
+  font-size 1.4em
 </style>

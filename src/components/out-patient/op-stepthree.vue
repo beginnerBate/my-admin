@@ -2,7 +2,7 @@
   <div class="op-stepthree">
     <div class="op-content">
        <div class="op-user-info">
-         <p><span>姓名: {{user.name}}</span><span>门诊ID: {{user.jzId}}</span></p>
+         <p><span>姓名: {{user.name}}</span><span>就诊卡号: {{user.jzId}}</span></p>
        </div>
        <div class="op-list">
          <table>
@@ -31,7 +31,7 @@
          <!-- 总计 -->
          <div class="money-content">
            <div class="money-wrapper">
-             <span class="money-txt"><i>总费用:</i><i>￥150元</i></span>
+             <span class="money-txt"><i>总费用:</i><i>￥{{totalCost}}元</i></span>
              <span class="money-btn" @click="toNext()"><i class="btn-sub">支 付</i></span>
            </div>
          </div>
@@ -56,7 +56,8 @@
         pageCount:1,
         totalCost:'',
         list: [],
-        tableData:[]
+        tableData:[],
+        total:0
       }
     },
     created() {
@@ -79,10 +80,12 @@
         payProjectList(this.token).then((res)=>{
            if (res.code == 200) {
              this.list = res.data.docList
-             this.totalCost = res.data.totalCostMap.totalCost
+             this.totalCost = res.data.totalCost
              this.pageCount = Math.ceil(this.list.length/this.rows)
              this.total = this.list.length
              this.getPageData()
+            // 设置总费用
+            this.$store.commit('setTotalCost',res.data.totalCost)
            }
         }).catch((err)=>{
           console.log(err)
@@ -96,13 +99,12 @@
       getPageData () {
         var startIndex = (this.page-1)*this.rows
         var endIndex = (this.page)*this.rows
-        if (this.rows <= this.total) {
+        console.log(this.list)
           this.tableData = this.list.filter((val,index)=>{
             if(index<endIndex && index>=startIndex) {
               return true
             }
           })
-        }
       },
       toNext() {
         this.$router.push({name:'opstepfour'})

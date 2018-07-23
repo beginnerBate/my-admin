@@ -28,9 +28,9 @@ export default {
           cardType:3
         },        
         {
-          remark:"就诊卡",
-          icon:require("./jzk.png"),
-          cardType:4
+          remark:"其他",
+         icon:require("./others.png"),
+          cardType:-1
         }
       ]
     }
@@ -51,6 +51,7 @@ export default {
     text-align center
     img 
       margin 2em 0
+      // height 206px
 </style>
 
 

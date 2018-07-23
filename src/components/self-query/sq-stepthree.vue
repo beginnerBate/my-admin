@@ -2,30 +2,73 @@
   <div class="op-stepthree">
     <div class="op-content">
        <div class="op-user-info">
-         <p><span>姓名: {{user.name}}</span><span>就诊卡号: {{user.jzId}}</span></p>
+         <p><span>姓名: {{user.name}}</span><span>就诊卡号: {{user.jzId}}</span></p><ul class="nav-btn">
+           <li v-for="(item,index) in tabs" 
+           :key="index" 
+           :class="{active: index == num}"
+           @click="tab(index)"><span>{{item.name}}</span></li>
+         </ul>
        </div>
        <div class="op-list">
-         <table>
+         <table >
            <thead>
-             <tr>
+             <tr v-if=" num==0">
                <th>序号</th>
-               <th>消费类型</th>
-               <th>消费名称</th>
-               <th>消费金额</th>
-               <th>消费时间</th>
-               <th>操作</th>
+               <th>医嘱内容</th>
+               <th>类别</th>
+               <th>单价</th>
+               <th>数量</th>
+               <th>金额</th>
+               <th>时间</th>
+               <!-- <th>操作</th> -->
+             </tr>  
+             <tr v-if="num==1">
+               <th>序号</th>
+               <th>项目</th>
+               <th>类别</th>
+               <th>单价</th>
+               <th>数量</th>
+               <th>金额</th>
+               <th>时间</th>
+               <!-- <th>操作</th> -->
              </tr>
-           </thead>
+             <tr v-show="num==2">
+               <th>序号</th>
+               <th>单据号</th>
+               <th>金额</th>
+               <th>结算方式</th>
+               <th>收款时间</th>
+               <!-- <th>操作</th> -->
+             </tr>           
+           </thead>         
            <!-- 数据渲染 -->
            <tbody>
              <tr v-for='(item,index) in tableData' :key="index">
                <th>{{(page-1)*rows +index+1}}</th>
-               <th>{{item.deptName}}</th>
-               <th>{{item.docName}}</th>
-               <th>{{item.numberType}}</th>
-               <th>{{item.sumRegister}}</th>
-               <th>{{item.vistTime}}</th>
-               <th><span>详情</span></th>
+               <template v-if='num ==0 '>
+                  <th>{{item.orderInfo}}</th>
+                  <th>{{item.orderType}}</th>
+                  <th>{{item.price}}</th>
+                  <th>{{item.number}}</th>
+                  <th>{{item.amountReceivable}}</th>
+                  <th>{{item.occurrenceTime|formatDate}}</th>
+                  <!-- <th>{{item.vistTime}}</th> -->
+               </template>               
+               <template v-if='num ==1 '>
+                  <th>{{item.project}}</th>
+                  <th>{{item.orderType}}</th>
+                  <th>{{item.price}}</th>
+                  <th>{{item.number}}</th>
+                  <th>{{item.amountReceivable}}</th>
+                  <th>{{item.occurrenceTime|formatDate}}</th>
+               </template>               
+               <template v-if='num ==2 '>
+                  <th>{{item.no}}</th>
+                  <th>{{item.money}}</th>
+                  <th>{{item.payType}}</th>
+                  <th>{{item.settlementTime|formatDate}}</th>
+               </template>
+               <!-- <th><span>详情</span></th> -->
              </tr>
            </tbody>
          </table>
@@ -45,6 +88,7 @@
 <script>
   import Page from 'base/page/page'
   import {hisPayRecord} from 'api/selfquery.js'
+  import {formatDate} from 'common/js/date.js'
   export default {
     data() {
       return {
@@ -55,7 +99,13 @@
         list: [],
         tableData:[],
         ischecked:'',
-        checkedValue:[]
+        checkedValue:[],
+        tabs:[{name:"医嘱缴费记录",type:"orderList"},{name:"挂号缴费记录",type:"regList"},{name:"预存金充值记录",type:"preDepositList"}],
+        tabContents:[],
+        num:0,
+        orderList:[],
+        preDepositList:[],
+        regList:[]
       }
     },
     created() {
@@ -73,12 +123,30 @@
         return this.$store.state.bookReg.user
       }
     },
+    filters: {
+      formatDate: function(value) {
+        var mydate = new Date(value)
+        return formatDate(mydate,'yyyy-MM-dd hh:mm:ss');
+      }
+    },
+    watch: {
+      num(newValue, oldValue) {
+          this.list = this.tabContents[this.num]
+          this.pageCount = Math.ceil(this.list.length/this.rows)
+          this.total = this.list.length
+          this.getPageData() 
+      }
+    },
     methods: {
       getList() {
         hisPayRecord(this.token).then((res)=>{
           console.log(res)
           if(res.code == "200"){
-            this.list = res.data
+            this.tabContents[0] = res.orderList
+            this.tabContents[1] = res.regList
+            this.tabContents[2] = res.preDepositList
+            // 根据类型判断
+            this.list = this.tabContents[this.num]
             this.pageCount = Math.ceil(this.list.length/this.rows)
             this.total = this.list.length
             this.getPageData() 
@@ -105,6 +173,9 @@
         if(this.checkedValue.length==0) return false
         var orderId = this.checkedValue.join(',')
         this.$router.push({name:'bostepfour'})
+      },
+      tab(index) {
+        this.num = index
       }
     },
   }
@@ -112,6 +183,7 @@
 <style lang="stylus" scoped>
 @import '~~common/stylus/variables.styl'
 @import '~~common/stylus/button.styl'
+@import '~~common/stylus/navbtn.styl'
 .op-stepthree
   padding 1em 0.8em
 .op-user-info
@@ -119,7 +191,8 @@
   color $color-font
   background-color $color-a1
   border-radius 8px
-  span 
+  overflow hidden
+  p>span 
     padding-right 40px
     letter-spacing 2px
     font-size 1.4em

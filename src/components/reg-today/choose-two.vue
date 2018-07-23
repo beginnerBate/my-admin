@@ -19,7 +19,7 @@
                 </span><span>
                 <i class="pb">下午</i>
                 <i>{{item.surplusNumber|yh}}</i>
-                <i class="active" @click='toDoctorinfo'>预约</i>
+                <i class="active" @click='toDoctorinfo(item)'>预约</i>
               </span>
             </div>
           </li>          
@@ -86,7 +86,6 @@
         }else if( this.type = 'ordinary') {
           mydata = this.list.ordinaryDocs || []
         }
-        console.log('fff',this.list)
         this.total = mydata.length 
 
         startIndex = (this.page-1)*this.rows
@@ -114,8 +113,7 @@
          this.getPageData()
       },
       toDoctorinfo($event) {
-        $event.departId = this.departId
-        this.$store.dispatch('getBookDoctorsInfo',$event)
+        this.$store.commit('setDayDoctorInfo',$event)
         this.$router.push({name:"regselectcard"})
       }
     }
