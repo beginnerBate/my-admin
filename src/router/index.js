@@ -6,6 +6,7 @@ import RegBook from 'components/reg-book/reg-book'
 import RbStepone from 'components/reg-book/rb-stepone'
 import RbSteptwo from 'components/reg-book/rb-steptwo'
 import RbStepthree from 'components/reg-book/rb-stepthree'
+import RbStepfour from 'components/reg-book/rb-stepfour'
 // 预约挂号
 import SDepartment from 'components/s-department/s-department'
 import SDoctor from 'components/s-doctor/s-doctor'
@@ -254,6 +255,11 @@ export default new Router({
           name:"rbstepthree",
           component:RbStepthree
         },
+        {
+          path:"RbStepfour",
+          name:"rbstepfour",
+          component:RbStepfour          
+        }
       ]
     }
 

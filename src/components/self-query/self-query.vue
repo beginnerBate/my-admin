@@ -40,6 +40,4 @@ import MainPage from 'components/main-page/main-page'
     },
   }
 </script>
-<style lang="stylus">
 
-</style>

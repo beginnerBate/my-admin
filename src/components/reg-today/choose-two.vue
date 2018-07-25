@@ -19,7 +19,7 @@
                 </span><span>
                 <i class="pb">下午</i>
                 <i>{{item.surplusNumber|yh}}</i>
-                <i class="active" @click='toDoctorinfo(item)'>预约</i>
+                <i class="active" @click='toDoctorinfo(item)'>挂号</i>
               </span>
             </div>
           </li>          
