@@ -22,7 +22,9 @@
         list:[],
         i:1,
         cardNumber:'',
-        flag:false
+        flag:false,
+        code:'',
+        regUserInfo:""
       }
     },
     created () {
@@ -31,7 +33,10 @@
     mounted () {
       setTimeout(()=>{
           if  (typeof getUserInfo == 'function') {
-            this.cardNumber = getUserInfo().cardNumber         
+            this.cardNumber = getUserInfo().cardNumber  
+            var regUserInfo = getUserInfo() 
+            console.log(regUserInfo)
+            this.$store.commit('setReguserinfo',regUserInfo)    
           }
       },3000)
     },
@@ -57,36 +62,49 @@
         var that = this
           userAuth({cardType:this.cardType, cardNumber: this.cardNumber})
           .then(function(res){
+            that.code = res.code
+            that.toSendInfo()
              if (res.code == 200) {
               // 提交用户信息和token
               that.$store.dispatch('getUserInfo',{
                                     token:res.token,
                                     name:res.patientInfo.name,
+                                    sex:res.patientInfo.sex,
                                     jzId:res.patientInfo.jzId,
-                                    cardNumber: that.cardNumber
+                                    cardNumber: res.patientInfo.idNumber
                                   })
               // 跳转到信息确认页面
               that.toNext()
-             }else {
+             }else if (res.code == "H404" || res.code=='404'){               
+               that.toNouser()
+             }else if (res.code =='406') {
                that.toError()
              }
           }).catch(function (err) {
-            console.log(err)
-            that.toError()
+            console.log('系统错误',err)
           })
       },
       toNext() {
-        // this.$router.push({path:"info-confirm"})
+        // 通过验证
         this.$emit('authpass')
       },
+      toNouser  () {
+        // 用户不存在
+        console.log('nono')
+        this.$emit('nouser')
+      },
       toError() {
+        // 用户已锁定
         this.$emit('authno')
+      },
+      toSendInfo() {
+        this.$emit('sendinfo',this.code)
       }
     }
   }
-  // 模拟 getUserInfo
+  // 模拟 getUserInfo 对接硬件获取用户信息
   function getUserInfo () {
-    return {cardNumber:"123456789098765432"}
+    return {cardNumber:"320840190212170707",name:"刘XX", sex:'女', birthday:"19921217"}
   }
 </script>
 <style lang="stylus" scoped>

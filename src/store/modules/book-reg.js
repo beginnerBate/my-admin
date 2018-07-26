@@ -10,8 +10,17 @@
 // {dayDoctorInfo} 当日挂号医生信息
 // -------------------cardType------------------------
 // {cardType} 证件类型
+// -------------------注册建档信息保存-----------------------------
+//  {reguserinfo:{name:'',sex:'',jtdh:'',cardNo:"",birthday:""}}
+//  {jzId}
+// -------------------------预存金充值金额--------------------------------------
+// {pdtotalCost} 
+// {balance} 余额
 import { getDepartmentDocs, getBookDoctors,getDayDoctorList} from 'api/guahao.js'
 const state = {
+  reguserinfo:"",
+  pdtotalCost:"",
+  balance:"",
   departName:"" ,
   departId:"",
   doctorList:[],
@@ -24,10 +33,23 @@ const state = {
   paymentTypeId:"",
   dayDoctorList:[],
   dayDoctorInfo:"",
-  cardType:""
+  cardType:"",
+  jzId:""
 }
 // mutations
 const mutations = {
+  setReguserinfo (state,code) {
+    state.reguserinfo = code
+  },
+  setJzId (state, code) {
+    state.jzId = code
+  },
+  setPdtotalCost (state, code) {
+    state.pdtotalCost = code
+  },
+  setBalance (state, code){
+    state.balance = code
+  },
   setDepartName (state, code) {
     state.departName = code
   },

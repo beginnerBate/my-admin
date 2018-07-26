@@ -1,5 +1,5 @@
 <template>
-  <user-identity @authpass="toNext()"></user-identity>
+  <user-identity @authpass="topage200()" @authno="topage406()" @nouser="toNext()"></user-identity>
 </template>
 
 <script>
@@ -14,6 +14,17 @@
     methods: {
       toNext() {
         this.$router.push({name:"rbstepthree"}) 
+      },
+      topage406() {
+        this.$store.commit('setRegbookTip','用户账号已锁定, 请到柜台处理!')
+        this.toTipPage()
+      },      
+      topage200() {
+        this.$store.commit('setRegbookTip','用户已存在!')
+        this.toTipPage()
+      },
+      toTipPage () {
+       this.$router.push({name:"rbtippage"}) 
       }
     }
   }

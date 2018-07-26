@@ -7,6 +7,14 @@ import RbStepone from 'components/reg-book/rb-stepone'
 import RbSteptwo from 'components/reg-book/rb-steptwo'
 import RbStepthree from 'components/reg-book/rb-stepthree'
 import RbStepfour from 'components/reg-book/rb-stepfour'
+// 预存金充值
+import PreDeposit from 'components/pre-deposit/pre-deposit'
+import PdStepone from 'components/pre-deposit/pd-stepone'
+import PdSteptwo from 'components/pre-deposit/pd-steptwo'
+import PdStepthree from 'components/pre-deposit/pd-stepthree'
+import PdStepfour from 'components/pre-deposit/pd-stepfour'
+import PdStepfive from 'components/pre-deposit/pd-stepfive'
+import PdStepsix from 'components/pre-deposit/pd-stepsix'
 // 预约挂号
 import SDepartment from 'components/s-department/s-department'
 import SDoctor from 'components/s-doctor/s-doctor'
@@ -46,6 +54,8 @@ import SqStepone from 'components/self-query/sq-stepone'
 import SqSteptwo from 'components/self-query/sq-steptwo'
 import SqStepthree from 'components/self-query/sq-stepthree'
 import SqStepfour from 'components/self-query/sq-stepfour'
+// 提示页面
+import TipPage from 'base/tip-page/tip-page'
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -259,6 +269,53 @@ export default new Router({
           path:"RbStepfour",
           name:"rbstepfour",
           component:RbStepfour          
+        },
+        {
+          path:'TipPage',
+          name:"rbtippage",
+          component:TipPage
+        }
+      ]
+    },
+    {
+      path:"/predeposit",
+      component:PreDeposit,
+      redirect:'/predeposit/pdStepone',
+      children:[
+        {
+          path:"PdStepone",
+          name:"pdstepone",
+          component:PdStepone
+        },        
+        {
+          path:"PdSteptwo",
+          name:"pdsteptwo",
+          component:PdSteptwo
+        },
+        {
+          path:"PdStepthree",
+          name:"pdstepthree",
+          component:PdStepthree
+        },
+        {
+          path:"PdStepfour",
+          name:"pdstepfour",
+          component:PdStepfour
+        },        
+        {
+          path:"PdStepfive",
+          name:"pdstepfive",
+          component:PdStepfive
+        },        
+        {
+          path:"PdStepsix",
+          name:"pdstepsix",
+          component:PdStepsix
+        },
+        {
+          path:'TipPage',
+          name:"pdtippage",
+          component:TipPage
         }
       ]
     }

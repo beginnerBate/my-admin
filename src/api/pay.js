@@ -19,8 +19,6 @@ export function createOrder (data,token) {
   })
 }
 
-// 2. 挂号缴费订单余额支付
-
 // 3. 挂号缴费订单查询(微信)
 export function wxPayOrder (data, token) {
   return getUrl().then(function(baseURL){
@@ -58,7 +56,58 @@ export function zfbPayOrder (data, token) {
 export function yePayOrder (data, token) {
   return getUrl().then(function(baseURL){
     var url = baseURL + 'ot/register/preDepositPay' 
-    console.log(qs.stringify(data))
+    return axios.post(url,qs.stringify(data),{
+      headers:{
+        token:token,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then(function(res){
+      return Promise.resolve(res.data)
+    }).catch(function(err){
+      return Promise.reject(err)
+    })
+  })
+}
+
+
+// 预存金充值
+export function createPredeposit (data,token) {
+  return getUrl().then(function(baseURL){
+    var url = baseURL + 'ot/preDepositRecharge/orders'
+    return axios.post(url,qs.stringify(data),{
+      headers:{
+        token:token,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then(function(res){
+      return Promise.resolve(res.data)
+    }).catch(function(err){
+      return Promise.reject(err)
+    })
+  })
+}
+
+// 预存金支付订单查询接口(微信
+export function wxpdPayOrder (data, token) {
+  return getUrl().then(function(baseURL){
+    var url = baseURL + 'ot/preDepositRecharge/wxPayOrderQuery ' 
+    return axios.post(url,qs.stringify(data),{
+      headers:{
+        token:token,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then(function(res){
+      return Promise.resolve(res.data)
+    }).catch(function(err){
+      return Promise.reject(err)
+    })
+  })
+}
+
+// 预存金支付订单查询接口(支付宝)
+export function zfbpdPayOrder (data, token) {
+  return getUrl().then(function(baseURL){
+    var url = baseURL + 'ot/preDepositRecharge/aliPayOrderQuery' 
     return axios.post(url,qs.stringify(data),{
       headers:{
         token:token,
