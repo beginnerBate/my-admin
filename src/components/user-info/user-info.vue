@@ -1,102 +1,37 @@
 <template>
-  <div class="login">
-    <div class="con">
-      <!-- 读取信息 -->
-      <div class="user-info">
-        <img src="./user-info.gif" alt="">
-      </div>
-      <!-- 用户信息 -->
-      <!-- button -->
-      <div class="button-wrapper">
-        <p>请在自助机指示区域放入已绑定就诊ID的卡进行身份验证!</p>
-      </div>
-    </div>
-  </div>
+  <user-identity @authpass="topage200()" @authno="topage406()" @nouser="usernot()" @neterror='neterror()'></user-identity>
 </template>
 
 <script>
-  import {userAuth} from 'api/user'
+  import UserIdentity from 'base/user-identity/user-identity'
   export default {
-    data() {
-      return {
-        list:[],
-        i:1,
-        cardType:'',
-        cardNumber:'',
-        flag:false
-      }
+    components:{
+      UserIdentity
     },
-    created () {
+    created(){
       this.$store.commit('setMenuIdx',1)
     },
-    mounted () {
-      setTimeout(()=>{
-          if  (typeof getUserInfo == 'function') {
-            this.cardType = getUserInfo().cardType
-            this.cardNumber = getUserInfo().cardNumber         
-          }
-      },3000)
-    },
-    watch: {
-      cardNumber(newValue) {
-        if(newValue && this.cardType) {
-          this.flag = true
-        }
-      },
-      flag(value){
-        if (value === true) {
-          this.toUserAuth()
-        }
-      }
-    },
-    computed: {
-    },
     methods: {
-      toUserAuth() {
-        var that = this
-          userAuth({cardType:this.cardType, cardNumber: this.cardNumber})
-          .then(function(res){
-             if (res.code == 200) {
-              // 提交用户信息和token
-              that.$store.dispatch('getUserInfo',{
-                                    token:res.token,
-                                    name:res.patientInfo.name,
-                                    jzId:res.patientInfo.jzId,
-                                    cardNumber: res.patientInfo.idNumber
-                                  })
-              // 跳转到信息确认页面
-              that.toNext()
-             }
-          }).catch(function (err) {
-            console.log(err)
-          })
+      // 用户存在
+      topage200() {
+        this.$router.push({name:"infoConfirm"}) 
       },
-      toNext() {
-        this.$router.push({path:"info-confirm"})
-      }
+      // 用户不存在
+      usernot() {
+        this.$store.commit('setRegbookTip','没有该用户,请先注册建档!')
+        this.toTipPage()
+      },
+      topage406() {
+        this.$store.commit('setRegbookTip','用户账号已锁定, 请到柜台处理!')
+        this.toTipPage() 
+      },
+      neterror() {
+        this.$store.commit('setRegbookTip','系统错误,请联系维修人员,维修电话 15865458562!')
+        this.toTipPage()        
+      },
+      toTipPage () {
+       this.$router.push({name:"dtippage"}) 
+      },
     }
   }
-  // 模拟 getUserInfo
-  function getUserInfo () {
-    return {cardType:'1',cardNumber:"320325199507895264"}
-  }
 </script>
-<style lang="stylus" scoped>
-@import '~~common/stylus/form.styl'
-@import '~~common/stylus/variables.styl'
-@import '~~common/stylus/button.styl'
-.login
-  height 100%
-.user-info
-  padding-top 2em
-  text-align center
-  img 
-    background #ffffff
-    border-radius 18px
-.button-wrapper
-  text-align center
-  padding-top 1em
-  color $color-font
-  letter-spacing 2.5px
-  font-size 1.8em
-</style>

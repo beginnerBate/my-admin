@@ -20,9 +20,25 @@ export function payProjectList (token) {
 }
 
 // 2.门诊缴费订单创建
-export function outpatientOrder (data,token) {
+export function outpatientOrder (token) {
   return getUrl().then(function(baseURL){
     var url = baseURL + 'ot/outpatientPayment/orders' 
+    return axios.get(url,{
+      headers:{
+        token:token
+      }
+    }).then(function(res){
+      return Promise.resolve(res.data)
+    }).catch(function(err){
+      return Promise.reject(err)
+    })
+  })
+}
+
+// 3. 选择支付方式
+export function payMethod (data,token) {
+  return getUrl().then(function(baseURL){
+    var url = baseURL + 'ot/outpatientPayment/selectPayType'
     return axios.post(url,qs.stringify(data),{
       headers:{
         token:token,
@@ -35,7 +51,6 @@ export function outpatientOrder (data,token) {
     })
   })
 }
-
 // 3. 门诊缴费订单余额支付(余额)
 export function yeOutpatientQuery (data,token) {
   return getUrl().then(function(baseURL){ 

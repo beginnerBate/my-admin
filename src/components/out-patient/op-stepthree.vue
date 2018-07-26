@@ -4,7 +4,7 @@
        <div class="op-user-info">
          <p><span>姓名: {{user.name}}</span><span>就诊卡号: {{user.jzId}}</span></p>
        </div>
-       <div class="op-list">
+       <div class="op-list" v-if="tableData.length">
          <table>
            <thead>
              <tr>
@@ -41,6 +41,9 @@
          </div>
          
        </div>
+       <div class="tip-info" v-if="!tableData.length">
+         <p>暂无缴费项目</p>
+       </div>
     </div>
   </div>
 </template>
@@ -48,6 +51,7 @@
 <script>
   import Page from 'base/page/page'
   import {payProjectList} from 'api/outpatient'
+  import {outpatientOrder} from 'api/outpatient'
   export default {
     data() {
       return {
@@ -107,7 +111,22 @@
           })
       },
       toNext() {
-        this.$router.push({name:'opstepfour'})
+        this.createOrder()
+      },
+      createOrder() {
+        var that = this
+        outpatientOrder(this.token).then(function(res){
+          if (res.code == 200) {
+            // 订单创建成功
+            // 保存orderId
+            that.$store.commit('setorderId',res.orderId)
+            that.$router.push({name:'opstepfour'})
+          }else if(res.code == 'AF401') {
+            console.log('认证失败')
+          }
+        }).catch(function(res){
+          console.log(res)
+        }) 
       }
     },
   }
@@ -168,5 +187,11 @@ table
   position relative
   width 60%
   .list-footer
-    bottom auto 
+    bottom auto
+.tip-info p
+  padding 25%
+  text-align center
+  font-size 1.4em
+  letter-spacing 2px
+  color $color-font 
 </style>

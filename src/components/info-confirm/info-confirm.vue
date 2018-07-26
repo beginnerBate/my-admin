@@ -26,6 +26,7 @@
 </template>
 
 <script>
+  import {createOrder}  from 'api/pay.js'
   export default {
     data() {
       return {
@@ -51,6 +52,9 @@
       },
       user () {
         return this.$store.state.bookReg.user
+      },
+      token() {
+        return this.$store.state.bookReg.token
       }
     },
     methods: {
@@ -65,7 +69,27 @@
         }
       },
       toNext() {
-        this.$router.push({path:"payment-method"})
+        this.createOrder()
+      },
+      // 创建订单
+      createOrder() {
+        var mydata = {
+          visitTime: this.booktime.date,     
+          docNumber: this.bookDoctor.hm
+        }
+        var that = this
+        createOrder(mydata,this.token).then(function(res){
+          if (res.code == 200) {
+            // 订单创建成功
+            // 保存orderId
+            that.$store.commit('setorderId',res.orderId)
+            that.$router.push({path:"payment-method"})
+          }else if(res.code == 'AF401') {
+            console.log('认证失败')
+          }
+        }).catch(function(res){
+          console.log(res)
+        }) 
       }
     }
   }

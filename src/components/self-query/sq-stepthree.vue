@@ -79,7 +79,7 @@
            </div>
          </div>
          <!-- 分页 -->
-         <page :total= 'total' :display='rows' @pagechange='pagechange($event)' class="page-wrapper"></page>
+         <page :total= 'total' :display='rows' @pagechange='pagechange($event)' class="page-wrapper" :currentPage='page'></page>
        </div>
     </div>
   </div>
@@ -130,21 +130,21 @@
       }
     },
     watch: {
-      num(newValue, oldValue) {
-          this.list = this.tabContents[this.num]
+      num(value) {       
+          this.list = this.tabContents[value]
           this.pageCount = Math.ceil(this.list.length/this.rows)
           this.total = this.list.length
+          this.page = 1
           this.getPageData() 
       }
     },
     methods: {
       getList() {
         hisPayRecord(this.token).then((res)=>{
-          console.log(res)
           if(res.code == "200"){
             this.tabContents[0] = res.orderList
             this.tabContents[1] = res.regList
-            this.tabContents[2] = res.preDepositList
+            this.tabContents[2] = res.preDeposits
             // 根据类型判断
             this.list = this.tabContents[this.num]
             this.pageCount = Math.ceil(this.list.length/this.rows)
@@ -176,6 +176,8 @@
       },
       tab(index) {
         this.num = index
+        // 分页重置
+        this.page = 1
       }
     },
   }

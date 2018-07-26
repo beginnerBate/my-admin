@@ -69,7 +69,7 @@
         }else {
           // 保存预约挂号信息
           this.$store.commit('setBooktime',{week:this.item.week,date:this.item.date,pb:this.item.pb})
-          this.$router.push({path:"user-info"}) 
+          this.$router.push({name:"dselectcard"}) 
         }
       }
     }

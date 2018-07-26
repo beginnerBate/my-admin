@@ -79,9 +79,11 @@
                that.toNouser()
              }else if (res.code =='406') {
                that.toError()
+             }else {
+               that.tosystemError()
              }
           }).catch(function (err) {
-            console.log('系统错误',err)
+            that.tosystemError()
           })
       },
       toNext() {
@@ -99,12 +101,15 @@
       },
       toSendInfo() {
         this.$emit('sendinfo',this.code)
+      },
+      tosystemError(){
+        this.$emit('neterror')
       }
     }
   }
   // 模拟 getUserInfo 对接硬件获取用户信息
   function getUserInfo () {
-    return {cardNumber:"320840190212170707",name:"刘XX", sex:'女', birthday:"19921217"}
+    return {cardNumber:"320840190212170707",name:"豪大大", sex:'女', birthday:"19921217"}
   }
 </script>
 <style lang="stylus" scoped>

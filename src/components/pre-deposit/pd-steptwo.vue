@@ -1,6 +1,5 @@
 <template>
-  <!-- <user-identity @authpass="toNext()" @authno="topage406()" @nouser="usernot()"></user-identity> -->
-  <user-identity @authpass="topage200()" @authno="topage406()" @nouser="usernot()"></user-identity>
+  <user-identity @authpass="topage200()" @authno="topage406()" @nouser="usernot()" @neterror='neterror()'></user-identity>
 </template>
 
 <script>
@@ -27,6 +26,10 @@
          console.log('dd')
         this.$store.commit('setRegbookTip','用户账号已锁定, 请到柜台处理!')
         this.toTipPage() 
+      },
+      neterror() {
+        this.$store.commit('setRegbookTip','系统错误,请联系维修人员,维修电话 15865458562!')
+        this.toTipPage()        
       },
       toTipPage () {
        this.$router.push({name:"pdtippage"}) 

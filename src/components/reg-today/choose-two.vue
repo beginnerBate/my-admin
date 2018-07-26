@@ -33,6 +33,7 @@
 
 <script>
   import Page from 'base/page/page'
+  
   export default {
     data() {
       return {

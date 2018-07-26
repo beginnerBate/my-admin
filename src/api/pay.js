@@ -2,14 +2,14 @@ import axios from 'axios'
 import {getUrl} from './config'
 import qs from "qs";
 
-// 1.挂号缴费模块
+// 1.创建订单(挂号模块) 
 export function createOrder (data,token) {
   return getUrl().then(function(baseURL){
     var url = baseURL + 'ot/register/orders'
-    // url += (url.indexOf('?') < 0 ? '?' : '&') + param(data)
-    return axios.post(url,data,{
+    return axios.post(url,qs.stringify(data),{
       headers:{
-        token:token
+        token:token,
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     }).then(function(res){
       return Promise.resolve(res.data)
@@ -18,7 +18,22 @@ export function createOrder (data,token) {
     })
   })
 }
-
+// 2. 选择支付方式
+export function payMethod (data,token) {
+  return getUrl().then(function(baseURL){
+    var url = baseURL + 'ot/register/selectPayType'
+    return axios.post(url,qs.stringify(data),{
+      headers:{
+        token:token,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then(function(res){
+      return Promise.resolve(res.data)
+    }).catch(function(err){
+      return Promise.reject(err)
+    })
+  })
+}
 // 3. 挂号缴费订单查询(微信)
 export function wxPayOrder (data, token) {
   return getUrl().then(function(baseURL){
@@ -38,7 +53,7 @@ export function wxPayOrder (data, token) {
 // 4. 挂号缴费订单查询(支付宝)
 export function zfbPayOrder (data, token) {
   return getUrl().then(function(baseURL){
-    var url = baseURL + 'ot/outpatientPayment/aliPayOrderQuery' 
+    var url = baseURL + 'ot/register/aliPayOrderQuery' 
     return axios.post(url,qs.stringify(data),{
       headers:{
         token:token,
@@ -87,6 +102,10 @@ export function createPredeposit (data,token) {
   })
 }
 
+// 预存金充值可以取消请求
+// axios取消设置
+var CancelToken = axios.CancelToken;
+var cancel;
 // 预存金支付订单查询接口(微信
 export function wxpdPayOrder (data, token) {
   return getUrl().then(function(baseURL){
@@ -96,6 +115,12 @@ export function wxpdPayOrder (data, token) {
         token:token,
         'Content-Type': 'application/x-www-form-urlencoded'
       }
+    },
+    {
+      cancelToken: new CancelToken(function executor(c) {
+        // executor 函数接收一个 cancel 函数作为参数
+        cancel = c;
+      })
     }).then(function(res){
       return Promise.resolve(res.data)
     }).catch(function(err){
@@ -112,7 +137,11 @@ export function zfbpdPayOrder (data, token) {
       headers:{
         token:token,
         'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      },
+        cancelToken: new CancelToken(function executor(c) {
+          // executor 函数接收一个 cancel 函数作为参数
+          cancel = c;
+        })
     }).then(function(res){
       return Promise.resolve(res.data)
     }).catch(function(err){
@@ -120,3 +149,5 @@ export function zfbpdPayOrder (data, token) {
     })
   })
 }
+
+export {cancel}

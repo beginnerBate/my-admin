@@ -1,5 +1,5 @@
 <template>
-  <user-identity @authpass="topage200()" @authno="topage406()" @nouser="toNext()"></user-identity>
+  <user-identity @authpass="topage200()" @authno="topage406()" @nouser="toNext()" @neterror='neterror()'></user-identity>
 </template>
 
 <script>
@@ -22,6 +22,10 @@
       topage200() {
         this.$store.commit('setRegbookTip','用户已存在!')
         this.toTipPage()
+      },
+      neterror() {
+        this.$store.commit('setRegbookTip','系统错误,请联系维修人员,维修电话 15865458562!')
+        this.toTipPage()        
       },
       toTipPage () {
        this.$router.push({name:"rbtippage"}) 

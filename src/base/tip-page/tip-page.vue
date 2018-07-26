@@ -16,8 +16,8 @@
 <style lang="stylus" scoped>
 .tip-page
   color #ffffff
-  font-size 2.5em
-  padding-top 38%
+  font-size 2em
+  padding-top 33%
   text-align center
 </style>
 

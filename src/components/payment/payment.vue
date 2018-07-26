@@ -62,8 +62,10 @@
             // 请求成功
             this.$router.push({path:'finish'})
           }else{
-            // 重新请求
-            this.getWxPayOrder()
+            // 如果路由没有变化的话,重新请求
+            if(this.$router.currentRoute.name=='payment') {
+              this.getWxPayOrder()
+            }
           }
         }).catch((err)=>{
           console.log('err')
@@ -79,8 +81,10 @@
             // 请求成功
             this.$router.push({path:'finish'})
           }else{
-            // 重新请求
-            this.getZfbPayOrder()
+            // 如果路由没有变化的话,重新请求
+            if(this.$router.currentRoute.name=='payment') {
+              this.getZfbPayOrder()
+            }
           }
         }).catch((err)=>{
           console.log('err')
@@ -96,9 +100,11 @@
           if (res.code == 200) {
             // 请求成功
             this.$router.push({path:'finish'})
-          }else{
-            // 重新请求
-            // this.getYePayOrder()
+          }else {
+            // 如果路由没有变化的话,重新请求
+            if(this.$router.currentRoute.name=='payment') {
+              this.getYePayOrder()
+            }
           }
         }).catch((err)=>{
           console.log('err')

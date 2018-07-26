@@ -4,120 +4,40 @@
     <div class="con">
       <!-- 用户信息 -->
       <div class="info-wrapper user-info">
-        <p>
-          <span>姓名:{{user.name}}</span>
-          <span>性别:{{user.sex}}</span>
-          <span>充值金额: {{pdtotalCost}} 元</span>
-        </p>
-      </div>
-      <!-- 支付模块 -->
-      <!-- 微信支付 -->
-      <div class="payment" v-if="paymentTypeId ==2">
-        <div class="payment-img">
-          <img :src="payInfo.QRcode" alt="">
+        <div>
+          <p>充值成功:{{pdtotalCost}}</p>
+          <p>当前卡内余额:{{balance}}</p>
         </div>
-        <p>打开手机微信,扫一扫完成支付!</p>
       </div>
-      <!-- 支付宝支付 -->
-      <div class="payment" v-if="paymentTypeId ==3">
-        <div class="payment-img">
-           <img :src="payInfo.QRcode" alt="">
-        </div>
-        <p>打开手机支付宝,扫一扫完成支付!</p>
+      <div class="payment">
+        <p>点击'打印'按钮， 可打印您的充值信息,请取走您的卡，谢谢！</p>
+      </div>
+      <!-- 打印按钮 -->
+      <div class="button-wrapper">
+        <span class="btn-sub" @click="toPrint()"><i>打 印</i></span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import {wxpdPayOrder,zfbpdPayOrder} from 'api/pay'
   export default {
-    data() {
-      return {
-        timer:""
-      }
-    },
     created () {
-      this.$store.commit('setMenuIdx',2)
-    },
-    mounted(){
-      // 订单查询
-      if (this.paymentTypeId ==2) {
-        this.timer = setTimeout(()=>{
-          this.getWxPayOrder()
-        },1000)
-      }else if (this.paymentTypeId ==3) {
-        this.timer = setTimeout(()=>{
-          this.getZfbPayOrder()
-        },1000)
-      }
+      this.$store.commit('setMenuIdx',3)
     },
     computed: {
-      user () {
-        return this.$store.state.bookReg.user
+      pdtotalCost() {
+        return this.$store.state.bookReg.pdtotalCost
       },
-      paymentTypeId() {
-        return  this.$store.state.bookReg.paymentTypeId
-      },
-      payInfo () {
-        return this.$store.state.bookReg.payInfo
-      },
-      token() {
-        return this.$store.state.bookReg.token
-      },
-      pdtotalCost () {
-         return this.$store.state.bookReg.pdtotalCost
+      balance () {
+        return this.$store.state.bookReg.balance
       }
-    },
-    destroyed() {
-      // 取消请求
     },
     methods: {
-      getWxPayOrder() {
-        // 清除定时器
-        var mydata = {
-          orderId: this.payInfo.orderId,
-          ksId:""
-        }
-        wxpdPayOrder(mydata,this.token).then((res)=>{
-          console.log(res)
-          if (res.code == 200) {
-            // 请求成功
-            this.$store.commit('setBalance',res.balance)
-            this.$router.push({name:'pdstepsix'})
-          }else{
-            // 重新请求
-            if(this.$router.currentRoute.name=='pdstepfour') {
-               this.getWxPayOrder()
-            }
-           
-          }
-        }).catch((err)=>{
-          console.log('err')
-        })
-      },
-      getZfbPayOrder () {
-        var mydata = {
-          orderId: this.payInfo.orderId,
-          ksId:""
-        }
-        zfbpdPayOrder(mydata,this.token).then((res)=>{
-          if (res.code == 200) {
-            // 请求成功
-            this.$store.commit('setBalance',res.balance)
-            this.$router.push({name:"pdstepsix"})
-          }else{
-            // 如果路由没有变化的话,重新请求
-            if(this.$router.currentRoute.name=='pdstepfour') {
-              this.getZfbPayOrder()
-            }
-            
-          }
-        }).catch((err)=>{
-          console.log('err')
-        })
+      toPrint() {
+        // 调用打印接口
       }
-    }
+    },
   }
 </script>
 <style lang="stylus" scoped>
@@ -132,21 +52,20 @@
   margin-bottom 2em
   border-radius 8px
   color $color-font
-.user-info>p>span
+.user-info p
   font-size 1.8em
   padding 0em 0.5em
 .payment
   text-align center
-  .payment-img
-    width 320px
-    height 320px
-    margin 0 auto
-    img 
-      border 4px solid $color-a4
-      border-radius 20px
   p
     color $color-font
-    font-size 1.6em
+    font-size 1.5em
     letter-spacing 3px
-    padding-top 1em
+    padding-top 5em
+.button-wrapper
+  position absolute
+  bottom 1.2em
+  width 100%
+  text-align center
+  font-size 1.4em
 </style>

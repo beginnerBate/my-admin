@@ -62,13 +62,15 @@
           orderId: this.payInfo.orderId
         }
         wxOutpatientQuery(mydata,this.token).then((res)=>{
-          console.log(res)
           if (res.code == 200) {
             // 请求成功
              this.$router.push({name:'opstepsix'})
           }else{
-            // 重新请求
-            this.getWxPayOrder()
+            // 如果路由没有变化的话,重新请求
+            if(this.$router.currentRoute.name=='opstepfive') {
+              this.getWxPayOrder()
+            }
+            
           }
         }).catch((err)=>{
           console.log('err')
@@ -84,8 +86,10 @@
             // 请求成功
             this.$router.push({name:'opstepsix'})
           }else{
-            // 重新请求
-            this.getZfbPayOrder()
+            // 如果路由没有变化的话,重新请求
+            if(this.$router.currentRoute.name=='opstepfive') {
+              this.getZfbPayOrder()
+            }
           }
         }).catch((err)=>{
           console.log('err')
@@ -100,8 +104,11 @@
             // 请求成功
              this.$router.push({name:'opstepsix'})
           }else{
-            // 重新请求
-            this.getYePayOrder()
+            // 如果路由没有变化的话,重新请求
+            if(this.$router.currentRoute.name=='opstepfive') {
+              this.getYePayOrder()
+            }
+            
           }
         }).catch((err)=>{
           console.log('err')
@@ -110,22 +117,20 @@
     },
     mounted(){
       // 订单查询
-      // if (this.paymentTypeId ==2) {
-      //   this.timer = setTimeout(()=>{
-      //     this.getWxPayOrder()
-      //   },1000)
-      // }else if (this.paymentTypeId ==3) {
-      //   this.timer = setTimeout(()=>{
-      //     this.getZfbPayOrder()
-      //   },1000)
-      // }else{
-      //   // 余额支付
-      //   this.timer = setTimeout(()=>{
-      //    this.getYePayOrder()
-      //   },1000)
-        
-      // }
-      this.getYePayOrder()
+      if (this.paymentTypeId ==2) {
+        this.timer = setTimeout(()=>{
+          this.getWxPayOrder()
+        },1000)
+      }else if (this.paymentTypeId ==3) {
+        this.timer = setTimeout(()=>{
+          this.getZfbPayOrder()
+        },1000)
+      }else{
+        // 余额支付
+        this.timer = setTimeout(()=>{
+         this.getYePayOrder()
+        },1000) 
+      }
     }
   }
 </script>

@@ -14,11 +14,11 @@ import PdSteptwo from 'components/pre-deposit/pd-steptwo'
 import PdStepthree from 'components/pre-deposit/pd-stepthree'
 import PdStepfour from 'components/pre-deposit/pd-stepfour'
 import PdStepfive from 'components/pre-deposit/pd-stepfive'
-import PdStepsix from 'components/pre-deposit/pd-stepsix'
 // 预约挂号
 import SDepartment from 'components/s-department/s-department'
 import SDoctor from 'components/s-doctor/s-doctor'
 import DoctorInfo from 'components/doctor-info/doctor-info'
+import SelectCard from 'components/user-info/select-card'
 import UserInfo from 'components/user-info/user-info'
 import InfoConfirm from 'components/info-confirm/info-confirm'
 import PaymentMethod from 'components/payment-method/payment-method'
@@ -68,43 +68,63 @@ export default new Router({
         {
           path:'department',
           name:"department",
-          component: SDepartment
+          component: SDepartment,
+          meta: { backpage: 'close'}
         },
         {
           path:'doctor',
           name:"doctor",
-          component: SDoctor
+          component: SDoctor,
+          meta: { backpage: 'department'}
         },
         {
           path:'doctor-info',
           name:"doctorInfo",
-          component: DoctorInfo
+          component: DoctorInfo,
+          meta: { backpage: 'doctor'}
+        },
+        {
+          path:"select-card",
+          name:"dselectcard",
+          component:SelectCard,
+          meta: { backpage: 'doctorInfo'}
         },
         {
           path:'user-info',
           name:"userInfo",
-          component: UserInfo
+          component: UserInfo,
+          meta: { backpage: 'dselectcard'}
         },
         {
           path:'info-confirm',
           name:"infoConfirm",
-          component: InfoConfirm
+          component: InfoConfirm,
+          meta: { backpage: 'doctorInfo'}
         },
         {
           path:'payment-method',
           name:"paymentMethod",
-          component: PaymentMethod
+          component: PaymentMethod,
+          meta: { backpage: 'infoConfirm'}
         },
         {
           path:'payment',
           name:"payment",
-          component: Payment
+          component: Payment,
+          meta: { backpage: 'paymentMethod'}
         },
         {
           path:'finish',
           name:"finish",
-          component: Finish
+          component: Finish,
+          meta: { backpage: 'close'}
         },
+        {
+          path:"dtippage",
+          name:'dtippage',
+          component:TipPage,
+          meta: { backpage: 'close'}
+        }
       ]
     },
     {
@@ -115,38 +135,52 @@ export default new Router({
       children:[
         {
           path:"choose-one",
-          component: ChooseOne
+          name:"chooseone",
+          component: ChooseOne,
+          meta: { backpage: 'close'}
         },
         {
           path:'ChooseTwo',
           component: ChooseTwo,
-          name:'choosetwo'
+          name:'choosetwo',
+          meta: { backpage: 'chooseone'}
         },
         {
           path:'select-card',
           name:'regselectcard',
-          component: RegCardType
+          component: RegCardType,
+          meta: { backpage: 'choosetwo'}
         },
         {
           path:'get-info',
           name:'reggetinfo',
-          component: GetInfo
+          component: GetInfo,
+          meta: { backpage: 'regselectcard'}
         },
         {
           path:"choose-three",
           component:ChooseThree,
-          name:'choosethree'
+          name:'choosethree',
+          meta: { backpage: 'choosetwo'}
         },
         {
           path:'pay-money',
           component:PayMoney,
-          name:"paymoney"
+          name:"paymoney",
+          meta: { backpage: 'choosethree'}
         },
         {
           path:'finish-four',
           component:FinishFour,
-          name:"finishfour"
+          name:"finishfour",
+          meta: { backpage: 'close'}
         },
+        {
+          path:"rttippage",
+          name:'rttippage',
+          component:TipPage,
+          meta: { backpage: 'close'}
+        }
       ]
     },
     {
@@ -157,32 +191,39 @@ export default new Router({
       children:[
         {
           path:"op-stepone",
-          component: OpStepone
+          component: OpStepone,
+          name:'opstepone',
+          meta: { backpage: 'close'}
         },
         {
           path:'op-steptwo',
           component: OpSteptwo,
-          name:'opsteptwo'
+          name:'opsteptwo',
+          meta: { backpage: 'opstepone'}
         },
         {
           path:'op-stepthree',
           name:'opstepthree',
-          component: OpStepthree
+          component: OpStepthree,
+          meta: { backpage: 'opstepone'}
         },
         {
           path:"op-stepfour",
           component:OpStepfour,
-          name:'opstepfour'
+          name:'opstepfour',
+          meta: { backpage: 'opstepthree'}
         },
         {
           path:"op-stepfive",
           component:OpStepfive,
-          name:'opstepfive'
+          name:'opstepfive',
+          meta: { backpage: 'opstepfour'}
         },
         {
           path:"op-stepsix",
           component:OpStepsix,
-          name:'opstepsix'
+          name:'opstepsix',
+          meta: { backpage: 'close'}
         }
       ]
     },
@@ -194,22 +235,33 @@ export default new Router({
       children:[
         {
           path:"bo-stepone",
-          component: BoStepone
+          name:'bostepone',
+          component: BoStepone,
+          meta: { backpage: 'close'}
         },
         {
           path:'bo-steptwo',
           component: BoSteptwo,
-          name:'bosteptwo'
+          name:'bosteptwo',
+          meta: { backpage: 'bostepone'}
         },
         {
           path:'bo-stepthree',
           name:'bostepthree',
-          component: BoStepthree
+          component: BoStepthree,
+          meta: { backpage: 'bostepone'}
         },
         {
           path:"bo-stepfour",
           component:BoStepfour,
-          name:'bostepfour'
+          name:'bostepfour',
+          meta: { backpage: 'close'}
+        },
+        {
+          path:"botippage",
+          name:'botippage',
+          component:TipPage,
+          meta: { backpage: 'close'}
         }
       ]
     },
@@ -221,27 +273,32 @@ export default new Router({
         {
           path:"SelfQuerylist",
           name:'selfquerylist',
-          component:SelfQuerylist
+          component:SelfQuerylist,
+          meta: { backpage: 'close'}
         },
         {
           path:"SqStepone",
           name:'sqstepone',
-          component:SqStepone
+          component:SqStepone,
+          meta: { backpage: 'selfquerylist'}
         },
         {
           path:"SqSteptwo",
           name:'sqsteptwo',
-          component:SqSteptwo
+          component:SqSteptwo,
+          meta: { backpage: 'sqstepone'}
         },
         {
           path:"SqStepthree",
           name:'sqstepthree',
-          component:SqStepthree
+          component:SqStepthree,
+          meta: { backpage: 'selfquerylist'}
         },
         {
           path:"SqStepfour",
           name:'sqstepfour',
-          component:SqStepfour
+          component:SqStepfour,
+          meta: { backpage: 'selfquerylist'}
         }
       ]
     },
@@ -253,27 +310,32 @@ export default new Router({
         {
           path:"RbStepone",
           name:"rbstepone",
-          component:RbStepone
+          component:RbStepone,
+          meta: { backpage: 'close'}
         },        
         {
           path:"RbSteptwo",
           name:"rbsteptwo",
-          component:RbSteptwo
+          component:RbSteptwo,
+          meta: { backpage: 'rbstepone'}
         },
         {
           path:"RbStepthree",
           name:"rbstepthree",
-          component:RbStepthree
+          component:RbStepthree,
+          meta: { backpage: 'rbstepone'}
         },
         {
           path:"RbStepfour",
           name:"rbstepfour",
-          component:RbStepfour          
+          component:RbStepfour,
+          meta: { backpage: 'close'}          
         },
         {
           path:'TipPage',
           name:"rbtippage",
-          component:TipPage
+          component:TipPage,
+          meta: { backpage: 'close'}
         }
       ]
     },
@@ -285,37 +347,38 @@ export default new Router({
         {
           path:"PdStepone",
           name:"pdstepone",
-          component:PdStepone
+          component:PdStepone,
+          meta: { backpage: 'close'}
         },        
         {
           path:"PdSteptwo",
           name:"pdsteptwo",
-          component:PdSteptwo
+          component:PdSteptwo,
+          meta: { backpage: 'pdstepone'}
         },
         {
           path:"PdStepthree",
           name:"pdstepthree",
-          component:PdStepthree
+          component:PdStepthree,
+          meta: { backpage: 'pdstepone'}
         },
         {
           path:"PdStepfour",
           name:"pdstepfour",
-          component:PdStepfour
+          component:PdStepfour,
+          meta: { backpage: 'pdstepthree'}
         },        
         {
           path:"PdStepfive",
           name:"pdstepfive",
-          component:PdStepfive
+          component:PdStepfive,
+          meta: { backpage: 'close'}
         },        
-        {
-          path:"PdStepsix",
-          name:"pdstepsix",
-          component:PdStepsix
-        },
         {
           path:'TipPage',
           name:"pdtippage",
-          component:TipPage
+          component:TipPage,
+          meta: { backpage: 'close'}
         }
       ]
     }

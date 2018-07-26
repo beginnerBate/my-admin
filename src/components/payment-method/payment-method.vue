@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {createOrder}  from 'api/pay.js'
+import {payMethod}  from 'api/pay.js'
   export default {
     data() {
       return {
@@ -83,6 +83,9 @@ import {createOrder}  from 'api/pay.js'
       },
       token() {
         return this.$store.state.bookReg.token
+      },
+      orderId () {
+        return this.$store.state.bookReg.orderId
       }
     },
     methods: {
@@ -92,17 +95,18 @@ import {createOrder}  from 'api/pay.js'
       },
       toNext() {
         if (this.i==-1)return
-        this.createOrder()
+        this.payMethod()
       },
-      createOrder() {
+      payMethod() {
         var mydata = {
           payType:this.item.payType,
-          paymentTypeId: this.item.paymentTypeId,
-          visitTime: this.booktime.date,     
-          hm: this.bookDoctor.hm
+          orderId:this.orderId
+        }
+        if (this.item.paymentTypeId !='') {
+            mydata.paymentTypeId = this.item.paymentTypeId
         }
         var that = this
-        createOrder(mydata,this.token).then(function(res){
+        payMethod(mydata,this.token).then(function(res){
           if (res.code == 200) {
             console.log(mydata)
             if (mydata.paymentTypeId == 2) {

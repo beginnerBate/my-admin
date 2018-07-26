@@ -5,7 +5,7 @@
     <div class="home-btn"><span>当前页面-<i>{{$store.state.navTxt}}</i></span></div>
     <!-- 倒计时 -->
     <div class="home-timer">
-      <timer-task @outTime='outTime'></timer-task>
+      <timer-task @outTime='outTime' ></timer-task>
     </div>
   </div>
   <!-- home-middle -->
@@ -43,21 +43,31 @@
       TimerTask,
       FooterTip
     },
+    watch: {
+      '$route'(value) {
+
+      }
+    },
     methods: {
       back() {
-        if(this.$router.currentRoute.name == 'department') {
+        var curRouteName = this.$router.currentRoute.name
+        var myback = this.$router.currentRoute.meta.backpage
+        console.log(myback)
+        if (myback == 'close') {
           this.close()
         }else {
-          this.$router.go(-1)
+          // 跳转的页面
+          this.$router.push({name:myback})
         }
       },
       close(){
         if(typeof window.external.CloseThis == 'function') {
           window.external.CloseThis()
         }
+        // 清空数据
       },
       outTime() {
-        alert('操作超时啦!')
+        this.close()
       }
     }
   }

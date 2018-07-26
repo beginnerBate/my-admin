@@ -16,6 +16,9 @@
 // -------------------------预存金充值金额--------------------------------------
 // {pdtotalCost} 
 // {balance} 余额
+// --------------------------创建订单模块--------------------------------
+// {orderId}
+// {payType}
 import { getDepartmentDocs, getBookDoctors,getDayDoctorList} from 'api/guahao.js'
 const state = {
   reguserinfo:"",
@@ -29,6 +32,7 @@ const state = {
   booktime:"",
   user:"",
   token:'',
+  orderId:"",
   payInfo:"",
   paymentTypeId:"",
   dayDoctorList:[],
@@ -73,6 +77,9 @@ const mutations = {
   },
   setToken (state, code) {
     state.token = code
+  },
+  setorderId (state, code){
+    state.orderId = code
   },
   setPayInfo (state, code) {
     state.payInfo = code

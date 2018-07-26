@@ -30,7 +30,7 @@
 </template>
 
 <script>
-  import {wxpdPayOrder,zfbpdPayOrder} from 'api/pay'
+  import {wxpdPayOrder,zfbpdPayOrder,cancel} from 'api/pay'
   export default {
     data() {
       return {
@@ -46,6 +46,7 @@
         this.timer = setTimeout(()=>{
           this.getWxPayOrder()
         },1000)
+        
       }else if (this.paymentTypeId ==3) {
         this.timer = setTimeout(()=>{
           this.getZfbPayOrder()
@@ -71,6 +72,9 @@
     },
     destroyed() {
       // 取消请求
+      if (typeof cancel === 'fucntion'){
+        cancel()
+      }
     },
     methods: {
       getWxPayOrder() {
@@ -82,13 +86,13 @@
         wxpdPayOrder(mydata,this.token).then((res)=>{
           if (res.code == 200) {
             // 请求成功
+            this.$store.commit('setBalance',res.balance)
             this.$router.push({name:'pdstepfive'})
           }else{
-            // 重新请求
+            // 如果路由没有变化的话,重新请求
             if(this.$router.currentRoute.name=='pdstepfour') {
-               this.getWxPayOrder()
+              this.getWxPayOrder()
             }
-           
           }
         }).catch((err)=>{
           console.log('err')
@@ -102,8 +106,9 @@
         zfbpdPayOrder(mydata,this.token).then((res)=>{
           if (res.code == 200) {
             // 请求成功
+            this.$store.commit('setBalance',res.balance)
             this.$router.push({name:"pdstepfive"})
-          }else{
+          }else {
             // 如果路由没有变化的话,重新请求
             if(this.$router.currentRoute.name=='pdstepfour') {
               this.getZfbPayOrder()

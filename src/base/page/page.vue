@@ -1,7 +1,7 @@
 <template>
     <div class="list-footer">
-      <div><span class="my-btn" :class="{'disabled':current==1}" @click="setCurrent(current -1)"><i>上一页</i></span></div>
-      <div><span class="my-btn" :class="{'disabled':current==page}" @click="setCurrent(current+1)"><i>下一页</i></span></div>
+      <div><span class="my-btn" :class="{'disabled':current<=1}" @click="setCurrent(current - 1)"><i>上一页</i></span></div>
+      <div><span class="my-btn" :class="{'disabled':current>=page}" @click="setCurrent(current + 1)"><i>下一页</i></span></div>
     </div>
 </template>
 <script>
@@ -36,6 +36,11 @@ export default {
   computed: {
     page() { //  总页数
       return Math.ceil(this.total / this.display )
+    }
+  },
+  watch: {
+    currentPage(value) {
+      this.current = value
     }
   },
   methods: {

@@ -32,7 +32,7 @@
 </template>
 
 <script>
-  import {outpatientOrder} from 'api/outpatient'
+  import {outpatientOrder,payMethod} from 'api/outpatient'
   export default {
     data() {
       return {
@@ -75,6 +75,9 @@
       },
       totalCost() {
         return this.$store.state.outPatient.totalCost
+      },
+      orderId () {
+        return this.$store.state.bookReg.orderId
       }
     },
     methods: {
@@ -84,20 +87,18 @@
       },
       toNext() {
         if (this.i==-1)return
-        this.createOrder()
+        this.payMethod()
       },
-      createOrder() {
-        var mydata = {}
-        if (this.item.paymentTypeId == '') {
-          mydata = {payType:this.item.payType}
-        }else {
-          mydata = {
-              payType:this.item.payType,
-              paymentTypeId: this.item.paymentTypeId
-          }
+      payMethod() {
+        var mydata = {
+          payType:this.item.payType,
+          orderId:this.orderId
+        }
+        if (this.item.paymentTypeId !='') {
+            mydata.paymentTypeId = this.item.paymentTypeId
         }
         var that = this
-        outpatientOrder(mydata,this.token).then(function(res){
+        payMethod(mydata,this.token).then(function(res){
           if (res.code == 200) {
             console.log(mydata)
             if (mydata.paymentTypeId == 2) {
@@ -116,8 +117,10 @@
                 that.$store.commit('setPayInfo',{orderId:res.orderId,payType:mydata.payType})
                 that.$router.push({name:"opstepfive"})
             }
+            // this.$router.push({path:"payment"}) 
           }else if(res.code == 'AF401') {
             console.log('认证失败')
+            // this.$router.push({path:'user-info'})
           }
         }).catch(function(res){
           console.log(res)
