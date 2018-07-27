@@ -8,7 +8,7 @@
       <!-- 用户信息 -->
       <!-- button -->
       <div class="button-wrapper">
-        <p>请在自助机指示区域放入已绑定就诊ID的卡进行身份验证!</p>
+        <p>{{message}}</p>
       </div>
     </div>
   </div>
@@ -24,21 +24,16 @@
         cardNumber:'',
         flag:false,
         code:'',
-        regUserInfo:""
+        regUserInfo:"",
+        cardInfo:"",
+        message:'请在自助机指示区域放入已绑定就诊ID的卡进行身份验证!'
       }
     },
     created () {
       this.$store.commit('setMenuIdx',1)
     },
     mounted () {
-      setTimeout(()=>{
-          if  (typeof getUserInfo == 'function') {
-            this.cardNumber = getUserInfo().cardNumber  
-            var regUserInfo = getUserInfo() 
-            console.log(regUserInfo)
-            this.$store.commit('setReguserinfo',regUserInfo)    
-          }
-      },3000)
+      this.getCardInfo()
     },
     watch: {
       cardNumber(newValue) {
@@ -91,8 +86,6 @@
         this.$emit('authpass')
       },
       toNouser  () {
-        // 用户不存在
-        console.log('nono')
         this.$emit('nouser')
       },
       toError() {
@@ -104,12 +97,30 @@
       },
       tosystemError(){
         this.$emit('neterror')
+      },
+      getCardInfo () {
+        if  (typeof window.external.GetCardInfoByType == 'function') {
+              console.log(this.cardType)
+              this.cardInfo = JSON.parse(window.external.GetCardInfoByType(this.cardType))
+              console.log('d',this.cardInfo)
+              if (this.cardInfo.code == '200') {
+                this.cardNumber = this.cardInfo.data.IdNumber 
+                this.$store.commit('setReguserinfo',
+                                                    {
+                                                      name:this.cardInfo.data.Name,
+                                                      sex:this.cardInfo.data.Sex,
+                                                      cardNumber:this.cardInfo.data.IdNumber,
+                                                      birthday:this.cardInfo.data.Birth
+                                                    }
+                )
+                this.message = '身份证读取成功!'
+              }else {
+                this.message = this.cardInfo.data
+                this.getCardInfo()
+              }
+        } 
       }
     }
-  }
-  // 模拟 getUserInfo 对接硬件获取用户信息
-  function getUserInfo () {
-    return {cardNumber:"320840190212170707",name:"豪大大", sex:'女', birthday:"19921217"}
   }
 </script>
 <style lang="stylus" scoped>

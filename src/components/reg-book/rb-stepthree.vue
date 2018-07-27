@@ -6,7 +6,7 @@
       <p>身份证号: {{regUserInfo.cardNumber}}</p>
     </div>
     <div class="complete-info">
-      <div class="my-phone"><label> 手 机 号 码 : </label><input type="number" v-model="myPhone" readonly></div>
+      <div class="my-phone"><label> 手 机 号 码 : </label><input v-model="myPhone" readonly></div>
       <!-- 键盘 -->
       <div class="mykey-wrapper">
         <ul class="my-key">
@@ -64,7 +64,7 @@ export default {
     },
     toNext() {
       if(this.i==-1) {
-        console.log('请输入正确的手机号码')
+        return
       }else {
         // 注册建档
         this.regUser()

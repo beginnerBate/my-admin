@@ -1,5 +1,6 @@
 <template>
-  <user-identity @authpass='toNext()' @anthno="toError()"></user-identity>
+  <user-identity @authpass="topage200()" @authno="topage406()" @nouser="usernot()" @neterror='neterror()'></user-identity>
+</template>
 </template>
 
 <script>
@@ -12,12 +13,27 @@
       this.$store.commit('setMenuIdx',1)
     },
     methods: {
-      toNext() {
+      // 用户存在
+      topage200() {
         this.$router.push({name:"opstepthree"})
       },
-      toError() {
-        // 返回主页面注册建党
-        alert('验证失败，返回注册建党模块！')
+      // 用户不存在
+      usernot() {
+        this.$store.commit('setRegbookTip','没有该用户,请先注册建档!')
+        this.toTipPage()
+      },
+      // 账号已锁定
+      topage406() {
+        this.$store.commit('setRegbookTip','用户账号已锁定, 请到柜台处理!')
+        this.toTipPage() 
+      },
+      // 系统错误
+      neterror() {
+        this.$store.commit('setRegbookTip','系统错误,请联系维修人员,维修电话 15865458562!')
+        this.toTipPage()        
+      },
+      toTipPage () {
+       this.$router.push({name:"optippage"}) 
       }
     }
   }

@@ -7,17 +7,29 @@
       <p>绑定卡: {{cardName}}</p>
       <p>身 份 证 号 :{{regUserInfo.cardNumber}}</p>
     </div>
-    <p class="tip-finish">☺恭喜您完成建档, 点击'打印'按钮,可打印您的建档信息, 请取走您的证件, 谢谢!</p>
+    <p class="tip-finish">{{tipInfo}}</p>
     <!-- button -->
-    <div class="button-wrapper">
+    <div class="button-wrapper" v-if="flag">
       <span class="btn-sub" @click="toNext()"><i>打 印</i></span>
     </div>
   </div>
 </template>
 <script>
 export default {
+  data() {
+    return {
+      message: "☺恭喜您完成建档, 点击'打印'按钮,可打印您的建档信息, 请取走您的证件, 谢谢!",
+      tipInfo:"数据处理中...",
+      flag:false
+    }
+  },
   created() {
     this.$store.commit('setMenuIdx',3)
+  },
+  mounted () {
+    setTimeout(()=>{
+      this.makecard()
+    },1000)
   },
   computed: {
     regUserInfo () {
@@ -41,7 +53,26 @@ export default {
   },
   methods:{
     toNext() {
-      console.log('')
+      // 打印小票
+      var postData = {"name": this.regUserInfo.name,"sex": this.regUserInfo.sex,"jiuzhenId":this.jzId};
+      if (typeof window.external.Print_SmallTicket_ZCJD == 'function') {
+          var code = window.external.Print_SmallTicket_ZCJD(JSON.stringify(postData))
+      }      
+    },
+    makecard () {
+      if (typeof window.external.WriteMedicalM1Card == 'function') {
+          var res = JSON.parse(window.external.WriteMedicalM1Card(this.jzId))
+          if (res.code == '200') {
+            this.tipInfo = this.message
+            this.flag = true
+          }else if (res.code =='206') {
+            this.flag = true
+            this.tipInfo = "数据处理成功, 出卡失败, 请到柜台处理！点击'打印'按钮,可打印您的建档信息, 请取走您的证件, 谢谢!"
+          }else {
+            this.flag = true
+            this.tipInfo = "出卡失败,请到柜台处理！点击'打印'按钮,可打印您的建档信息, 请取走您的证件, 谢谢!"
+          }
+      }
     }
   }
 }
@@ -56,7 +87,7 @@ export default {
   background $color-a1
   font-size 1.6em
   border-radius 8px
-  line-height 1.5em
+  line-height 1.8em
 .tip-finish
   padding-top 4em
   color $color-font

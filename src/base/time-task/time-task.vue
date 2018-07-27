@@ -24,6 +24,9 @@ export default {
         if (value.name.indexOf('tippage') != -1) {
           this.time = 5
         }
+        if (value.meta.timer) {
+          this.time = value.meta.timer
+        }
         clearInterval(this.interval)
          this._countDown();
       }

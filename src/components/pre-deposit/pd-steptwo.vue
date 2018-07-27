@@ -18,12 +18,10 @@
       },
       // 用户不存在
       usernot() {
-        console.log('dd')
         this.$store.commit('setRegbookTip','没有该用户,请先注册建档!')
         this.toTipPage()
       },
       topage406() {
-         console.log('dd')
         this.$store.commit('setRegbookTip','用户账号已锁定, 请到柜台处理!')
         this.toTipPage() 
       },
@@ -33,7 +31,7 @@
       },
       toTipPage () {
        this.$router.push({name:"pdtippage"}) 
-      },
+      }
     }
   }
 </script>

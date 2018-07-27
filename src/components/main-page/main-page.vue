@@ -52,7 +52,7 @@
       back() {
         var curRouteName = this.$router.currentRoute.name
         var myback = this.$router.currentRoute.meta.backpage
-        console.log(myback)
+        
         if (myback == 'close') {
           this.close()
         }else {

@@ -117,7 +117,7 @@ export default new Router({
           path:'finish',
           name:"finish",
           component: Finish,
-          meta: { backpage: 'close'}
+          meta: { backpage: 'close',timer:15}
         },
         {
           path:"dtippage",
@@ -173,7 +173,7 @@ export default new Router({
           path:'finish-four',
           component:FinishFour,
           name:"finishfour",
-          meta: { backpage: 'close'}
+          meta: { backpage: 'close',timer:15}
         },
         {
           path:"rttippage",
@@ -223,7 +223,13 @@ export default new Router({
           path:"op-stepsix",
           component:OpStepsix,
           name:'opstepsix',
-          meta: { backpage: 'close'}
+          meta: { backpage: 'close',timer:15}
+        },
+        {
+          path:"op-tippage",
+          name:'optippage',
+          component:TipPage,
+          meta:{backpage:'close'}
         }
       ]
     },
@@ -255,7 +261,7 @@ export default new Router({
           path:"bo-stepfour",
           component:BoStepfour,
           name:'bostepfour',
-          meta: { backpage: 'close'}
+          meta: { backpage: 'close',timer:15}
         },
         {
           path:"botippage",
@@ -323,13 +329,13 @@ export default new Router({
           path:"RbStepthree",
           name:"rbstepthree",
           component:RbStepthree,
-          meta: { backpage: 'rbstepone'}
+          meta: { backpage: 'rbstepone',timer:15}
         },
         {
           path:"RbStepfour",
           name:"rbstepfour",
           component:RbStepfour,
-          meta: { backpage: 'close'}          
+          meta: { backpage: 'close',timer:15}          
         },
         {
           path:'TipPage',
@@ -372,7 +378,7 @@ export default new Router({
           path:"PdStepfive",
           name:"pdstepfive",
           component:PdStepfive,
-          meta: { backpage: 'close'}
+          meta: { backpage: 'close',timer:15}
         },        
         {
           path:'TipPage',
