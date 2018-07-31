@@ -2,16 +2,17 @@
   <!-- base-box -->
   <base-box :title="title" @hide="hide()">
     <div class="user-show">
-      <p>用户编号: 01</p>
-      <p>用户名称: 张三</p>
-      <p>就诊卡号: 2356851155355245</p>
-      <p>创建时间: 2018-05-06 12:55:88</p>
-      <p>最后登录时间: 2018-05-09 12:55:88</p>
+      <p>用户编号: {{item.patientId}}</p>
+      <p>用户名称: {{item.name}}</p>
+      <p>就诊卡号: {{item.medicalCardNumber}}</p>
+      <p>创建时间: {{item.createDatetime | formatDate}}</p>
+      <p>最后登录时间: {{item.lastLoginDatetime | formatDate}}</p>
     </div>
   </base-box>
 </template>
 <script>
 import BaseBox from 'base/base-box/base-box'
+import {formatDate} from 'common/js/date'
 export default {
   data() {
     return {
@@ -20,6 +21,15 @@ export default {
   },
   components: {
     BaseBox,
+  },
+  filters: {
+    formatDate (value) {
+      var mydate = new Date(value)
+      return formatDate(mydate, 'yyyy-MM-dd hh:mm:dd')
+    }
+  },
+  props:{
+    item:''
   },
   methods: {
     hide() {

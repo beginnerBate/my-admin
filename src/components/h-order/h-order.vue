@@ -95,12 +95,16 @@
 <script>
 import Page from 'base/page/page'
 import orderShow from './order-show'
+import {orderInfo} from 'api/order.js'
 export default {
   data() {
     return {
       page:1,
-      row: 10,
-      total: 10,
+      rows: 10,
+      total: 0,
+      orderNumber:"",
+      orderTypeId:"",
+      status:"",
       usershowFlag: false
     }
   },
@@ -117,6 +121,17 @@ export default {
   methods: {
     pagechange() {
       
+    },
+    // 获取订单列表
+    getOrderInfo () {
+      var mydata = {
+        orderNumber:this.orderNumber,
+        orderTypeId:this.orderTypeId,
+        status:this.status
+      }
+      orderInfo(mydata,this.token).then((res)=>{
+        console.log(res)
+      })
     },
     // 用户详情
     userShow () {

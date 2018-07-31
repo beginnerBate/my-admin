@@ -2,7 +2,7 @@ function setItem (name, value)  {
   localStorage.setItem(name, value)
 }
 function getItem (name, type) {
-  let res = localStorage.getItem(name)
+  var res = localStorage.getItem(name)
   if (res !== null) {
     if(!type) { //为布尔值
       res = JSON.parse(res)
