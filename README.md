@@ -40,6 +40,15 @@
 ## Build Setup
 > 基础组件
 1. 分页组件
+## 修改列表
+1. 倒计时问题: 正常情况: 60s 提示成功页面:10s 提示错误页面: 15s
+2. 添加就诊卡
+3. 页面布局统一修改
+4. 预约页面 选择专家 修改 没有数据修改
+5. 读取身份证 成功之后修改
+6. code码修改 
+7. 添加语音接口 window.external.SpeechText("请放入身份证");
+
 ``` bash
 # install dependencies
 npm install

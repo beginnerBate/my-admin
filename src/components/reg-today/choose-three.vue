@@ -1,18 +1,16 @@
 <template>
   <div class="login">
-    <div class="con">
+    <div class="con"  v-if='!flag'>
       <!-- 用户信息 -->
-      <div class="info-wrapper user-info">
-        <p>
-          <span>姓名:{{user.name}}</span>
-          <span>就诊卡号:{{user.jzId}}</span>
-        </p>
+      <div class="myuser-info info-wrapper">
+        <span><i>姓名:</i> <i>{{user.name}}</i> </span>
+        <span><i>就诊卡号:</i> <i>{{user.jzId}}</i></span>
       </div>
       <!-- 医生信息 -->
       <div class="doctor-info">
-        <p>挂号科室: {{departName}}</p>
-        <p>门诊医生: {{dayDoctorInfo.docName}}</p>
-        <p>挂号费: {{dayDoctorInfo.sumRegister}}元</p>
+        <p><i>挂号科室:</i> <i>{{departName}}</i></p>
+        <p><i>门诊医生:</i> <i>{{dayDoctorInfo.docName|mydocName}}</i></p>
+        <p><i>挂号费用:</i> <i>{{dayDoctorInfo.sumRegister}}元</i></p>
       </div>
       <!-- 支付方式 -->
       <div class="payment">
@@ -29,11 +27,16 @@
         <span class="btn-sub" :class="{'disabled':i==-1}" @click="toNext()"><i>确 认</i></span>
       </div>
     </div>
+    <!-- loading -->
+    <div v-if='flag' class='loading-wrapper'>
+      <loading :title="title"></loading>
+    </div>
   </div>
 </template>
 
 <script>
 import {payMethod}  from 'api/pay.js'
+import Loading from 'base/loading/loading'
   export default {
     data() {
       return {
@@ -59,14 +62,15 @@ import {payMethod}  from 'api/pay.js'
           }
         ],
         i:-1,
-        item:""
+        item:"",
+        flag:false,
+        title:'页面加载中...'
       }
     },
     created () {
       this.$store.commit('setMenuIdx',2)
     },
-    mounted () {
-    },
+    components: {Loading},
     computed: {
       user () {
         return this.$store.state.bookReg.user
@@ -84,7 +88,19 @@ import {payMethod}  from 'api/pay.js'
         return this.$store.state.bookReg.orderId
       }
     },
+    filters:{
+      mydocName(value) {
+        if(value=='') {
+          return '普通医生'
+        }else{
+          return value
+        }
+      }
+    },
     methods: {
+      toTipPage () {
+        this.$router.push({name:"rttippage"}) 
+      },
       selectItem(index,item) {
         this.i = index
         this.item = item
@@ -101,10 +117,11 @@ import {payMethod}  from 'api/pay.js'
         if (this.item.paymentTypeId !='') {
             mydata.paymentTypeId = this.item.paymentTypeId
         }
+        // 创建订单之前
+        this.flag = true
         var that = this
         payMethod(mydata,this.token).then(function(res){
           if (res.code == 200) {
-            console.log(mydata)
             if (mydata.paymentTypeId == 2) {
                 // 微信支付
                 that.$store.commit('setPaymentTypeId',2)
@@ -121,13 +138,16 @@ import {payMethod}  from 'api/pay.js'
                 that.$store.commit('setPayInfo',{orderId:res.orderId,payType:mydata.payType})
                 that.$router.push({name:"paymoney"})
             }
-            // this.$router.push({path:"payment"}) 
-          }else if(res.code == 'AF401') {
-            console.log('认证失败')
-            this.$router.push({path:'user-info'})
+          }else if(res.code == '400') {
+              this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+              this.toTipPage()  
+          }else {
+            this.$store.commit('setRegbookTip','订单创建失败,请到柜台处理!')
+            this.toTipPage()  
           }
         }).catch(function(res){
-          console.log(res)
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            this.toTipPage()  
         }) 
       }
     }
@@ -140,21 +160,18 @@ import {payMethod}  from 'api/pay.js'
 .login
   height 100%
 .info-wrapper
-  background $color-bg1
-  padding 1em 3em
   margin-bottom 2em
-  border-radius 8px
-  color $color-font
 .doctor-info>p
   font-size 2em
   margin 0.5em 0
   color $color-font
   padding-left 0.6em
-.user-info>p>span
-  font-size 1.8em
-  padding 0em 0.5em
+  i:first-child
+    letter-spacing: 3px;
+  i:nth-child(2)
+    color #ff6666
 .payment
-  padding-left 0.6em
+  padding-left 1em
   .txt
     font-size 2em
     color $color-font
@@ -174,4 +191,6 @@ import {payMethod}  from 'api/pay.js'
   width 100%
   text-align center
   font-size 1.4em
+.loading-wrapper
+  padding-top 30%
 </style>

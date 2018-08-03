@@ -19,6 +19,9 @@
 // --------------------------创建订单模块--------------------------------
 // {orderId}
 // {payType}
+// {{orderNumber}} 流水号
+// -----------------------------预约取号-----------------------------------------
+// {{bookNumber}} 预约取号信息
 import { getDepartmentDocs, getBookDoctors,getDayDoctorList} from 'api/guahao.js'
 const state = {
   reguserinfo:"",
@@ -38,7 +41,9 @@ const state = {
   dayDoctorList:[],
   dayDoctorInfo:"",
   cardType:"",
-  jzId:""
+  jzId:"",
+  orderNumber:"",
+  bookNumber:""
 }
 // mutations
 const mutations = {
@@ -95,7 +100,13 @@ const mutations = {
   },
   setCardType (state, code) {
     state.cardType = code
-  } 
+  },
+  setOrderNumber (state, code) {
+    state.orderNumber = code
+  },
+  setBookNumber (state, code) {
+    state.bookNumber = code
+  }
 }
 //acions 
 const actions = {

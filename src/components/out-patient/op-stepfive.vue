@@ -3,11 +3,9 @@
     <!-- 预约信息 -->
     <div class="con">
       <!-- 用户信息 -->
-      <div class="info-wrapper user-info">
-        <p>
-          <span>姓名:{{user.name}}</span>
-          <span>就诊卡号:  {{user.jzId}}</span>
-        </p>
+      <div class="myuser-info info-wrapper">
+        <span><i>姓名</i>: <i>{{user.name}}</i></span>
+        <span><i>就诊卡号</i>: <i>{{user.jzId}}</i></span>
       </div>
       <!-- 支付模块 -->
       <!-- 微信支付 -->
@@ -25,7 +23,7 @@
         <p>打开手机支付宝,扫一扫完成支付!</p>
       </div>
       <!-- 余额支付 -->
-      <div v-if="paymentTypeId ==''">支付中,请稍等！</div>
+      <div class="ye-pay" v-if="paymentTypeId ==''">{{payMsg}}</div>
     </div>
   </div>
 </template>
@@ -35,7 +33,8 @@
   export default {
     data() {
       return {
-        timer: ""
+        timer: "",
+        payMsg:"余额支付中,请稍后！"
       }
     },
     created () {
@@ -64,16 +63,21 @@
         wxOutpatientQuery(mydata,this.token).then((res)=>{
           if (res.code == 200) {
             // 请求成功
+             this.$store.commit('setOrderNumber',res.data.orderNumber)
              this.$router.push({name:'opstepsix'})
-          }else{
+          }else if (res.code ==408){
             // 如果路由没有变化的话,重新请求
             if(this.$router.currentRoute.name=='opstepfive') {
               this.getWxPayOrder()
-            }
-            
+            }           
+          }else {
+            // 失败
+            this.$store.commit('setRegbookTip','扣款失败,请到柜台处理')
+            this.toTipPage()
           }
         }).catch((err)=>{
-          console.log('err')
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理')
+            this.toTipPage()
         })
       },
       getZfbPayOrder () {
@@ -84,15 +88,21 @@
           
           if (res.code == 200) {
             // 请求成功
+            this.$store.commit('setOrderNumber',res.data.orderNumber)
             this.$router.push({name:'opstepsix'})
-          }else{
+          }else if (res.code == 408){
             // 如果路由没有变化的话,重新请求
             if(this.$router.currentRoute.name=='opstepfive') {
               this.getZfbPayOrder()
             }
+          }else {
+            // 失败
+            this.$store.commit('setRegbookTip','扣款失败,请到柜台处理')
+            this.toTipPage()            
           }
         }).catch((err)=>{
-          console.log('err')
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理')
+            this.toTipPage()
         })
       },
       getYePayOrder() {
@@ -102,17 +112,30 @@
         yeOutpatientQuery(mydata,this.token).then((res)=>{
           if (res.code == 200) {
             // 请求成功
+             this.$store.commit('setOrderNumber',res.data.orderNumber)
              this.$router.push({name:'opstepsix'})
+          }else if (res.code == '407') {
+            this.payMsg = '账户余额不足,请重新选择支付方式'
+            setTimeout(()=>{
+              this.$router.go(-1)
+            },1000)
+          } else if (res.code == '400') {
+            this.$store.commit('setRegbookTip','订单错误,请到柜台处理')
+            this.toTipPage()
+          }else if (res.code == '404') {
+            this.$store.commit('setRegbookTip','订单不存在,请到柜台处理')
+            this.toTipPage()
           }else{
-            // 如果路由没有变化的话,重新请求
-            if(this.$router.currentRoute.name=='opstepfive') {
-              this.getYePayOrder()
-            }
-            
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理')
+            this.toTipPage()
           }
         }).catch((err)=>{
-          console.log('err')
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理')
+            this.toTipPage()
         })        
+      },
+      toTipPage () {
+       this.$router.push({name:"optippage"}) 
       }
     },
     mounted(){
@@ -127,9 +150,7 @@
         },1000)
       }else{
         // 余额支付
-        this.timer = setTimeout(()=>{
-         this.getYePayOrder()
-        },1000) 
+        this.getYePayOrder()
       }
     }
   }
@@ -141,11 +162,7 @@
 .login
   height 100%
 .info-wrapper
-  background $color-bg1
-  padding 1em 3em
   margin-bottom 2em
-  border-radius 8px
-  color $color-font
 .doctor-info>p
   font-size 1.4em
   margin 0.5em 0
@@ -168,4 +185,10 @@
     font-size 1.6em
     letter-spacing 3px
     padding-top 1em
+.ye-pay
+  text-align center
+  color $color-font
+  font-size 1.6em
+  padding-top 100px
+  letter-spacing 5px
 </style>

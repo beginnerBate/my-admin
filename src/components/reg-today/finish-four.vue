@@ -3,11 +3,9 @@
     <!-- 预约信息 -->
     <div class="con">
       <!-- 用户信息 -->
-      <div class="info-wrapper user-info">
-        <p>
-          <span>姓名:{{user.name}}</span>
-          <span>就诊卡号:{{user.jzId}}</span>
-        </p>
+      <div class="myuser-info info-wrapper">
+        <span><i>姓名:</i> <i>{{user.name}}</i> </span>
+        <span><i>就诊卡号:</i> <i>{{user.jzId}}</i></span>
       </div>
       <!-- 扫码支付 -->
       <div class="payment">
@@ -24,10 +22,35 @@
       // this.getData()
     },
     mounted () {
+      this.toPrint()
     },
     computed: {
       user () {
         return this.$store.state.bookReg.user
+      },
+      orderNumber() {
+        return this.$store.state.bookReg.orderNumber
+      },
+      departmentName() {
+        return this.$store.state.bookReg.departName
+      },
+      dayDoctorInfo () {
+        return this.$store.state.bookReg.dayDoctorInfo
+      },
+    },
+    methods: {
+      toPrint(){
+        // 调用打印接口
+        var postData = {
+                        "name": this.user.name,
+                        "departmentName":this.departmentName,
+                        "doctorName":this.dayDoctorInfo.docName,
+                        "guaHaoAmount":this.dayDoctorInfo.sumRegister,
+                        "flowNumber":this.orderNumber
+                        };
+        if (typeof window.external.Print_SmallTicket_DRGH== 'function') {
+            var code = window.external.Print_SmallTicket_DRGH(JSON.stringify(postData))
+        } 
       }
     },
   }
@@ -39,11 +62,7 @@
 .login
   height 100%
 .info-wrapper
-  background $color-bg1
-  padding 1em 3em
   margin-bottom 2em
-  border-radius 8px
-  color $color-font
 .doctor-info>p
   font-size 1.4em
   margin 0.5em 0

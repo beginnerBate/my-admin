@@ -1,13 +1,13 @@
 <template>
   <div class="login">
     <!-- doctor header -->
-    <div class="doctor-header">
+    <div class="doctor-header" v-if='!loadflag'>
       <div class="btn left"><span>{{name}}</span></div>
       <div class="btn right"><span>
-        <i @click="toSpecialist()" :class="{'active':type == 'specialist'}">专家</i><i>/</i><i @click="toOrdinary()" :class="{'active':type == 'ordinary'}">普通</i></span></div>
+        <i @click="toSpecialist()" :class="{'active':type == 'specialist'}" v-if="!(flag==1)">专家</i><i v-if="!(flag ==2)" @click="toOrdinary()" :class="{'active':type == 'ordinary'}">普通</i></span></div>
     </div>
     <!-- department -->
-    <div class="doctor" ref="doctor">
+    <div class="doctor" ref="doctor" v-if='!loadflag'>
       <div class="doctor-content" ref="doctorContent">
         <ul class="doctor-list">         
           <li v-for="(item, index) in pageList" :key="index" v-if="pageList.length">
@@ -31,11 +31,16 @@
         <page :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
       </div>
     </div>
+    <!-- loading -->
+    <div v-if='loadflag' class='loading-wrapper'>
+      <loading :title="title"></loading>
+    </div> 
   </div>
 </template>
 
 <script>
   import Page from 'base/page/page'
+  import Loading from 'base/loading/loading'
   import {getDepartmentDocs} from 'api/guahao.js'
   export default {
     data() {
@@ -45,23 +50,41 @@
         pageCount:1,
         total:0,
         type:'specialist',
-        pageList:[],     
+        pageList:[],
+        flag:0,
+        loadflag:true,
+        title:"页面加载中..."  
       }
     },
-    created () {
-      this.pageList = []   
+    created () {  
       this.$store.commit('setMenuIdx',1)
     },
     mounted () {
-      this.getPageData()
+      if (this.list.length !=0) {
+        if (this.list.expertDocsList.length == 0) {
+          this.flag = 1
+        }
+        if (this.list.ordinaryDocsList.length ==0) {
+          this.flag = 2
+        }
+        this.getPageData()
+
+      }
     },
     watch: {
-      list(newValue, oldValue) {
+      list(value) {
+        if (value.expertDocsList.length == 0) {
+          this.flag = 1
+        }
+        if (value.ordinaryDocsList.length ==0) {
+          this.flag = 2
+        }
         this.getPageData()
       }
     },
     components:{
-      Page
+      Page,
+      Loading
     },
     computed: {
       name() {
@@ -77,16 +100,24 @@
     methods: {
       // 获取科室医生
       getPageData() {
+        this.loadflag = false
         var startIndex, endIndex;
         var mydata = []
         // 根据类型获取医生
         if (this.type=='specialist') {
           mydata = this.list.expertDocsList || []
-        }else if( this.type = 'ordinary') {
+        }else if( this.type == 'ordinary') {
           mydata = this.list.ordinaryDocsList || []
         }
-        this.total = mydata.length 
 
+        if (mydata.length == 0 && this.type == 'specialist') {
+           mydata = this.list.ordinaryDocsList || []
+           this.type = 'ordinary'
+        }else if (mydata.length == 0 && this.type == 'ordinary') {
+           mydata = this.list.expertDocsList || []
+           this.type = 'specialist'
+        }
+        this.total = mydata.length 
         startIndex = (this.page-1)*this.rows
         endIndex = (this.page)*this.rows
 
@@ -113,6 +144,7 @@
       },
       toDoctorinfo($event) {
         $event.departId = this.departId
+        this.$store.commit('setDoctorInfo',[])
         this.$store.dispatch('getBookDoctorsInfo',$event)
         this.$router.push({path:"/doctor-info"})
       }
@@ -139,17 +171,20 @@
   border-radius 12px
   span 
     font-size 2.1em
+.btn.right
+  padding 0.48em 1em
 .btn.right>span
-  background #e8edf1
   display inline-block
-  width 100%
-  border-radius 12px
   i.active
-    color:#ff6666  
-  i:nth-child(2)
-    color:#678784
+    background: #36c7fe
+    color: #fff
   i
-    color:#989ba0
+    display: inline-block;
+    background: #f5f5f5;
+    margin: 0 0.2em;
+    padding: 0.1em 0.5em;
+    border-radius: 6px;
+    color: #0a3876;
 .doctor
   height calc(100% - 100px)
   overflow hidden
@@ -186,4 +221,6 @@
       padding 0.35em 0.75em
       border-radius 4px
       display inline-block
+.loading-wrapper
+  padding-top 30%
 </style>

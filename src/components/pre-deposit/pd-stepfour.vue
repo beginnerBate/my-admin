@@ -3,12 +3,10 @@
     <!-- 预约信息 -->
     <div class="con">
       <!-- 用户信息 -->
-      <div class="info-wrapper user-info">
-        <p>
-          <span>姓名:{{user.name}}</span>
-          <span>性别:{{user.sex}}</span>
-          <span>充值金额: {{pdtotalCost}} 元</span>
-        </p>
+      <div class="myuser-info info-wrapper">
+          <span><i>姓名: </i><i>{{user.name}}</i></span>
+          <span><i>就诊卡号: </i><i>{{user.jzId}}</i></span>
+          <span><i>充值金额: </i> <i>{{pdtotalCost}}</i> <i>元</i></span>
       </div>
       <!-- 支付模块 -->
       <!-- 微信支付 -->
@@ -88,14 +86,18 @@
             // 请求成功
             this.$store.commit('setBalance',res.balance)
             this.$router.push({name:'pdstepfive'})
-          }else{
+          }else if(res.code == 408){
             // 如果路由没有变化的话,重新请求
             if(this.$router.currentRoute.name=='pdstepfour') {
               this.getWxPayOrder()
             }
+          }else {
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理或者请联系维修人员,维修电话 15865458562!') 
+            this.toTipPage()  
           }
         }).catch((err)=>{
-          console.log('err')
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理或者请联系维修人员,维修电话 15865458562!') 
+            this.toTipPage()  
         })
       },
       getZfbPayOrder () {
@@ -108,16 +110,22 @@
             // 请求成功
             this.$store.commit('setBalance',res.balance)
             this.$router.push({name:"pdstepfive"})
-          }else {
+          }else if(res.code == 408) {
             // 如果路由没有变化的话,重新请求
             if(this.$router.currentRoute.name=='pdstepfour') {
               this.getZfbPayOrder()
-            }
-            
+            }            
+          }else {
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理或者请联系维修人员,维修电话 15865458562!') 
+            this.toTipPage()  
           }
         }).catch((err)=>{
-          console.log('err')
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理或者请联系维修人员,维修电话 15865458562!') 
+            this.toTipPage() 
         })
+      },
+      toTipPage () {
+       this.$router.push({name:"pdtippage"}) 
       }
     }
   }
@@ -129,11 +137,7 @@
 .login
   height 100%
 .info-wrapper
-  background $color-bg1
-  padding 1em 3em
   margin-bottom 2em
-  border-radius 8px
-  color $color-font
 .user-info>p>span
   font-size 1.8em
   padding 0em 0.5em

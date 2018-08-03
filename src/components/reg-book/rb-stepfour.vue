@@ -1,13 +1,16 @@
 <template>
   <div class="con">
-    <div class="user-info info-wrapper">
-      <p>姓 名: {{regUserInfo.name}}</p>
-      <p>性 别: {{regUserInfo.sex}}</p>
-      <p>就诊卡号: {{jzId}}</p>
-      <p>绑定卡: {{cardName}}</p>
-      <p>身 份 证 号 :{{regUserInfo.cardNumber}}</p>
+    <div class="myuser-info info-wrapper">
+      <span><i>用户姓名 :</i> <i>{{regUserInfo.name}}</i></span>
+      <span><i>用户性别 :</i> <i>{{regUserInfo.sex}}</i></span>
+      <span><i>就诊卡号 :</i> <i>{{jzId}}</i></span>
+      <span><i>绑定卡名 :</i> <i>{{cardName}}</i></span>
+      <span><i>身份证号 :</i> <i>{{regUserInfo.cardNumber}}</i></span>
     </div>
-    <p class="tip-finish">{{tipInfo}}</p>
+    <p class="tip-finish" v-if="flag">{{tipInfo}}</p>
+    <div v-if='!flag' class='loading-wrapper'>
+      <loading :title="tipInfo"></loading>
+    </div>
     <!-- button -->
     <div class="button-wrapper" v-if="flag">
       <span class="btn-sub" @click="toNext()"><i>打 印</i></span>
@@ -15,6 +18,7 @@
   </div>
 </template>
 <script>
+import Loading from 'base/loading/loading'
 export default {
   data() {
     return {
@@ -25,6 +29,9 @@ export default {
   },
   created() {
     this.$store.commit('setMenuIdx',3)
+  },
+  components:{
+    Loading
   },
   mounted () {
     setTimeout(()=>{
@@ -81,13 +88,13 @@ export default {
 <style lang="stylus" scoped>
 @import '~~common/stylus/variables.styl'
 @import '~~common/stylus/button.styl'
-.info-wrapper 
-  padding 0.4em
-  color $color-font
-  background $color-a1
-  font-size 1.6em
-  border-radius 8px
-  line-height 1.8em
+.info-wrapper>span
+  display block
+  line-height 40px
+  i:first-child 
+    display inline-block
+    width 130px
+    text-align right 
 .tip-finish
   padding-top 4em
   color $color-font
@@ -100,4 +107,6 @@ export default {
   width 100%
   text-align center
   font-size 1.4em
+.loading-wrapper
+  padding-top 18%
 </style>

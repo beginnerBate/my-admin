@@ -1,10 +1,12 @@
 <template>
   <div class="op-stepthree">
     <div class="op-content">
-       <div class="op-user-info">
-         <p><span>姓名: {{user.name}}</span><span>就诊卡号: {{user.jzId}}</span></p>
-       </div>
-       <div class="op-list">
+      <!-- 用户信息 -->
+      <div class="myuser-info info-wrapper">
+        <span><i>姓名:</i> <i>{{user.name}}</i> </span>
+        <span><i>就诊卡号:</i> <i>{{user.jzId}}</i></span>
+      </div>
+       <div class="op-list" v-if="isData == true">
          <table>
            <thead>
              <tr>
@@ -30,9 +32,9 @@
                  <input type="checkbox" 
                  :id="'checkbox'+index" 
                  class="checkbox" 
-                 :value="item.localRegRecordId"
+                 :value="item"
                  v-model="checkedValue"
-                 ><label :for="'checkbox'+index" class="labelbox"><i></i></label></th>
+                 ><label :for="'checkbox'+index" class="labelbox"><i>√</i></label></th>
              </tr>
            </tbody>
          </table>
@@ -43,15 +45,23 @@
            </div>
          </div>
          <!-- 分页 -->
-         <page :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
+         <page v-if="total>rows" :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
+       </div>
+      <div class="tip-info" v-else>
+         <p>{{nodata}}</p>
        </div>
     </div>
+    <!-- loading -->
+    <div v-if='loadflag' class='loading-wrapper'>
+      <loading :title="title"></loading>
+    </div> 
   </div>
 </template>
 
 <script>
   import Page from 'base/page/page'
   import {numberInfoList} from 'api/bookno.js'
+  import Loading from 'base/loading/loading'
   export default {
     data() {
       return {
@@ -62,15 +72,28 @@
         list: [],
         tableData:[],
         ischecked:'',
-        checkedValue:[]
+        checkedValue:[],
+        loadflag:true,
+        title:"页面加载中...",
+        isData:'',
+        nodata:''  
       }
     },
     created() {
       this.$store.commit('setMenuIdx',2)
       this.getList()
+      // 默认全选
+    },
+    watch: {
+      tableData(value) {
+        if (value) {
+          this.checkedValue = value
+        }
+      }
     },
     components:{
-      Page
+      Page,
+      Loading
     },
     computed: {
       token() {
@@ -81,17 +104,32 @@
       }
     },
     methods: {
+      toTipPage () {
+        this.$router.push({name:"botippage"}) 
+      },
       getList() {
+        this.loadflag = true
         numberInfoList(this.token).then((res)=>{
-          console.log(res)
+          this.loadflag = false
           if(res.code == "200"){
+            this.isData = true
             this.list = res.data
             this.pageCount = Math.ceil(this.list.length/this.rows)
             this.total = this.list.length
             this.getPageData() 
+          }else if(res.code =='404') {
+            this.isData = false
+            // 无数据
+            this.list = []
+            this.nodata = '暂无挂号信息'
+          }else {
+            this.$store.commit('setRegbookTip','系统错误, 请到柜台处理')
+            this.toTipPage()
           }
         }).catch((err)=>{
-          console.log(err)
+          this.loadflag = false
+          this.$store.commit('setRegbookTip','系统错误, 请到柜台处理')
+          this.toTipPage()
         })
       },
       pagechange($event) {
@@ -110,7 +148,8 @@
       toNext() {
         // 判断是否被选中
         if(this.checkedValue.length==0) return false
-        var orderId = this.checkedValue.join(',')
+        // 存储打印预约取号信息
+        this.$store.commit('setBookNumber', this.checkedValue)
         this.$router.push({name:'bostepfour'})
       }
     },
@@ -168,4 +207,12 @@ table
 .money-btn .btn-sub
   font-size 2em
   margin-left 50px
+.tip-info p
+  padding 25%
+  text-align center
+  font-size 1.8em
+  letter-spacing 4px
+  color $color-font 
+.loading-wrapper
+  padding-top 30%
 </style>

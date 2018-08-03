@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <!-- department -->
-    <div class="department">
+    <div class="department"  v-if='!flag'>
       <div class="department-content">
         <!-- 列表 -->
         <reg-list v-if="pageList" :pageList='pageList' @selectreg='toSelectDoctor($event)'></reg-list>
@@ -9,14 +9,17 @@
         <page :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
       </div>
     </div>
-    <!-- 系统错误 -->
-    <p v-if="err">{{err}}</p>
+    <!-- loading -->
+    <div v-if='flag' class='loading-wrapper'>
+      <loading :title="title"></loading>
+    </div>
   </div>
 </template>
 <script>
   import RegList from 'base/reg-list/reg-list'
   import page from 'base/page/page'
   import {getOutpatients} from 'api/guahao.js'
+  import Loading from 'base/loading/loading'
   export default {
     data() {
       return {
@@ -26,7 +29,9 @@
         page:1,
         pageCount:1,
         total:0,
-        err:''
+        err:'',
+        flag:false,
+        title:"页面加载中..."
       }
     },
     created () {
@@ -39,21 +44,36 @@
     },
     components:{
       page,
-      RegList
+      RegList,
+      Loading
     },
     methods: {
+      toTipPage () {
+        this.$router.push({name:"rttippage"}) 
+      },
       getData() {
         var that = this
+        this.flag = true
         getOutpatients().then(function(data){
           if (data.code == '200'){
+            that.flag = false
             that.list = data.data
             that.pageCount = Math.ceil(that.list.length/that.rows)
             that.total = that.list.length
             that.getPageData()
+          }else if (res.code == '404') {
+            // 无数据
+            this.$store.commit('setRegbookTip','没有可挂号科室!')
+            this.toTipPage()  
+          }else {
+            // 系统错误
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            this.toTipPage()  
           }
         }).catch(function(err){
-          console.log(err)
-          that.err = '系统错误'
+          // 网络错误
+          this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+          this.toTipPage()  
         }) 
       },
       pagechange($event) {
@@ -72,7 +92,6 @@
         }
       },
       toSelectDoctor ($event) {
-        console.log($event)
         // 提交action 获取数据 提交action
         this.$store.dispatch('getDayDocotorList',$event)
         this.$router.push({ name: 'choosetwo'})
@@ -92,4 +111,6 @@
 .department-content
   padding 1em 0.8em
   padding-top 0.2em
+.loading-wrapper
+  padding-top 30%
 </style>

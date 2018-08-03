@@ -120,6 +120,7 @@ input:not([type='search']&&[type='checkbox']){
   overflow hidden  
 }      
 @import './icon.styl'
+@import './variables.styl'
 .self-query{
   height: 100%;
   overflow: hidden;
@@ -127,3 +128,16 @@ input:not([type='search']&&[type='checkbox']){
 .self-query .home-middle .home-right{
   left:20px !important
 }
+.myuser-info{
+  padding: 0.4em
+  color:$color-font
+  background :$color-a1
+  font-size: 1.5em
+  border-radius: 8px
+}
+.myuser-info>span{
+  padding-left:20px
+}
+.myuser-info>span>i:not(:first-child) {
+  color:#ff6666
+  }

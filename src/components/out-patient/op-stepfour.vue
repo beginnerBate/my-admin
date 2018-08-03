@@ -1,13 +1,11 @@
 <template>
   <div class="login">
     <!-- 预约信息 -->
-    <div class="con">
+    <div class="con" v-if="!flag">
       <!-- 用户信息 -->
-      <div class="info-wrapper user-info">
-        <p>
-          <span>姓名:{{user.name}}</span>
-          <span>就诊卡号:{{user.jzId}}</span>
-        </p>
+      <div class="myuser-info">
+        <span><i>姓名</i>: <i>{{user.name}}</i></span>
+        <span><i>就诊卡号</i>: <i>{{user.jzId}}</i></span>
       </div>
       <!-- 医生信息 -->
       <div class="doctor-info">
@@ -28,11 +26,16 @@
         <span class="btn-sub" :class="{'disabled':i==-1}" @click="toNext()"><i>确 认</i></span>
       </div>
     </div>
+    <!-- loading -->
+    <div v-if='flag' class='loading-wrapper'>
+      <loading :title="title"></loading>
+    </div>
   </div>
 </template>
 
 <script>
   import {outpatientOrder,payMethod} from 'api/outpatient'
+  import Loading from 'base/loading/loading'
   export default {
     data() {
       return {
@@ -58,11 +61,16 @@
           }
         ],
         i:-1,
-        item:''
+        item:'',
+        flag:false,
+        title:"页面加载中..."
       }
     },
     created () {
       this.$store.commit('setMenuIdx',2)
+    },
+    components:{
+      Loading
     },
     mounted () {
     },
@@ -94,13 +102,13 @@
           payType:this.item.payType,
           orderId:this.orderId
         }
+        this.flag = true
         if (this.item.paymentTypeId !='') {
             mydata.paymentTypeId = this.item.paymentTypeId
         }
         var that = this
         payMethod(mydata,this.token).then(function(res){
           if (res.code == 200) {
-            console.log(mydata)
             if (mydata.paymentTypeId == 2) {
                 // 微信支付
                 that.$store.commit('setPaymentTypeId',2)
@@ -117,10 +125,8 @@
                 that.$store.commit('setPayInfo',{orderId:res.orderId,payType:mydata.payType})
                 that.$router.push({name:"opstepfive"})
             }
-            // this.$router.push({path:"payment"}) 
           }else if(res.code == 'AF401') {
             console.log('认证失败')
-            // this.$router.push({path:'user-info'})
           }
         }).catch(function(res){
           console.log(res)
@@ -174,4 +180,6 @@
   width 100%
   text-align center
   font-size 1.4em
+.loading-wrapper
+  padding-top 30%
 </style>

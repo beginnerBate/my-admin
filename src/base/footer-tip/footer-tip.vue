@@ -1,6 +1,6 @@
 <template>
   <div class="footer-tip">
-    <p>温馨提示: 欢迎您使用***门诊自助服务终端系统,使用完毕后请取走您的物品!</p>
+    <p>温馨提示：欢迎使用医院自助服务系统，使用完毕后请取走您的物品!</p>
   </div>
 </template>
 <style lang="stylus" scoped>

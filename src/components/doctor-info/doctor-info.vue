@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <!-- doctor header -->
-    <div class="con doctor-wrapper">
+    <div class="con doctor-wrapper" v-if='doctorInfo.length'>
       <p class="doctor-name">
         <span>{{departName}}</span>
         <span>{{bookDoctor.ysxm}}</span>
@@ -10,7 +10,7 @@
     </div>
     <!-- doctor-info -->
     <!-- doctor 排班信息 -->
-    <div class="con doctor-list-wrapper">
+    <div class="con doctor-list-wrapper"  v-if='doctorInfo.length'>
       <ul class="doctor-list">
         <li v-for="(item,index) in doctorInfo" :key="index">
           <div>
@@ -25,21 +25,27 @@
         <span class="btn-sub" :class="{'disabled':i==-1}" @click="toNext()"><i>确 定</i></span>
       </div>
     </div>
+    <!-- loading -->
+    <div v-if='doctorInfo.length==0' class='loading-wrapper'>
+      <loading :title="title"></loading>
+    </div> 
   </div>
 </template>
 
 <script>
+ import Loading from 'base/loading/loading'
   export default {
     data() {
       return {
         list:[],
         i:-1,
-        item:""
+        item:"",
+        loadflag:true,
+        title:"页面加载中..."  
       }
     },
-    created () {
-    },
-    mounted () {
+    components:{
+      Loading
     },
     filters: {
       yh: function(value) {
@@ -130,4 +136,6 @@
   bottom 1.2em
   width 100%
   text-align center
+.loading-wrapper
+  padding-top 30%
 </style>

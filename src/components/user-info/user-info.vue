@@ -31,7 +31,7 @@
       },
       toTipPage () {
        this.$router.push({name:"dtippage"}) 
-      },
+      }
     }
   }
 </script>

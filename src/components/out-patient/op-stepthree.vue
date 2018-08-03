@@ -1,9 +1,11 @@
 <template>
   <div class="op-stepthree">
-    <div class="op-content">
-       <div class="op-user-info">
-         <p><span>姓名: {{user.name}}</span><span>就诊卡号: {{user.jzId}}</span></p>
-       </div>
+    <div class="op-content" v-if="!flag">
+      <!-- 用户信息 -->
+      <div class="myuser-info">
+        <span><i>姓名</i>: <i>{{user.name}}</i></span>
+        <span><i>就诊卡号</i>: <i>{{user.jzId}}</i></span>
+      </div>
        <div class="op-list" v-if="tableData.length">
          <table>
            <thead>
@@ -45,11 +47,15 @@
          <p>暂无缴费项目</p>
        </div>
     </div>
+    <div v-if='flag' class='loading-wrapper'>
+      <loading :title="title"></loading>
+    </div>
   </div>
 </template>
 
 <script>
   import Page from 'base/page/page'
+  import Loading from 'base/loading/loading'
   import {payProjectList} from 'api/outpatient'
   import {outpatientOrder} from 'api/outpatient'
   export default {
@@ -61,7 +67,9 @@
         totalCost:'',
         list: [],
         tableData:[],
-        total:0
+        total:0,
+        flag:false,
+        title:"页面加载中..."
       }
     },
     created() {
@@ -69,7 +77,8 @@
       this.getList()
     },
     components:{
-      Page
+      Page,
+      Loading
     },
     computed: {
       user() {
@@ -80,9 +89,14 @@
       }
     },
     methods: {
+      toTipPage () {
+       this.$router.push({name:"optippage"}) 
+      },
       getList() {
+        this.flag = true
         payProjectList(this.token).then((res)=>{
            if (res.code == 200) {
+             this.flag = false
              this.list = res.data.docList
              this.totalCost = res.data.totalCost
              this.pageCount = Math.ceil(this.list.length/this.rows)
@@ -92,7 +106,7 @@
             this.$store.commit('setTotalCost',res.data.totalCost)
            }
         }).catch((err)=>{
-          console.log(err)
+          
         })
 
       },
@@ -115,6 +129,7 @@
       },
       createOrder() {
         var that = this
+        this.flag = true
         outpatientOrder(this.token).then(function(res){
           if (res.code == 200) {
             // 订单创建成功
@@ -136,15 +151,6 @@
 @import '~~common/stylus/button.styl'
 .op-stepthree
   padding 1em 0.8em
-.op-user-info
-  padding 1em
-  color $color-font
-  background-color $color-a1
-  border-radius 8px
-  span 
-    padding-right 40px
-    letter-spacing 2px
-    font-size 1.4em
 .op-list
   padding 1em 0
 table
@@ -191,7 +197,9 @@ table
 .tip-info p
   padding 25%
   text-align center
-  font-size 1.4em
-  letter-spacing 2px
+  font-size 1.8em
+  letter-spacing 4px
   color $color-font 
+.loading-wrapper
+  padding-top 30%
 </style>

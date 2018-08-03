@@ -3,11 +3,9 @@
     <!-- 预约信息 -->
     <div class="con">
       <!-- 用户信息 -->
-      <div class="info-wrapper user-info">
-        <p>
-          <span>姓名:叶威</span>
-          <span>门诊ID:123456</span>
-        </p>
+      <div class="myuser-info info-wrapper">
+        <span><i>姓名</i>: <i>{{user.name}}</i></span>
+        <span><i>就诊卡号</i>: <i>{{user.jzId}}</i></span>
       </div>
       <!-- 扫码支付 -->
       <div class="payment">
@@ -21,6 +19,30 @@
   export default {
     created () {
       this.$store.commit('setMenuIdx',3)
+    },
+    computed:{
+      user () {
+        return this.$store.state.bookReg.user
+      },
+      orderNumber () {
+        return this.$store.state.bookReg.orderNumber
+      }
+    },
+    mounted () {
+      this.toPrint()
+    },
+    methods: {
+      toPrint(){
+        // 调用打印接口
+        var postData = {
+                        "name": this.user.name,
+                        "payAmount":this.balance,
+                        "flowNumber":this.orderNumber
+                        };
+        if (typeof window.external.Print_SmallTicket_MZJF== 'function') {
+            var code = window.external.Print_SmallTicket_MZJF(JSON.stringify(postData))
+        } 
+      }
     }
   }
 </script>
@@ -31,11 +53,7 @@
 .login
   height 100%
 .info-wrapper
-  background $color-bg1
-  padding 1em 3em
   margin-bottom 2em
-  border-radius 8px
-  color $color-font
 .doctor-info>p
   font-size 1.4em
   margin 0.5em 0

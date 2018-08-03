@@ -10,24 +10,6 @@
   export default {
     data() {
       return {
-        list:[
-          {
-            text:'微信支付',
-            icon:'icon-wx'
-          },
-          {
-            text:'支付宝支付',
-            icon:'icon-zfb'
-          },
-          {
-            text:'银行卡支付',
-            icon:'icon-yhk'
-          },          
-          {
-            text:'余额支付',
-            icon:'icon-ye'
-          }
-        ],
         i:-1
       }
     },

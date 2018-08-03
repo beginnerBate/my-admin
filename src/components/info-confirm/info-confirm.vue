@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <!-- 预约信息 -->
-    <div class="con">
+    <div class="con" v-if='!flag'>
       <!-- 医生信息 -->
       <div class="info-wrapper doctor-info">
         <p>专家: {{bookDoctor.ysxm}}</p>
@@ -22,16 +22,23 @@
         <span class="btn-sub" :class="{'disabled':i==-1}" @click="toNext()"><i>确 认</i></span>
       </div>
     </div>
+    <!-- loading -->
+    <div v-if='flag' class='loading-wrapper'>
+      <loading :title="title"></loading>
+    </div>
   </div>
 </template>
 
 <script>
   import {createOrder}  from 'api/pay.js'
+  import Loading from 'base/loading/loading'
   export default {
     data() {
       return {
         list:[],
-        i:1
+        i:1,
+        flag:false,
+        title:'页面加载中...'
       }
     },
     created () {
@@ -40,6 +47,7 @@
     },
     mounted () {
     },
+    components: {Loading},
     computed: {
       bookDoctor() {
         return this.$store.state.bookReg.bookDoctor
@@ -58,6 +66,9 @@
       }
     },
     methods: {
+      toTipPage () {
+       this.$router.push({name:"dtippage"}) 
+      },
       getData() {
         for (var i=0;i<10;i++) {
           this.list.push({value:"余号100"})
@@ -77,6 +88,8 @@
           visitTime: this.booktime.date,     
           docNumber: this.bookDoctor.hm
         }
+        // 创建订单之前
+        this.flag = true
         var that = this
         createOrder(mydata,this.token).then(function(res){
           if (res.code == 200) {
@@ -84,11 +97,16 @@
             // 保存orderId
             that.$store.commit('setorderId',res.orderId)
             that.$router.push({path:"payment-method"})
-          }else if(res.code == 'AF401') {
-            console.log('认证失败')
+          }else if(res.code == '400') {
+              this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+              this.toTipPage()  
+          }else {
+            this.$store.commit('setRegbookTip','订单创建失败,请到柜台处理!')
+            this.toTipPage()  
           }
         }).catch(function(res){
-          console.log(res)
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            this.toTipPage()  
         }) 
       }
     }
@@ -119,4 +137,6 @@
   width 100%
   text-align center
   font-size 1.4em
+.loading-wrapper
+  padding-top 30%
 </style>

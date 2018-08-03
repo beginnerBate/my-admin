@@ -89,7 +89,7 @@ export function wxOutpatientQuery (data,token) {
 // 4. 门诊缴费订单余额支付(支付宝)
 export function zfbOutpatientQuery (data,token) {
   return getUrl().then(function(baseURL){
-    var url = baseURL + 'ot/register/aliPayOrderQuery' 
+    var url = baseURL + 'ot/outpatientPayment/aliPayOrderQuery' 
     return axios.post(url,qs.stringify(data),{
       headers:{
         token:token,

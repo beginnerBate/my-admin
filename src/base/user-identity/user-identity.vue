@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <div class="con">
+    <div class="con" v-if='!flag'>
       <!-- 读取信息 -->
       <div class="user-info">
         <img src="./user-info.gif" alt="">
@@ -11,11 +11,15 @@
         <p>{{message}}</p>
       </div>
     </div>
+    <div v-if='flag' class='loading-wrapper'>
+      <loading :title="title"></loading>
+    </div>
   </div>
 </template>
 
 <script>
   import {userAuth} from 'api/user'
+  import Loading from 'base/loading/loading'
   export default {
     data() {
       return {
@@ -26,14 +30,32 @@
         code:'',
         regUserInfo:"",
         cardInfo:"",
-        message:'请在自助机指示区域放入已绑定就诊ID的卡进行身份验证!'
+        message:'请在自助机指示区域放入已绑定就诊ID的卡进行身份验证!',
+        isCall: true,
+        timer:"",
+        title:"读卡成功,用户信息验证中,请稍等..."
       }
+    },
+    components:{
+      Loading
     },
     created () {
       this.$store.commit('setMenuIdx',1)
+      if (this.cardType == 1) {
+        this.SpeechText('请放入身份证')
+      }else if (this.cardType == 4) {
+        this.SpeechText('请放入就诊卡')
+      }
     },
     mounted () {
-      this.getCardInfo()
+
+      this.timer = setInterval(()=>{
+        if (this.isCall == true){
+          this.getCardInfo()
+        }else {
+          clearInterval(this.timer)
+        }
+      },500)
     },
     watch: {
       cardNumber(newValue) {
@@ -45,12 +67,20 @@
         if (value === true) {
           this.toUserAuth()
         }
+      },
+      isCall (value) {
+        if (value == false) {
+          clearInterval(this.timer)
+        }
       }
     },
     computed: {
       cardType() {
         return this.$store.state.bookReg.cardType
       }
+    },
+    destroyed() {
+        clearInterval(this.timer)
     },
     methods: {
       toUserAuth() {
@@ -60,6 +90,7 @@
             that.code = res.code
             that.toSendInfo()
              if (res.code == 200) {
+               that.title = '验证成功!'
               // 提交用户信息和token
               that.$store.dispatch('getUserInfo',{
                                     token:res.token,
@@ -70,7 +101,7 @@
                                   })
               // 跳转到信息确认页面
               that.toNext()
-             }else if (res.code == "H404" || res.code=='404'){               
+             }else if (res.code=='404'){               
                that.toNouser()
              }else if (res.code =='406') {
                that.toError()
@@ -100,25 +131,56 @@
       },
       getCardInfo () {
         if  (typeof window.external.GetCardInfoByType == 'function') {
-              console.log(this.cardType)
               this.cardInfo = JSON.parse(window.external.GetCardInfoByType(this.cardType))
-              console.log('d',this.cardInfo)
               if (this.cardInfo.code == '200') {
-                this.cardNumber = this.cardInfo.data.IdNumber 
-                this.$store.commit('setReguserinfo',
-                                                    {
-                                                      name:this.cardInfo.data.Name,
-                                                      sex:this.cardInfo.data.Sex,
-                                                      cardNumber:this.cardInfo.data.IdNumber,
-                                                      birthday:this.cardInfo.data.Birth
-                                                    }
-                )
-                this.message = '身份证读取成功!'
+                this.isCall = false
+                if (this.cardType == 1) {
+                      // 身份证                 
+                    this.cardNumber = this.cardInfo.data.IdNumber 
+                    this.$store.commit('setReguserinfo',
+                                                        {
+                                                          name:this.cardInfo.data.Name,
+                                                          sex:this.cardInfo.data.Sex,
+                                                          cardNumber:this.cardInfo.data.IdNumber,
+                                                          birthday:this.cardInfo.data.Birth
+                                                        }
+                    )
+                    this.message = '身份证读取成功!'
+                }else if (this.cardType == 4){
+                  // 就诊卡号
+                   this.cardNumber = this.cardInfo.data
+                   this.message = '就诊卡号读取成功!'
+                } 
               }else {
+                this.isCall = true
                 this.message = this.cardInfo.data
-                this.getCardInfo()
               }
-        } 
+        } else  {
+          // 模拟数据测试
+          if (this.cardType == 1) {
+                // 身份证                 
+          this.cardNumber = '368186199545176884'
+          this.$store.commit('setReguserinfo',
+                                              {
+                                                name:"模拟数据01",
+                                                sex:"女",
+                                                cardNumber:'368186199545176884',
+                                                birthday:"19985468"
+                                              }
+          )
+          this.message = '身份证读取成功!'
+          }else if (this.cardType == 4){
+            // 就诊卡号
+              this.cardNumber = '17391069'
+              this.message = '就诊卡号读取成功!'
+          } 
+
+        }
+      },
+      SpeechText(value) {
+        if (typeof window.external.SpeechText == 'function') {
+          window.external.SpeechText(value)
+        }
       }
     }
   }
@@ -141,4 +203,6 @@
   color $color-font
   letter-spacing 2.5px
   font-size 1.8em
+.loading-wrapper
+  padding-top 30%
 </style>

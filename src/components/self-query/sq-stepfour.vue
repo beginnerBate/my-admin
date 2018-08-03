@@ -1,10 +1,6 @@
 <template>
   <div class="op-stepthree">
     <div class="op-content">
-       <div class="op-user-info">
-         <p><span>姓名: {{user.name}}</span><span>就诊卡号: {{user.jzId}}</span></p>
-         <ul><li></li></ul>
-       </div>
        <div class="op-list">
          <table>
            <thead>
@@ -29,16 +25,11 @@
              </tr>
            </tbody>
          </table>
-         <!-- 总计 -->
-         <div class="money-content">
-           <div class="money-wrapper">
-             <span class="money-btn" @click="toNext()"><i class="btn-sub">打 印</i></span>
-           </div>
-         </div>
          <!-- 分页 -->
          <page :total= 'total' :display='rows' @pagechange='pagechange($event)' class="page-wrapper"></page>
        </div>
     </div>
+    <div class="tip-info " v-if="nodata"><p>暂无数据</p></div>
   </div>
 </template>
 
@@ -56,7 +47,8 @@
         list: [],
         tableData:[],
         ischecked:'',
-        checkedValue:[]
+        checkedValue:[],
+        nodata:false
       }
     },
     created() {
@@ -83,15 +75,22 @@
     methods: {
       getList() {
         hisMedicalRecord(this.token).then((res)=>{
-          console.log(res)
           if(res.code == "200"){
             this.list = res.data
             this.pageCount = Math.ceil(this.list.length/this.rows)
             this.total = this.list.length
             this.getPageData() 
+          }else if( res.code == '404'){
+            this.nodata = true
+          }else {
+            // 系统错误
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            this.toTipPage()   
           }
         }).catch((err)=>{
-          console.log(err)
+          // 系统错误
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            this.toTipPage()   
         })
       },
       pagechange($event) {
@@ -112,6 +111,9 @@
         if(this.checkedValue.length==0) return false
         var orderId = this.checkedValue.join(',')
         this.$router.push({name:'bostepfour'})
+      },
+      toTipPage () {
+       this.$router.push({name:"sqtippage"}) 
       }
     },
   }
@@ -169,6 +171,12 @@ table
 .money-btn .btn-sub
   font-size 2em
   margin-left 50px
-.page-wrapper
-  width 55% !important
+.tip-info p
+  padding 25%
+  text-align center
+  font-size 1.8em
+  letter-spacing 4px
+  color $color-font 
+.loading-wrapper
+  padding-top 30%
 </style>

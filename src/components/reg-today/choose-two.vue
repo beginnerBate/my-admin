@@ -1,12 +1,12 @@
 <template>
   <div class="login">
     <!-- doctor header -->
-    <div class="doctor-header">
+    <div class="doctor-header" v-if='!loadflag'>
       <div class="btn left"><span>{{departName}}</span></div>
-      <div class="btn right"><span><i @click="toSpecialist()" :class="{'active':type == 'specialist'}">专家</i><i>/</i><i @click="toOrdinary()" :class="{'active':type == 'ordinary'}">普通</i></span></div>
+      <div class="btn right"><span><i v-if="!(flag==1)" @click="toSpecialist()" :class="{'active':type == 'specialist'}">专家</i><i v-if="!(flag==2)" @click="toOrdinary()" :class="{'active':type == 'ordinary'}">普通</i></span></div>
     </div>
     <!-- department -->
-    <div class="doctor" ref="doctor">
+    <div class="doctor" ref="doctor" v-if='!loadflag'>
       <div class="doctor-content" ref="doctorContent">
         <ul class="doctor-list">              
           <li v-for="(item, index) in pageList" :key="index" v-if="pageList.length">
@@ -16,7 +16,7 @@
                 <!-- 此处不能换行 -->
               </span><span>
                 <i>挂号费: {{item.sumRegister}}元</i>
-                </span><span>
+                </span><span><i>{{item.numberName}}</i></span><span>
                 <i class="pb">下午</i>
                 <i>{{item.surplusNumber|yh}}</i>
                 <i class="active" @click='toDoctorinfo(item)'>挂号</i>
@@ -28,12 +28,15 @@
         <page :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
       </div>
     </div>
+   <!-- loading -->
+    <div v-if='loadflag' class='loading-wrapper'>
+      <loading :title="title"></loading>
+    </div> 
   </div>
 </template>
-
 <script>
   import Page from 'base/page/page'
-  
+  import Loading from 'base/loading/loading'
   export default {
     data() {
       return {
@@ -42,15 +45,26 @@
         pageCount:1,
         total:0,
         type:'specialist',
-        pageList:[],     
+        pageList:[],
+        flag:0,
+        loadflag:true,
+        title:"页面加载中..."  
       }
     },
-    created () {
-      this.pageList = []   
+    created () { 
       this.$store.commit('setMenuIdx',1)
     },
     mounted () {
-      this.getPageData()
+      if (this.list.length !=0) {
+        
+        if (this.list.expertDocs.length == 0) {
+          this.flag = 1
+        }
+        if (this.list.ordinaryDocs.length ==0) {
+          this.flag = 2
+        }
+        this.getPageData()
+      }
     },
     filters: {
       yh: function(value) {
@@ -58,12 +72,19 @@
       }
     },
     watch: {
-      list(newValue, oldValue) {
+      list(value) {
+        if (value.expertDocs.length == 0) {
+          this.flag = 1
+        }
+        if (value.ordinaryDocs.length ==0) {
+          this.flag = 2
+        }
         this.getPageData()
       }
     },
     components:{
-      Page
+      Page,
+      Loading
     },
     computed: {
       departName() {
@@ -79,6 +100,7 @@
     methods: {
       // 获取科室医生
       getPageData() {
+        this.loadflag = false
         var startIndex, endIndex;
         var mydata = []
         // 根据类型获取医生
@@ -86,6 +108,14 @@
           mydata = this.list.expertDocs || []
         }else if( this.type = 'ordinary') {
           mydata = this.list.ordinaryDocs || []
+        }
+
+        if (mydata.length == 0 && this.type == 'specialist') {
+           mydata = this.list.ordinaryDocs || []
+           this.type = 'ordinary'
+        }else if (mydata.length == 0 && this.type == 'ordinary') {
+           mydata = this.list.expertDocs || []
+           this.type = 'specialist'
         }
         this.total = mydata.length 
 
@@ -138,17 +168,20 @@
   border-radius 12px
   span 
     font-size 2.1em
+.btn.right
+  padding 0.48em 1em
 .btn.right>span
-  background #e8edf1
   display inline-block
-  width 100%
-  border-radius 12px
   i.active
-    color:#f66  
-  i:nth-child(2)
-    color:#678784
+    background: #36c7fe
+    color: #fff
   i
-    color:#989ba0
+    display: inline-block;
+    background: #f5f5f5;
+    margin: 0 0.2em;
+    padding: 0.1em 0.5em;
+    border-radius: 6px;
+    color: #0a3876;
 .doctor
   height calc(100% - 100px)
   overflow hidden
@@ -176,7 +209,16 @@
   div>span:nth-child(2)
     font-size 1.2em
   div>span:nth-child(3)
-    width: 60%
+    font-size 1.2em
+    width: 20%
+    text-align center
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    vertical-align: -21%;
+    padding: 0 0.5em;
+  div>span:nth-child(4)
+    width: 40%
     text-align right 
     font-size: 1em;
     i 
@@ -198,7 +240,7 @@
       font-size 1.2em
       background #95ca00
       color #fff
-  div>span:nth-child(4)
+  div>span:nth-child(5)
     width 15%;
     text-align center
     vertical-align: 1.5ch;
@@ -209,4 +251,6 @@
       border-radius 4px
     i.on
       background #d4d4d4
+.loading-wrapper
+  padding-top 30%
 </style>

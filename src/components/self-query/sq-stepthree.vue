@@ -2,7 +2,7 @@
   <div class="op-stepthree">
     <div class="op-content">
        <div class="op-user-info">
-         <p><span>姓名: {{user.name}}</span><span>就诊卡号: {{user.jzId}}</span></p><ul class="nav-btn">
+         <ul class="nav-btn">
            <li v-for="(item,index) in tabs" 
            :key="index" 
            :class="{active: index == num}"
@@ -52,7 +52,7 @@
                   <th>{{item.number}}</th>
                   <th>{{item.amountReceivable}}</th>
                   <th>{{item.occurrenceTime|formatDate}}</th>
-                  <!-- <th>{{item.vistTime}}</th> -->
+                   <div class="tip-info " v-if="item"><p>暂无数据</p></div>
                </template>               
                <template v-if='num ==1 '>
                   <th>{{item.project}}</th>
@@ -61,24 +61,18 @@
                   <th>{{item.number}}</th>
                   <th>{{item.amountReceivable}}</th>
                   <th>{{item.occurrenceTime|formatDate}}</th>
+                   <div class="tip-info " v-if="item"><p>暂无数据</p></div>
                </template>               
                <template v-if='num ==2 '>
                   <th>{{item.no}}</th>
                   <th>{{item.money}}</th>
                   <th>{{item.payType}}</th>
                   <th>{{item.settlementTime|formatDate}}</th>
+                   <div class="tip-info " v-if="item"><p>暂无数据</p></div>
                </template>
-               <!-- <th><span>详情</span></th> -->
              </tr>
            </tbody>
          </table>
-         <!-- 总计 -->
-         <div class="money-content">
-           <div class="money-wrapper">
-             <span class="money-btn" @click="toNext()"><i class="btn-sub">打 印</i></span>
-           </div>
-         </div>
-         <!-- 分页 -->
          <page :total= 'total' :display='rows' @pagechange='pagechange($event)' class="page-wrapper" :currentPage='page'></page>
        </div>
     </div>
@@ -130,12 +124,14 @@
       }
     },
     watch: {
-      num(value) {       
+      num(value) { 
+        if (this.tabContents.length!=0) {
           this.list = this.tabContents[value]
           this.pageCount = Math.ceil(this.list.length/this.rows)
           this.total = this.list.length
           this.page = 1
           this.getPageData() 
+        }      
       }
     },
     methods: {
@@ -191,7 +187,6 @@
 .op-user-info
   padding 1em
   color $color-font
-  background-color $color-a1
   border-radius 8px
   overflow hidden
   p>span 
@@ -200,6 +195,7 @@
     font-size 1.4em
 .op-list
   padding 1em 0
+  margin-top: 1.4em;
 table
   width 100%
   thead
@@ -237,6 +233,4 @@ table
 .money-btn .btn-sub
   font-size 2em
   margin-left 50px
-.page-wrapper
-  width 55% !important
 </style>

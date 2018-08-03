@@ -12,17 +12,16 @@ export default {
   data() {
     return {
       count: '',
-      time: 120,
+      time: 60,
       interval:""
     }
   },
   watch: {
       '$route'(value) {
-        console.log(value)
-        this.time = 120
+        this.time = 60
         // 提示页面给5秒钟
         if (value.name.indexOf('tippage') != -1) {
-          this.time = 5
+          this.time = 15
         }
         if (value.meta.timer) {
           this.time = value.meta.timer

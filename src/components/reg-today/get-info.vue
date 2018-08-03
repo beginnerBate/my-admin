@@ -47,7 +47,7 @@
         this.toTipPage() 
       },
       neterror() {
-        this.$store.commit('setRegbookTip','系统错误,请联系维修人员,维修电话 15865458562!')
+        this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
         this.toTipPage()        
       },
       toTipPage () {

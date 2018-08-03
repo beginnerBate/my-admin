@@ -3,11 +3,9 @@
     <!-- 预约信息 -->
     <div class="con">
       <!-- 用户信息 -->
-      <div class="info-wrapper user-info">
-        <p>
-          <span>姓名: {{user.name}}</span>
-          <span>门诊ID: {{user.jzId}}</span>
-        </p>
+      <div class="myuser-info info-wrapper">
+        <span><i>姓名:</i> <i>{{user.name}}</i> </span>
+        <span><i>就诊卡号:</i> <i>{{user.jzId}}</i></span>
       </div>
       <!-- 扫码支付 -->
       <div class="payment">
@@ -26,7 +24,35 @@
       user () {
         return this.$store.state.bookReg.user
       },
-    }
+      booktime () {
+        return this.$store.state.bookReg.booktime
+      },
+      departmentName() {
+        return this.$store.state.bookReg.departName
+      },
+      bookDoctor () {
+        return this.$store.state.bookReg.bookDoctor
+      },
+      orderNumber() {
+        return this.$store.state.bookReg.orderNumber
+      }
+    },
+    methods: {
+      toPrint(){
+        // 调用打印接口
+        var postData = {
+                        "name": this.user.name,
+                        "subscribeTime":this.booktime,
+                        "departmentName":this.departmentName,
+                        "doctorName":this.bookDoctor.ysxm,
+                        "guaHaoAmount":this.bookDoctor.sumRegister,
+                        "flowNumber":this.orderNumber
+                        };
+        if (typeof window.external.Print_SmallTicket_YYGH== 'function') {
+            var code = window.external.Print_SmallTicket_YYGH(JSON.stringify(postData))
+        } 
+      }
+    },
   }
 </script>
 <style lang="stylus" scoped>

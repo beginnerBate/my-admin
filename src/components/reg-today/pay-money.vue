@@ -3,11 +3,9 @@
     <!-- 预约信息 -->
     <div class="con">
       <!-- 用户信息 -->
-      <div class="info-wrapper user-info">
-        <p>
-          <span>姓名:{{user.name}}</span>
-          <span>就诊卡号:{{user.jzId}}</span>
-        </p>
+      <div class="myuser-info info-wrapper">
+        <span><i>姓名:</i> <i>{{user.name}}</i> </span>
+        <span><i>就诊卡号:</i> <i>{{user.jzId}}</i></span>
       </div>
       <!-- 支付模块 -->
       <!-- 微信支付 -->
@@ -25,7 +23,7 @@
         <p>打开手机支付宝,扫一扫完成支付!</p>
       </div>
       <!-- 余额支付 -->
-      <div v-if="paymentTypeId ==''">支付中,请稍等！</div>
+      <div  class="ye-pay" v-if="paymentTypeId ==''">{{payMsg}}</div>
     </div>
   </div>
 </template>
@@ -35,7 +33,8 @@
   export default {
     data() {
       return {
-        timer:""
+        timer:"",
+        payMsg:"余额支付中,请稍后！"
       }
     },
     created () {
@@ -71,22 +70,31 @@
       }
     },
     methods: {
+      toTipPage () {
+       this.$router.push({name:"rttippage"}) 
+      },
       getWxPayOrder() {
         // 清除定时器
         var mydata = {
           orderId: this.payInfo.orderId
         }
         wxPayOrder(mydata,this.token).then((res)=>{
-          console.log(res)
           if (res.code == 200) {
             // 请求成功
+            this.$store.commit('setOrderNumber',res.data.orderNumber)
             this.$router.push({name:'finishfour'})
-          }else{
-            // 重新请求
-            this.getWxPayOrder()
+          }else if(res.code == 408){
+            // 如果路由没有变化的话,重新请求
+            if(this.$router.currentRoute.name=='paymoney') {
+              this.getWxPayOrder()
+            }
+          }else {
+            this.$store.commit('setRegbookTip','支付失败, 请到柜台处理!')
+            this.toTipPage() 
           }
         }).catch((err)=>{
-          console.log('err')
+            this.$store.commit('setRegbookTip','系统错误, 请到柜台处理!')
+            this.toTipPage() 
         })
       },
       getZfbPayOrder () {
@@ -94,34 +102,48 @@
           orderId: this.payInfo.orderId
         }
         zfbPayOrder(mydata,this.token).then((res)=>{
-          console.log(res)
           if (res.code == 200) {
             // 请求成功
+            this.$store.commit('setOrderNumber',res.data.orderNumber)
             this.$router.push({name:"finishfour"})
-          }else{
-            // 重新请求
-            this.getZfbPayOrder()
+          }else if(res.code == 408){
+            // 如果路由没有变化的话,重新请求
+            if(this.$router.currentRoute.name=='paymoney') {
+              this.getZfbPayOrder()
+            }
+          }else {
+            this.$store.commit('setRegbookTip','支付失败, 请到柜台处理!')
+            this.toTipPage() 
           }
         }).catch((err)=>{
-          console.log('err')
+            this.$store.commit('setRegbookTip','系统错误, 请到柜台处理!')
+            this.toTipPage() 
         })
       },
       getYePayOrder() {
         var mydata = {
           orderId: this.payInfo.orderId
         }
-        console.log(mydata)
         yePayOrder(mydata,this.token).then((res)=>{
-          console.log(res)
           if (res.code == 200) {
             // 请求成功
+           this.$store.commit('setOrderNumber',res.data.orderNumber)
            this.$router.push({name:"finishfour"})
+          } else if (res.code == '407') {
+            this.payMsg = '账户余额不足,请重新选择支付方式'
+            setTimeout(()=>{
+              this.$router.go(-1)
+            },3000)
+          }else if (res.code == '400' || res.code =='404') {
+            this.$store.commit('setRegbookTip','订单失败, 请到柜台处理!')
+            this.toTipPage()       
           }else{
-            // 重新请求
-            this.getYePayOrder()
+            this.$store.commit('setRegbookTip','系统错误, 请到柜台处理!')
+            this.toTipPage() 
           }
         }).catch((err)=>{
-          console.log('err')
+            this.$store.commit('setRegbookTip','系统错误, 请到柜台处理!')
+            this.toTipPage() 
         })        
       }
     }
@@ -134,11 +156,7 @@
 .login
   height 100%
 .info-wrapper
-  background $color-bg1
-  padding 1em 3em
   margin-bottom 2em
-  border-radius 8px
-  color $color-font
 .user-info>p>span
   font-size 1.8em
   padding 0em 0.5em
@@ -156,4 +174,10 @@
     font-size 1.6em
     letter-spacing 3px
     padding-top 1em
+.ye-pay
+  text-align center
+  color $color-font
+  font-size 1.6em
+  padding-top 100px
+  letter-spacing 5px
 </style>

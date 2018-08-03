@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from 'components/home/home'
+// index-page 主页
+import IndexPage from 'components/index-page/index-page'
 // 注册建档
 import RegBook from 'components/reg-book/reg-book'
 import RbStepone from 'components/reg-book/rb-stepone'
@@ -54,11 +56,22 @@ import SqStepone from 'components/self-query/sq-stepone'
 import SqSteptwo from 'components/self-query/sq-steptwo'
 import SqStepthree from 'components/self-query/sq-stepthree'
 import SqStepfour from 'components/self-query/sq-stepfour'
+// 自助打印
+import SelfPrint from 'components/self-print/self-print'
+import SpStepone from 'components/self-print/sp-stepone'
+// 智能导诊
+import SmartLeading from 'components/smart-leading/smart-leading'
+import SlStepone from 'components/smart-leading/sl-stepone'
 // 提示页面
 import TipPage from 'base/tip-page/tip-page'
 Vue.use(Router)
 export default new Router({
   routes: [
+    {
+      path:"/indexpage",
+      name:'indexpage',
+      component:IndexPage
+    },
     {
       path: "/",
       name: "home",
@@ -117,7 +130,7 @@ export default new Router({
           path:'finish',
           name:"finish",
           component: Finish,
-          meta: { backpage: 'close',timer:15}
+          meta: { backpage: 'close',timer:10}
         },
         {
           path:"dtippage",
@@ -173,7 +186,7 @@ export default new Router({
           path:'finish-four',
           component:FinishFour,
           name:"finishfour",
-          meta: { backpage: 'close',timer:15}
+          meta: { backpage: 'close',timer:10}
         },
         {
           path:"rttippage",
@@ -223,7 +236,7 @@ export default new Router({
           path:"op-stepsix",
           component:OpStepsix,
           name:'opstepsix',
-          meta: { backpage: 'close',timer:15}
+          meta: { backpage: 'close',timer:10}
         },
         {
           path:"op-tippage",
@@ -261,7 +274,7 @@ export default new Router({
           path:"bo-stepfour",
           component:BoStepfour,
           name:'bostepfour',
-          meta: { backpage: 'close',timer:15}
+          meta: { backpage: 'close',timer:10}
         },
         {
           path:"botippage",
@@ -305,9 +318,28 @@ export default new Router({
           name:'sqstepfour',
           component:SqStepfour,
           meta: { backpage: 'selfquerylist'}
+        },
+        {
+          path:'sqtippage',
+          name:"sqtippage",
+          component:TipPage,
+          meta: { backpage: 'close'}
         }
       ]
     },
+    {
+      path:"/self-print",
+      component:SelfPrint,
+      redirect:'/self-print/SpStepone',
+      children:[
+        {
+          path:"SpStepone",
+          name:'spstepone',
+          component:SpStepone,
+          meta: { backpage: 'close'}
+        }
+      ]
+    },    
     {
       path:"/regbook",
       component:RegBook,
@@ -329,13 +361,13 @@ export default new Router({
           path:"RbStepthree",
           name:"rbstepthree",
           component:RbStepthree,
-          meta: { backpage: 'rbstepone',timer:15}
+          meta: { backpage: 'rbstepone'}
         },
         {
           path:"RbStepfour",
           name:"rbstepfour",
           component:RbStepfour,
-          meta: { backpage: 'close',timer:15}          
+          meta: { backpage: 'close',timer:10}          
         },
         {
           path:'TipPage',
@@ -384,6 +416,19 @@ export default new Router({
           path:'TipPage',
           name:"pdtippage",
           component:TipPage,
+          meta: { backpage: 'close'}
+        }
+      ]
+    },
+    {
+      path:"/smartleading",
+      component:SmartLeading,
+      redirect:"/smartleading/slstepone",
+      children:[
+        {
+          name:'slstepone',
+          component:SlStepone,
+          path:'slstepone',
           meta: { backpage: 'close'}
         }
       ]

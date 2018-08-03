@@ -3,18 +3,18 @@
     <!-- 预约信息 -->
     <div class="con">
       <!-- 用户信息 -->
-      <div class="info-wrapper user-info">
-        <div>
-          <p>充值成功:{{pdtotalCost}}</p>
-          <p>当前卡内余额:{{balance}}</p>
-        </div>
+      <div class="myuser-info info-wrapper">
+        <span><i>姓名</i>: <i>{{user.name}}</i></span>
+        <span><i>就诊卡号</i>: <i>{{user.jzId}}</i></span>
+        <span><i>充值金额</i>: <i>{{pdtotalCost}}元</i></span>
       </div>
       <div class="payment">
+        <p>充值成功！</p>
         <p>点击'打印'按钮， 可打印您的充值信息,请取走您的卡，谢谢！</p>
       </div>
       <!-- 打印按钮 -->
       <div class="button-wrapper">
-        <span class="btn-sub" @click="toPrint()"><i>打 印</i></span>
+        <span class="btn-sub" @click="toPrint()" :class="{'disabled': disableFlag == -1}"><i>打 印</i></span>
       </div>
     </div>
   </div>
@@ -22,6 +22,11 @@
 
 <script>
   export default {
+    data() {
+      return {
+        disableFlag: 1
+      }
+    },
     created () {
       this.$store.commit('setMenuIdx',3)
     },
@@ -31,11 +36,35 @@
       },
       balance () {
         return this.$store.state.bookReg.balance
-      }
+      },
+      user () {
+        return this.$store.state.bookReg.user
+      },
     },
     methods: {
       toPrint() {
+        if (this.disableFlag == 1) {
+           this.disableFlag = -1
+        }else {
+          return
+        }
+        
         // 调用打印接口
+        var postData = {
+                        "rechargeAmount": this.pdtotalCost,
+                        "originalAmount":this.balance,
+                        "name":this.user.name,
+                        "flowNumber":""
+                        };
+        if (typeof window.external.Print_SmallTicket_YCJCZ== 'function') {
+            var code = JSON.parse(window.external.Print_SmallTicket_YCJCZ(JSON.stringify(postData)))
+            if (code.code==200) {
+              this.disableFlag = -1
+            }else {
+              this.disableFlag = 1
+            }
+          
+        } 
       }
     },
   }
@@ -46,12 +75,6 @@
 @import '~~common/stylus/button.styl'
 .login
   height 100%
-.info-wrapper
-  background $color-bg1
-  padding 1em 3em
-  margin-bottom 2em
-  border-radius 8px
-  color $color-font
 .user-info p
   font-size 1.8em
   padding 0em 0.5em

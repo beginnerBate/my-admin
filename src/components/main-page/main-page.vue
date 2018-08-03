@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+  <header-tip></header-tip>
   <!-- home-header -->
   <div class="home-header">
     <div class="home-btn"><span>当前页面-<i>{{$store.state.navTxt}}</i></span></div>
@@ -36,12 +37,14 @@
 <script>
   import LeftNav from 'components/left-nav/left-nav'
   import TimerTask from 'base/time-task/time-task'
+  import HeaderTip from 'base/header-tip/header-tip'
   import FooterTip from 'base/footer-tip/footer-tip'
   export default {
     components: {
       LeftNav,
       TimerTask,
-      FooterTip
+      FooterTip,
+      HeaderTip
     },
     watch: {
       '$route'(value) {
@@ -61,13 +64,16 @@
         }
       },
       close(){
-        if(typeof window.external.CloseThis == 'function') {
-          window.external.CloseThis()
-        }
-        // 清空数据
+        this.$router.push({name:'indexpage'})      
+        this.clearData()
       },
       outTime() {
         this.close()
+      },
+      // 清空数据
+      clearData () {
+        // 预存金充值金额清除
+        this.$store.commit('setPdtotalCost','')
       }
     }
   }
@@ -84,6 +90,7 @@
   padding 1em 1.2em
   color $color-font
   overflow hidden
+  margin-top:90px
 .home-btn
   min-width 280px
   max-width 300px
@@ -105,12 +112,12 @@
   .home-left
     width 340px
     position fixed
-    top 110px
+    top 200px
     bottom 0px
     left 0px
   .home-right
     position fixed
-    top 110px
+    top 200px
     bottom 126px
     left 340px
     right:1em;

@@ -1,11 +1,10 @@
 <template>
   <div class="con">
-    <div class="user-info info-wrapper">
-      <span>姓名: {{regUserInfo.name}} </span>
-      <span>性别: {{regUserInfo.sex}}</span>
-      <p>身份证号: {{regUserInfo.cardNumber}}</p>
+    <div class="myuser-info info-wrapper">
+      <span><i>姓名:</i> <i>{{regUserInfo.name}}</i> </span>
+      <span><i>身份证号:</i> <i>{{regUserInfo.cardNumber}}</i></span>
     </div>
-    <div class="complete-info">
+    <div class="complete-info" v-if='!flag'>
       <div class="my-phone"><label> 手 机 号 码 : </label><input v-model="myPhone" readonly></div>
       <!-- 键盘 -->
       <div class="mykey-wrapper">
@@ -20,22 +19,31 @@
         <span class="btn-sub" :class="{'disabled':i==-1}" @click="toNext()"><i>确 认</i></span>
       </div>
     </div>
+    <div v-if='flag' class='loading-wrapper'>
+      <loading :title="title"></loading>
+    </div>
   </div>
 </template>
 <script>
 import {regUser} from 'api/user'
+import Loading from 'base/loading/loading'
 export default {
   data() {
     return {
       key: ['1','2','3','4','5','6','7','8','9','0','退格','清空'],
       myPhone:'',
-      i:-1
+      i:-1,
+      flag:false,
+      title:"信息处理中,请稍等... "
     }
   },
   computed:{
     regUserInfo () {
       return this.$store.state.bookReg.reguserinfo
     }
+  },
+  components:{
+    Loading
   },
   created() {
     this.$store.commit('setMenuIdx',2)
@@ -49,7 +57,10 @@ export default {
       }
     }
   },
-  methods:{
+  methods:{      
+    toTipPage () {
+       this.$router.push({name:"rbtippage"}) 
+    },
     KeyUp(item) {
       if (item == '退格') {
         if (this.myPhone<=0) return
@@ -79,14 +90,25 @@ export default {
         cardNo: this.regUserInfo.cardNumber,
         birthday:this.regUserInfo.birthday
       }
+      this.flag = true
       regUser(mydata).then((res)=>{
         if (res.code == '200') {
           // 保存就诊id === 就诊卡号
           this.$store.commit('setJzId',res.data)
           this.$router.push({name:"rbstepfour"})
+        }else if (res.code == '400') {
+          this.$store.commit('setRegbookTip','注册失败, 请到柜台处理!')
+          this.toTipPage()
+        }else if (res.code =='404') {
+          this.$store.commit('setRegbookTip','用户已存在!')
+          this.toTipPage()
+        }else {
+          this.$store.commit('setRegbookTip','系统错误, 请到柜台处理!')
+          this.toTipPage() 
         }
       }).catch((err)=>{
-        console.log(err)
+          this.$store.commit('setRegbookTip','系统错误, 请到柜台处理!')
+          this.toTipPage() 
       })
     }
   }
@@ -96,12 +118,6 @@ export default {
 <style lang="stylus" scoped>
 @import '~~common/stylus/variables.styl'
 @import '~~common/stylus/button.styl'
-.info-wrapper 
-  padding 0.4em
-  color $color-font
-  background $color-a1
-  font-size 1.5em
-  border-radius 8px
 .complete-info
   overflow hidden
   color $color-font
@@ -145,4 +161,6 @@ export default {
   width 100%
   text-align center
   font-size 1.4em
+.loading-wrapper
+  padding-top 30%
 </style>
