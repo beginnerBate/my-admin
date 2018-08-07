@@ -13,7 +13,7 @@
     </div>
     <!-- button -->
     <div class="button-wrapper" v-if="flag">
-      <span class="btn-sub" @click="toNext()"><i>打 印</i></span>
+      <span class="btn-sub" @click.once="toNext()"><i>打 印</i></span>
     </div>
   </div>
 </template>

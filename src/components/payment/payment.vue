@@ -23,7 +23,8 @@
     data() {
       return {
         timer: '',
-        payMsg:"余额支付中,请稍后！"
+        payMsg:"余额支付中,请稍后！",
+        mypayTime:''
       }
     },
     created () {
@@ -46,6 +47,10 @@
       token() {
         return this.$store.state.bookReg.token
       }
+    },
+    destroyed(){
+      clearTimeout(this.mypayTime)
+      clearInterval(this.timer)
     },
     methods: {
       toTipPage () {
@@ -109,7 +114,7 @@
             this.$router.push({path:'finish'})
           }else if (res.code == '407') {
             this.payMsg = '账户余额不足,请重新选择支付方式'
-            setTimeout(()=>{
+            this.mypayTime = setTimeout(()=>{
               this.$router.go(-1)
             },3000)
           }else if (res.code == '400' || res.code =='404') {

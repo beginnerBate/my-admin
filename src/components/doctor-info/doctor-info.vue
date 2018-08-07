@@ -61,6 +61,9 @@
       },
       departName() {
         return this.$store.state.bookReg.departName
+      },
+      token () {
+        return this.$store.state.bookReg.token
       }
     },
     methods: {
@@ -75,7 +78,13 @@
         }else {
           // 保存预约挂号信息
           this.$store.commit('setBooktime',{week:this.item.week,date:this.item.date,pb:this.item.pb})
-          this.$router.push({name:"dselectcard"}) 
+          // 如果信息已验证
+          if (this.token) {
+            this.$router.push({name:"infoConfirm"})
+          }else {
+            this.$router.push({name:"dselectcard"}) 
+          }
+          
         }
       }
     }

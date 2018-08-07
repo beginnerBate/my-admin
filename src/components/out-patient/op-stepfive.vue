@@ -34,7 +34,8 @@
     data() {
       return {
         timer: "",
-        payMsg:"余额支付中,请稍后！"
+        payMsg:"余额支付中,请稍后",
+        mypayTime:''
       }
     },
     created () {
@@ -53,6 +54,9 @@
       token() {
         return this.$store.state.bookReg.token
       }
+    },
+    destroyed() {
+      clearTimeout(this.mypayTime)
     },
     methods: {
       getWxPayOrder() {
@@ -116,9 +120,10 @@
              this.$router.push({name:'opstepsix'})
           }else if (res.code == '407') {
             this.payMsg = '账户余额不足,请重新选择支付方式'
-            setTimeout(()=>{
-              this.$router.go(-1)
-            },1000)
+
+            this.mypayTime = setTimeout(()=>{
+                this.$router.go(-1)
+            },3000)
           } else if (res.code == '400') {
             this.$store.commit('setRegbookTip','订单错误,请到柜台处理')
             this.toTipPage()

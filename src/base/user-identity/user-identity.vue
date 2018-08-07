@@ -14,6 +14,7 @@
     <div v-if='flag' class='loading-wrapper'>
       <loading :title="title"></loading>
     </div>
+    <audio ref='player' :src='require("./identity.mp3")' ></audio>
   </div>
 </template>
 
@@ -39,16 +40,16 @@
     components:{
       Loading
     },
-    created () {
+    created() {
       this.$store.commit('setMenuIdx',1)
-      if (this.cardType == 1) {
-        this.SpeechText('请放入身份证')
-      }else if (this.cardType == 4) {
-        this.SpeechText('请放入就诊卡')
-      }
+
     },
     mounted () {
-
+      if (this.cardType == 1) {
+        this.SpeechText('请放入，二代身份证')
+      }else if (this.cardType == 4) {
+        this.SpeechText('请放入，就诊卡')
+      }
       this.timer = setInterval(()=>{
         if (this.isCall == true){
           this.getCardInfo()
@@ -179,7 +180,7 @@
       },
       SpeechText(value) {
         if (typeof window.external.SpeechText == 'function') {
-          window.external.SpeechText(value)
+           window.external.SpeechText(value,1)
         }
       }
     }

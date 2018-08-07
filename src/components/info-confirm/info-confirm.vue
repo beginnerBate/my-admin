@@ -2,20 +2,17 @@
   <div class="login">
     <!-- 预约信息 -->
     <div class="con" v-if='!flag'>
-      <!-- 医生信息 -->
-      <div class="info-wrapper doctor-info">
-        <p>专家: {{bookDoctor.ysxm}}</p>
-        <p>科室: {{departName}}</p>
-        <p>预约时间: {{booktime.date}} {{booktime.week}} {{booktime.pb}}</p>
-        <p>挂号费: {{bookDoctor.sumRegister}}元</p>
-      </div>
       <!-- 用户信息 -->
-      <div class="info-wrapper user-info">
-        <p>
-          <span>姓名: {{user.name}}</span>
-          <span>就诊卡号: {{user.jzId}}</span><br>
-          <span>身份证号: {{user.cardNumber}}</span>
-        </p>
+      <div class="myuser-info info-wrapper">
+        <span><i>姓名:</i> <i>{{user.name}}</i> </span>
+        <span><i>就诊卡号:</i> <i>{{user.jzId}}</i></span>
+      </div>
+      <!-- 医生信息 -->
+      <div class="doctor-info">
+        <p><i>挂号科室:</i> <i>{{departName}}</i></p>
+        <p><i>门诊医生:</i> <i>{{bookDoctor.ysxm|mydocName}}</i></p>
+        <p><i>挂号费用:</i> <i>{{bookDoctor.sumRegister}}元</i></p>
+        <p><i>预约时间:</i> <i>{{booktime.date}} {{booktime.week}} {{booktime.pb}}</i></p>
       </div>
       <!-- button -->
       <div class="button-wrapper">
@@ -63,6 +60,15 @@
       },
       token() {
         return this.$store.state.bookReg.token
+      }
+    },
+    filters:{
+      mydocName(value) {
+        if(value=='') {
+          return '普通医生'
+        }else{
+          return value
+        }
       }
     },
     methods: {
@@ -119,18 +125,20 @@
 .login
   height 100%
 .info-wrapper
-  background $color-bg1
-  padding 1em 3em
   margin-bottom 2em
-  border-radius 8px
-  color $color-font
+.doctor-info
+  background  $color-bg1
+  padding 0.4em
+  border-radius 4px
 .doctor-info>p
   font-size 2em
   margin 0.5em 0
-.user-info>p>span
-  font-size 1.8em
-  padding 0em 0.5em
-  line-height: 1.8em;
+  color $color-font
+  padding-left 0.6em
+  i:first-child
+    letter-spacing: 3px;
+  i:nth-child(2)
+    color #ff6666
 .button-wrapper
   position absolute
   bottom 1.2em

@@ -2,6 +2,9 @@ export function getUrl () {
   return Promise.resolve(baseURL)
 }
 
+export function getUrlA () {
+  return Promise.resolve(baseURLA)
+}
 export function param(data) {
   let url = ''
   for (var k in data) {

@@ -1,8 +1,6 @@
 <template>
 <div>
-  <div class="bo-four"  v-if="flag">
-     {{tipMsg}}
-  </div>
+  <div class="bo-four" v-if="flag">{{tipMsg}}</div>
   <div v-if='!flag' class='loading-wrapper'>
     <loading :title="tipMsg"></loading>
   </div>
@@ -60,7 +58,7 @@
            printingFetchNumber({recordId:data.localRegRecordId}, this.token).then((res)=>{
           //  console.log(res)
            })
-            this.tipMsg = '打印成功,请取走您的小票和就诊卡！'
+            this.tipMsg = '打印成功,请取走您的小票和就诊卡'
           }else {
              this.flag = true
             // 打印失败

@@ -26,7 +26,7 @@
            </tbody>
          </table>
          <!-- 分页 -->
-         <page :total= 'total' :display='rows' @pagechange='pagechange($event)' class="page-wrapper"></page>
+         <page :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
        </div>
     </div>
     <div class="tip-info " v-if="nodata"><p>暂无数据</p></div>

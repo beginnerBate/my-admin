@@ -1,12 +1,12 @@
 <template>
   <div class="op-stepthree">
-    <div class="op-content">
+    <div class="op-content" v-if='!loadflag'>
       <!-- 用户信息 -->
       <div class="myuser-info info-wrapper">
         <span><i>姓名:</i> <i>{{user.name}}</i> </span>
         <span><i>就诊卡号:</i> <i>{{user.jzId}}</i></span>
       </div>
-       <div class="op-list" v-if="isData == true">
+      <div class="op-list" v-if="isData == true">
          <table>
            <thead>
              <tr>
@@ -41,11 +41,11 @@
          <!-- 总计 -->
          <div class="money-content">
            <div class="money-wrapper">
-             <span class="money-btn" @click="toNext()"><i class="btn-sub">打 印</i></span>
+             <span class="money-btn" @click="toNext()"><i class="btn-sub" :class="{'disabled':checkedValue.length==0}">打 印</i></span>
            </div>
          </div>
          <!-- 分页 -->
-         <page v-if="total>rows" :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
+         <page v-if="total>rows" :total= 'total' :display='rows' @pagechange='pagechange($event)' class="page-wrapper"></page>
        </div>
       <div class="tip-info" v-else>
          <p>{{nodata}}</p>
@@ -85,7 +85,7 @@
       // 默认全选
     },
     watch: {
-      tableData(value) {
+      list(value) {
         if (value) {
           this.checkedValue = value
         }
@@ -196,9 +196,10 @@ table
       background #fafafa
 .money-content
   position absolute
-  bottom 100px
+  bottom 10px
   text-align center 
-  width 100%
+  width 40%
+  right 0
 .money-txt
   font-size 2em
   color $color-font

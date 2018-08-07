@@ -38,7 +38,7 @@
            </div>
          </div>
          <!-- 分页 -->
-         <div class="page-wrapper">
+         <div class="page-wrapper" v-if="total>rows">
            <page :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
          </div>
          
@@ -104,6 +104,8 @@
              this.getPageData()
             // 设置总费用
             this.$store.commit('setTotalCost',res.data.totalCost)
+           }else {
+             this.flag = false
            }
         }).catch((err)=>{
           

@@ -62,11 +62,7 @@
 .login
   height 100%
 .info-wrapper
-  background $color-bg1
-  padding 1em 3em
   margin-bottom 2em
-  border-radius 8px
-  color $color-font
 .doctor-info>p
   font-size 1.8em
   margin 0.5em 0

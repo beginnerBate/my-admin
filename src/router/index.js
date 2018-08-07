@@ -56,9 +56,12 @@ import SqStepone from 'components/self-query/sq-stepone'
 import SqSteptwo from 'components/self-query/sq-steptwo'
 import SqStepthree from 'components/self-query/sq-stepthree'
 import SqStepfour from 'components/self-query/sq-stepfour'
+import SqStepfive from 'components/self-query/sq-stepfive'
+import SqStepsix from 'components/self-query/sq-stepsix'
 // 自助打印
 import SelfPrint from 'components/self-print/self-print'
 import SpStepone from 'components/self-print/sp-stepone'
+import SpSteptwo from 'components/self-print/sp-steptwo'
 // 智能导诊
 import SmartLeading from 'components/smart-leading/smart-leading'
 import SlStepone from 'components/smart-leading/sl-stepone'
@@ -218,7 +221,7 @@ export default new Router({
           path:'op-stepthree',
           name:'opstepthree',
           component: OpStepthree,
-          meta: { backpage: 'opstepone'}
+          meta: { backpage: 'close'}
         },
         {
           path:"op-stepfour",
@@ -320,6 +323,18 @@ export default new Router({
           meta: { backpage: 'selfquerylist'}
         },
         {
+          path:"SqStepfive",
+          name:'sqstepfive',
+          component:SqStepfive,
+          meta: { backpage: 'selfquerylist'}
+        },
+        {
+          path:"SqStepsix",
+          name:'sqstepsix',
+          component:SqStepsix,
+          meta: { backpage: 'selfquerylist'}
+        },
+        {
           path:'sqtippage',
           name:"sqtippage",
           component:TipPage,
@@ -336,6 +351,18 @@ export default new Router({
           path:"SpStepone",
           name:'spstepone',
           component:SpStepone,
+          meta: { backpage: 'close'}
+        },
+        {
+          path:"SpSteptwo",
+          name:'spsteptwo',
+          component:SpSteptwo,
+          meta: { backpage: 'spstepone'}   
+        },
+        {
+          path:'sptippage',
+          name:"sptippage",
+          component:TipPage,
           meta: { backpage: 'close'}
         }
       ]
@@ -398,7 +425,7 @@ export default new Router({
           path:"PdStepthree",
           name:"pdstepthree",
           component:PdStepthree,
-          meta: { backpage: 'pdstepone'}
+          meta: { backpage: 'close'}
         },
         {
           path:"PdStepfour",

@@ -37,8 +37,12 @@
       toNext() {
         if (this.queryType == 1) {
          this.$router.push({name:"sqstepthree"}) 
-        }else if(this.queryType == 2){
+        }else if(this.queryType == 4){
           this.$router.push({name:'sqstepfour'})
+        }else if(this.queryType ==2) {
+          this.$router.push({name:"sqstepfive"}) 
+        }else if (this.queryType ==3) {
+          this.$router.push({name:"sqstepsix"}) 
         }
       }
     }

@@ -48,7 +48,6 @@
     },
     watch: {
       '$route'(value) {
-
       }
     },
     methods: {
@@ -74,6 +73,14 @@
       clearData () {
         // 预存金充值金额清除
         this.$store.commit('setPdtotalCost','')
+
+        // 当日挂号
+        this.$store.dispatch('getDayDocotorList','')
+        this.$store.commit('setDayDoctorInfo','')
+        this.$store.commit('setCardType','')
+        this.$store.dispatch('getUserInfo','')
+        // 自助打印
+        this.$store.commit('setJzId','')
       }
     }
   }

@@ -95,6 +95,9 @@
       },
       list () {
         return this.$store.state.bookReg.dayDoctorList
+      },
+      token () {
+        return this.$store.state.bookReg.token
       }
     },
     methods: {
@@ -145,7 +148,12 @@
       },
       toDoctorinfo($event) {
         this.$store.commit('setDayDoctorInfo',$event)
-        this.$router.push({name:"regselectcard"})
+        // 如果信息已验证
+        if (this.token) {
+          this.$router.push({name:"choosethree"})
+        }else {
+          this.$router.push({name:"regselectcard"})
+        }
       }
     }
   }
