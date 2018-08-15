@@ -1,8 +1,8 @@
 <template>
   <div class="header-tip">
     <p class="header-logo">
-      <img src="./logo.png">
-      <span>南京医科大学第二附属医院</span>
+      <img src="./logo.png" width="60px" height="60px">
+      <span>兰考第一医院妇儿医院</span>
     </p>
     <p class="header-date">
       <span><i>{{sysDate}}</i> <i>{{sysWeek}}</i> <i>{{sysTime}}</i></span></p>
@@ -60,7 +60,7 @@ export default {
   p
     letter-spacing 2px
     font-size 1.75em
-    color #003e92
+    color #006ab8
   .header-logo
     float left
     margin-top 13px

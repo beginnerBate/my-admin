@@ -3,30 +3,38 @@
     <!-- 自助打印读卡区域 -->
     <div class="sq-left">
       <div class="sq-left-wrapper">
-        <h3>请将就诊卡置于感应区</h3>
-        <div class="user-info"><img src="./user-info.gif"></div>
+        <div class="sq-con">
+        <h3>请刷就诊卡</h3>
+        <div class="user-info"><img src="./card.gif"></div>
+        </div>
       </div>
     </div><div class="sq-right">
       <!-- 自助打印填卡区域  上面不能换行！！！-->
       <div class="sq-right-wrapper">
-        <h3>若未带就诊卡, 请输入就诊卡号</h3>
-        <div class="get-id">
-          <div class="input-wrapper">
-            <input type='text' v-model='jzId' class='input-wrapper-num' ref="myJzId" @keyup.enter="submit" v-focus>
-          </div>
-          <!-- 键盘 -->
-          <div class="key">     
-            <div class="mykey-wrapper">
-              <ul class="my-key">
-                <li v-for="(item, index) in key" :key="index" @click="KeyUp(item)">
-                  <div><span>{{item}}</span></div>
-                </li>                                                                                             
-              </ul>
+        <div class="sq-con">
+          <h3>若未带就诊卡, 请输入就诊卡号</h3>
+          <div class="get-id">
+            <div class="input-wrapper">
+              <input type='text' v-model='jzId' class='input-wrapper-num' ref="myJzId" @keyup.enter="submit" v-focus>
             </div>
-          </div>
-          <!-- button -->
-          <div class="button-wrapper">
-            <span class="btn-sq" @click="submit()" :class="{'disabled': disableFlag == -1}"><i>查 询</i></span>
+            <!-- 键盘 -->
+            <div class="key">     
+              <div class="mykey-wrapper">
+                <ul class="my-key">
+                  <div class="border-wrapper">
+                    <li v-for="(item, index) in key" :key="index">
+                      <div :class="{'active': i==index}" 
+                      @click="KeyUp(item,index)
+                       "><span>{{item}}</span></div>
+                    </li>  
+                  </div>                                                                                           
+                </ul>
+              </div>
+            </div>
+            <!-- button -->
+            <div class="button-wrapper" @click="submit()">
+              <span class="btn-sq"><i>查 询</i></span>
+            </div>
           </div>
         </div>
       </div>
@@ -40,27 +48,30 @@
         jzId:'',
          key: ['1','2','3','4','5','6','7','8','9','0','退格','清空'],
          curFlag:false,
-         disableFlag:0,
-          isCall:true,
-          cardInfo:"",
-          cardNumber:'',
           flag:false,
-          timer:""
+          timer:"",
+          i:-1
       }
     },
     mounted () {
-      this.speech()
-      var that = this
       document.addEventListener('click',this.myfocus)
+      document.addEventListener('touchmove',this.myfocus)
+      document.addEventListener('mousemove',this.myfocus)
     },
     watch: {
       jzId(value) {
-        var par = /\d+/ig
-        this.jzId = value.match(par)[0]
+        if (value) {
+        var par = /\d+/
+        this.jzId = value.match(par)? value.match(par)[0] : ''
+        }else {
+          this.jzId = ''
+        }
       }
     },
     destroyed() {
       document.removeEventListener('click',this.myfocus)
+      document.removeEventListener('touchmove',this.myfocus)
+      document.removeEventListener('mousemove',this.myfocus)
       clearInterval(this.timer)
     },
     methods: {
@@ -73,7 +84,11 @@
       myfocus(){
          this.$refs.myJzId.focus()
       },
-      KeyUp(item) {
+      KeyUp(item,index) {
+         this.i = index
+         setTimeout(()=>{
+           this.i = -1
+         },200)
         if (item == '退格') {
           if (this.jzId<=0) return
           this.jzId = this.jzId.substring(0,this.jzId.length-1)
@@ -85,56 +100,7 @@
           this.jzId += item
         }
         this.$refs.myJzId.focus()
-      },
-      getCardInfo () {
-        if  (typeof window.external.GetCardInfoByType == 'function') {
-              this.cardInfo = JSON.parse(window.external.GetCardInfoByType(4))
-              if (this.cardInfo.code == '200') {
-                this.isCall = false
-                  // 就诊卡号
-                this.cardNumber = this.cardInfo.data
-                this.jzId = this.cardInfo.data
-                this.submit()
-              }else {
-                this.isCall = true
-              }
-          }
-        },
-      speech() {
-        runAsync1()
-        .then(function(data){
-            return runAsync2();
-        })
-        .then(function(data){
-            return '直接返回数据';  //这里直接返回数据
-        })
-        var that = this
-        function runAsync1(){
-          var p = new Promise((resolve, reject)=>{
-              //做一些异步操作
-              var code
-              if (typeof window.external.SpeechText == 'function') {
-               var code =  window.external.SpeechText('请将,就诊卡,置于感应区',1)
-                resolve(code)
-              }
-          });
-          return p;            
-          }
-          function runAsync2(){
-              var p = new Promise((resolve, reject)=>{
-                  //做一些异步操作
-                  that.timer = setInterval(()=>{
-                    if (that.isCall == true){
-                      that.getCardInfo()
-                    }else {
-                      clearInterval(that.timer)
-                    }
-                  },500)
-                  resolve('dddd')
-              });
-              return p;            
-          }
-        }
+      }
     },
     directives: {
       focus: {
@@ -153,51 +119,68 @@
   width 50%
   height 100%
   overflow hidden
+.sq-left
+  float left
+.sq-right
+  float right 
 .sq-left-wrapper,.sq-right-wrapper
-  padding 1em
   color #ffffff
   font-size 1.6em
   letter-spacing 5px
   text-align center
   height 100%
+.sq-con
+  padding 1em
 .sq-right-wrapper
   border-left 1px dashed  #7ca8cf
 .sq-left-wrapper
   border-right  1px dashed  #7ca8cf
 .user-info
-  padding-top 4em
-  text-align center
+  margin-top: 20px
   img 
-    background #ffffff
-    border-radius 18px
+    width 100%
+    display block
+    text-align center
+    height 475px
+    overflow hidden
+    border-radius 2px
 .my-key
   background #ffffff
   // border-radius 8px
+  border-top 2px solid #45719c
   padding 0.5em
   li
     display inline-block
     width 33.3%
     div
       padding 0.4em
+      border-left: 1px solid #45719c;
+      border-top: 1px solid #45719c;
       span 
+        color #45719c
         display block
-        background-color #45719c
+        // background-color #45719c
         text-align center
-        border-radius 6px
+        // border-radius 6px
         font-size 1.5em
+    div.active
+      background #45719c
+      span 
+        color #ffffff
 .input-wrapper
-  background-color #45719c
+  background-color #fff
   text-align left  
   padding 0.2em 0.1em
 .input-wrapper-num
   width 100%
   height 100%
-  background-color #45719c
+  background-color #fff
+  // background-color #45719c
   font-size 1.5em
   min-height 1ex
   border 0
   outline 0
-  color #ffffff
+  color #45719c
 .cursor
   opacity:0
 .get-id
@@ -213,4 +196,7 @@
   border-bottom: 3px solid #30679c
   box-shadow: 0px 3px 0px #346b9e
   overflow hidden
+.border-wrapper
+  border-right: 1px solid #45719c;
+  border-bottom: 1px solid #45719c;
 </style>

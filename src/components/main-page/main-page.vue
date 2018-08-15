@@ -3,18 +3,15 @@
   <header-tip></header-tip>
   <!-- home-header -->
   <div class="home-header">
-    <div class="home-btn"><span>当前页面-<i>{{$store.state.navTxt}}</i></span></div>
-    <!-- 倒计时 -->
-    <div class="home-timer">
-      <timer-task @outTime='outTime' ></timer-task>
+    <div class="home-btn"><span><i>{{$store.state.navTxt}}</i></span></div>
+        <!-- 倒计时 -->
+    <div class="home-timer"  v-if="flag">
+      <time-task @outTime='outTime' ></time-task>
     </div>
+
   </div>
   <!-- home-middle -->
   <div class="home-middle">
-    <!-- home-left -->
-    <div class="home-left">
-      <left-nav></left-nav>
-    </div>
     <!-- home-right -->
     <div class="home-right">
       <div class="home-right-content">
@@ -23,64 +20,50 @@
         <slot></slot>
       </div>
     </div>
-    <!-- home-footer -->
-    <div class="home-footer">
-      <div><span class="back-pre" @click="back()"><i class="icon icon-back-pre"></i><i>返回</i></span></div>
-      <div><span class="back-home" @click="close()"><i class="icon icon-back-home"></i><i>主页</i></span></div>
-      <div><span class="back-exit" @click="close()"><i class="icon icon-back-exit"></i><i>退出</i></span></div>
-    </div>
   </div>
   <!-- footer-tip -->
   <footer-tip></footer-tip>
   </div>
 </template>
 <script>
-  import LeftNav from 'components/left-nav/left-nav'
-  import TimerTask from 'base/time-task/time-task'
   import HeaderTip from 'base/header-tip/header-tip'
   import FooterTip from 'base/footer-tip/footer-tip'
+  import TimeTask from 'base/time-task/time-task'
   export default {
+    data() {
+      return {
+        flag: false
+      }
+    },
     components: {
-      LeftNav,
-      TimerTask,
       FooterTip,
-      HeaderTip
+      HeaderTip,
+      TimeTask
     },
     watch: {
       '$route'(value) {
+        if (value.name == 'spsteptwo' || value.name =='sptippage') {
+          this.flag = true
+        }else{
+          this.flag = false
+        }
       }
     },
     methods: {
       back() {
-        var curRouteName = this.$router.currentRoute.name
-        var myback = this.$router.currentRoute.meta.backpage
-        
-        if (myback == 'close') {
-          this.close()
-        }else {
-          // 跳转的页面
-          this.$router.push({name:myback})
-        }
+        this.close()
       },
       close(){
-        this.$router.push({name:'indexpage'})      
+        this.$router.push({path:'/self-print/SpStepone'})      
         this.clearData()
-      },
-      outTime() {
-        this.close()
       },
       // 清空数据
       clearData () {
-        // 预存金充值金额清除
-        this.$store.commit('setPdtotalCost','')
-
-        // 当日挂号
-        this.$store.dispatch('getDayDocotorList','')
-        this.$store.commit('setDayDoctorInfo','')
-        this.$store.commit('setCardType','')
-        this.$store.dispatch('getUserInfo','')
         // 自助打印
         this.$store.commit('setJzId','')
+      },
+      outTime() {
+        this.close()
       }
     }
   }
@@ -88,7 +71,8 @@
 <style lang="stylus" scoped>
 @import '~~common/stylus/variables.styl'
 .home
-  background url('./home_bg.png') no-repeat 
+  // background url('./home_bg.png') no-repeat 
+  background-color: #517aa2
   background-size cover
   height 100%;
   width 100%;
@@ -125,7 +109,7 @@
   .home-right
     position fixed
     top 200px
-    bottom 126px
+    bottom 76px
     left 340px
     right:1em;
     .home-right-content
@@ -133,29 +117,7 @@
       height:100%
       border 1px solid $color-theme-h
       border-radius 8px
-.home-footer
-  position fixed
-  bottom 37px
-  right 0
-  div
-    display inline-block
-    padding 0.6em 2em
-    font-size 1.6em
-    color #333
-  span 
-    display inline-block
-    width 178px
-    padding 0.4em 0
-    border-radius 8px
-    text-align center
-    border-bottom 3px solid #96a3b3
-    box-shadow  0px 3px 0px #84a3c2
-    &.back-pre
-      background $color-back-pre
-    &.back-home
-      background $color-back-home
-    &.back-exit
-      background $color-back-exit
+      overflow hidden
 .icon
   display inline-block
   width 38px
