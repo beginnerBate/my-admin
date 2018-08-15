@@ -55,8 +55,12 @@
     },
     watch: {
       jzId(value) {
-        var par = /\d+/ig
-        this.jzId = value.match(par)[0]
+        if (value) {
+        var par = /\d+/
+        this.jzId = value.match(par)? value.match(par)[0] : ''
+        }else {
+          this.jzId = ''
+        }
       }
     },
     destroyed() {
@@ -87,8 +91,8 @@
         this.$refs.myJzId.focus()
       },
       getCardInfo () {
-        if  (typeof window.external.GetCardInfoByType == 'function') {
-              this.cardInfo = JSON.parse(window.external.GetCardInfoByType(4))
+        if  (typeof SharpForeign.GetCardInfoByType == 'function') {
+              this.cardInfo = JSON.parse(SharpForeign.GetCardInfoByType(4))
               if (this.cardInfo.code == '200') {
                 this.isCall = false
                   // 就诊卡号
@@ -113,8 +117,8 @@
           var p = new Promise((resolve, reject)=>{
               //做一些异步操作
               var code
-              if (typeof window.external.SpeechText == 'function') {
-               var code =  window.external.SpeechText('请将,就诊卡,置于感应区',1)
+              if (typeof SharpForeign.SpeechText == 'function') {
+               var code =  SharpForeign.SpeechText('请将,就诊卡,置于感应区',1)
                 resolve(code)
               }
           });
@@ -167,6 +171,7 @@
 .user-info
   padding-top 4em
   text-align center
+  
   img 
     background #ffffff
     border-radius 18px

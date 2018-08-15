@@ -56,8 +56,8 @@
                         "name":this.user.name,
                         "flowNumber":""
                         };
-        if (typeof window.external.Print_SmallTicket_YCJCZ== 'function') {
-            var code = JSON.parse(window.external.Print_SmallTicket_YCJCZ(JSON.stringify(postData)))
+        if (typeof SharpForeign.Print_SmallTicket_YCJCZ== 'function') {
+            var code = JSON.parse(SharpForeign.Print_SmallTicket_YCJCZ(JSON.stringify(postData)))
             if (code.code==200) {
               this.disableFlag = -1
             }else {

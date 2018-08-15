@@ -1,8 +1,31 @@
 <template>
   <div class="self-query">
     该模块暂未开发
+    <div>测试模块</div>
+    <p>浏览器对flex的支持情况: {{flex}}</p>
+    <p>svg: {{svg}}</p>
   </div>
 </template>
+<script>
+export default {
+  data() {
+    return {
+      flex: '',
+      svg:""
+    }
+  },
+  created () {
+    this.flex = CSS.supports("display", "flex");  
+    this.svg =  hasSVG()
+
+  }
+}
+function hasSVG(){
+	var SVG_NS = 'http://www.w3.org/2000/svg';
+	return !!document.createElementNS && !!document.createElementNS(SVG_NS, 'svg').createSVGRect;
+}
+</script>
+
 <style lang="stylus" scoped>
 .self-query
   padding 2em 1em

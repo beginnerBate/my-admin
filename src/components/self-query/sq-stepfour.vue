@@ -1,8 +1,13 @@
 <template>
   <div class="op-stepthree">
-    <div class="op-content">
+    <div class="op-content" v-if="!loadFlag">
+      <!-- 用户信息 -->
+      <div class="myuser-info info-wrapper">
+        <span><i>姓名:</i> <i>{{user.name}}</i> </span>
+        <span><i>就诊卡号:</i> <i>{{user.jzId}}</i></span>
+      </div>
        <div class="op-list">
-         <table>
+         <table v-if="tableData.length">
            <thead>
              <tr>
                <th>序号</th>
@@ -26,29 +31,33 @@
            </tbody>
          </table>
          <!-- 分页 -->
-         <page :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
+         <page v-if="total>rows" :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
+          <div class="tip-info " v-if="!tableData.length"><p>暂无就诊记录</p></div>
        </div>
     </div>
-    <div class="tip-info " v-if="nodata"><p>暂无数据</p></div>
+    <!-- loading -->
+    <div class="loading-wrapper" v-if="loadFlag">
+      <loading :title="title"></loading>
+    </div>
   </div>
 </template>
 
 <script>
   import Page from 'base/page/page'
+  import Loading from 'base/loading/loading'
   import {hisMedicalRecord} from 'api/selfquery.js'
   import {formatDate} from 'common/js/date.js'
   export default {
     data() {
       return {
+        loadFlag:true,
+        title:"页面加载中...",
         rows:6,
         page:1,
         pageCount:1,
         total:0,
         list: [],
-        tableData:[],
-        ischecked:'',
-        checkedValue:[],
-        nodata:false
+        tableData:[]
       }
     },
     created() {
@@ -56,7 +65,8 @@
       this.getList()
     },
     components:{
-      Page
+      Page,
+      Loading
     },
     computed: {
       token() {
@@ -74,6 +84,7 @@
     },
     methods: {
       getList() {
+        this.loadFlag = true
         hisMedicalRecord(this.token).then((res)=>{
           if(res.code == "200"){
             this.list = res.data
@@ -81,14 +92,16 @@
             this.total = this.list.length
             this.getPageData() 
           }else if( res.code == '404'){
-            this.nodata = true
+            this.list = []
           }else {
             // 系统错误
             this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
             this.toTipPage()   
           }
+          this.loadFlag = false
         }).catch((err)=>{
           // 系统错误
+          this.loadFlag = false
             this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
             this.toTipPage()   
         })
@@ -106,16 +119,10 @@
             }
           })
       },
-      toNext() {
-        // 判断是否被选中
-        if(this.checkedValue.length==0) return false
-        var orderId = this.checkedValue.join(',')
-        this.$router.push({name:'bostepfour'})
-      },
       toTipPage () {
        this.$router.push({name:"sqtippage"}) 
       }
-    },
+    }
   }
 </script>
 <style lang="stylus" scoped>
@@ -177,6 +184,4 @@ table
   font-size 1.8em
   letter-spacing 4px
   color $color-font 
-.loading-wrapper
-  padding-top 30%
 </style>

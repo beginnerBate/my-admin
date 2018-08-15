@@ -14,7 +14,6 @@
     <div v-if='flag' class='loading-wrapper'>
       <loading :title="title"></loading>
     </div>
-    <audio ref='player' :src='require("./identity.mp3")' ></audio>
   </div>
 </template>
 
@@ -34,7 +33,7 @@
         message:'请在自助机指示区域放入已绑定就诊ID的卡进行身份验证!',
         isCall: true,
         timer:"",
-        title:"读卡成功,用户信息验证中,请稍等..."
+        title:"信息验证中,请稍等..."
       }
     },
     components:{
@@ -131,8 +130,8 @@
         this.$emit('neterror')
       },
       getCardInfo () {
-        if  (typeof window.external.GetCardInfoByType == 'function') {
-              this.cardInfo = JSON.parse(window.external.GetCardInfoByType(this.cardType))
+        if  (typeof SharpForeign.GetCardInfoByType == 'function') {
+              this.cardInfo = JSON.parse(SharpForeign.GetCardInfoByType(this.cardType))
               if (this.cardInfo.code == '200') {
                 this.isCall = false
                 if (this.cardType == 1) {
@@ -179,8 +178,8 @@
         }
       },
       SpeechText(value) {
-        if (typeof window.external.SpeechText == 'function') {
-           window.external.SpeechText(value,1)
+        if (typeof SharpForeign.SpeechText == 'function') {
+           SharpForeign.SpeechText(value,1)
         }
       }
     }
@@ -204,6 +203,4 @@
   color $color-font
   letter-spacing 2.5px
   font-size 1.8em
-.loading-wrapper
-  padding-top 30%
 </style>

@@ -48,8 +48,8 @@
                         "guaHaoAmount":this.bookDoctor.sumRegister,
                         "flowNumber":this.orderNumber
                         };
-        if (typeof window.external.Print_SmallTicket_YYGH== 'function') {
-            var code = window.external.Print_SmallTicket_YYGH(JSON.stringify(postData))
+        if (typeof SharpForeign.Print_SmallTicket_YYGH== 'function') {
+            var code = SharpForeign.Print_SmallTicket_YYGH(JSON.stringify(postData))
         } 
       }
     },

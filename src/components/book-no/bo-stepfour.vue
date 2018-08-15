@@ -50,8 +50,8 @@
           "doctorName": data.docName,
           "guaHaoAmount": data.sumRegister
         };
-        if (typeof window.external.Print_SmallTicket_ZZQH == 'function') {
-          mydata = JSON.parse(window.external.Print_SmallTicket_ZZQH(JSON.stringify(postData)))
+        if (typeof SharpForeign.Print_SmallTicket_ZZQH == 'function') {
+          mydata = JSON.parse(SharpForeign.Print_SmallTicket_ZZQH(JSON.stringify(postData)))
           if (mydata.code == '200') {
             // 打印成功
              this.flag = true
@@ -76,6 +76,4 @@
   color #ffffff
   font-size 2em
   letter-spacing 4px
-.loading-wrapper
-  padding-top 30%
 </style>

@@ -1,8 +1,14 @@
 <template>
   <div class="op-stepthree">
-    <div class="op-content">
-       <div class="op-list" v-if="!loadFlag">
-         <table >
+    <!-- 挂号记录 -->
+    <div class="op-content"  v-if="!loadFlag">
+      <!-- 用户信息 -->
+      <div class="myuser-info info-wrapper">
+        <span><i>姓名:</i> <i>{{user.name}}</i> </span>
+        <span><i>就诊卡号:</i> <i>{{user.jzId}}</i></span>
+      </div>
+       <div class="op-list">
+         <table v-if="tableData.length">
            <thead>
              <tr>
                <th>序号</th>
@@ -26,25 +32,25 @@
                   <th>{{item.number}}</th>
                   <th>{{item.amountReceivable}}</th>
                   <th>{{item.occurrenceTime|formatDate}}</th>
-                   <div class="tip-info " v-if="item"><p>暂无数据</p></div>
                </template>               
              </tr>
            </tbody>
          </table>
          <page v-if="total>rows" :total= 'total' :display='rows' @pagechange='pagechange($event)' :currentPage='page'></page>
+         <div class="tip-info " v-if="!tableData.length"><p>暂无挂号记录</p></div>
        </div>
-       <!-- loading -->
+    </div>
+      <!-- loading -->
        <div class="loading-wrapper" v-if="loadFlag">
          <loading :title="title"></loading>
        </div>
-    </div>
   </div>
 </template>
 
 <script>
   import Page from 'base/page/page'
   import Loading from 'base/loading/loading'
-  import {hisPayRecord} from 'api/selfquery.js'
+  import {guahaoRecord} from 'api/selfquery.js'
   import {formatDate} from 'common/js/date.js'
   export default {
     data() {
@@ -57,10 +63,6 @@
         total:0,
         list: [],
         tableData:[],
-        tabContents:[],
-        orderList:[],
-        preDepositList:[],
-        regList:[]
       }
     },
     created() {
@@ -91,17 +93,12 @@
       },
       getList() {
         this.loadFlag = true
-        hisPayRecord(this.token).then((res)=>{
-          console.log(res)
+        guahaoRecord(this.token).then((res)=>{
           if(res.code == '200'){
-            // this.tabContents[0] = res.orderList
-            // this.tabContents[1] = res.regList
-            // this.tabContents[2] = res.preDeposits
-            // // 根据类型判断
-            // this.list = this.tabContents[this.num]
-            // this.pageCount = Math.ceil(this.list.length/this.rows)
-            // this.total = this.list.length
-            // this.getPageData() 
+            this.list = res.data
+            this.pageCount = Math.ceil(this.list.length/this.rows)
+            this.total = this.list.length
+            this.getPageData() 
           }else if (res.code == '404') {
             // 没有数据
  
@@ -136,6 +133,8 @@
 @import '~~common/stylus/variables.styl'
 @import '~~common/stylus/button.styl'
 @import '~~common/stylus/navbtn.styl'
+.op-list
+  margin-top 20px
 .op-stepthree
   padding 1em 0.8em
 table
@@ -175,6 +174,10 @@ table
 .money-btn .btn-sub
   font-size 2em
   margin-left 50px
-.loading-wrapper
-  padding-top 30%
+.tip-info p
+  padding 20%
+  text-align center
+  font-size 1.8em
+  letter-spacing 4px
+  color $color-font 
 </style>

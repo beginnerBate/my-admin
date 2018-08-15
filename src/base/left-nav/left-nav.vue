@@ -24,9 +24,6 @@ export default {
     menuIdx() {
       return this.$store.state.menuIdx
     }
-  },
-  created() {
-    this.version = window.navigator.appVersion
   }
 }
 </script>

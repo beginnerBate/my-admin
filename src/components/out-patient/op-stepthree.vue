@@ -119,7 +119,6 @@
       getPageData () {
         var startIndex = (this.page-1)*this.rows
         var endIndex = (this.page)*this.rows
-        console.log(this.list)
           this.tableData = this.list.filter((val,index)=>{
             if(index<endIndex && index>=startIndex) {
               return true
@@ -202,6 +201,4 @@ table
   font-size 1.8em
   letter-spacing 4px
   color $color-font 
-.loading-wrapper
-  padding-top 30%
 </style>

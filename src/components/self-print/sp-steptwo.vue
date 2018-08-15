@@ -1,32 +1,38 @@
 <template>
   <div class="self-query">
     <div v-if="(!loadflag) && (!printState)">
+      <!-- 用户信息 -->
+      <div class="myuser-info info-wrapper" v-if="tableData.length">
+        <span><i>姓名:</i> <i>{{tableData[0].name}}</i> </span>
+        <span><i>就诊卡号:</i> <i>{{tableData[0].visitId}}</i></span>
+      </div>
       <div class="op-list" v-if="tableData.length">
          <table>
            <thead>
              <tr>
                <th>序号</th>
-               <th>姓名</th>
-               <th>项目名</th>
-               <th>费别</th>
+               <th>检查项</th>
+               <th>标本</th>
+               <th>送检时间</th>
                <th>报告时间</th>
-               <th>操作</th>
+               <th>选择</th>
              </tr>
            </thead>
            <!-- 数据渲染 -->
            <tbody>
              <tr v-for='(item,index) in tableData' :key="index">
                <th>{{(page-1)*rows +index+1}}</th>
-               <th>{{item.name}}</th>
+               <th>{{item.itemName}}</th>
                <th>{{item.specimen}}</th>
-               <th>{{item.payType}}</th>
+               <th>{{item.sendInspectionTime}}</th>
                <th>{{item.reportingTime}}</th>
-               <th>
+               <th class="table-select">
                  <input type="checkbox" 
                  :id="'checkbox'+index" 
                  class="checkbox" 
                  :value="item"
                  v-model="checkedValue"
+                 hidden
                  ><label :for="'checkbox'+index" class="labelbox"><i>√</i></label></th>
              </tr>
            </tbody>
@@ -77,7 +83,7 @@ import {ItemInfos} from 'api/print.js'
         ischecked:'',
         checkedValue:[],
         isData:'',
-        nodata:''  
+        nodata:'' 
       }
     },
     created() {
@@ -146,18 +152,18 @@ import {ItemInfos} from 'api/print.js'
         var postData = JSON.stringify(this.checkedValue)
         var mydata;
         this.printState = true
-        if (typeof  window.external.Print_ShenHuaCheckProject == 'function') {
-          var mydata = JSON.parse(window.external.Print_ShenHuaCheckProject(postData)) 
-          setTimeout(() => {
+        if (typeof  SharpForeign.Print_ShenHuaCheckProject == 'function') {
+          var mydata = JSON.parse(SharpForeign.Print_ShenHuaCheckProject(postData)) 
             if (mydata.code ==200) {
               // 打印完成
-              this.printState = true
-              this.getdata()
+              this.printState = false
+              this.$store.commit('setRegbookTip','打印成功')
+              this.toTipPage()
             }else{
-              this.printState = true
-              this.getdata()
+              this.printState = false
+              this.$store.commit('setRegbookTip','打印失败')
+              this.toTipPage()
             }
-          }, 1000);
         }
        
       }
@@ -167,8 +173,11 @@ import {ItemInfos} from 'api/print.js'
 <style lang="stylus" scoped>
 @import '~~common/stylus/variables.styl'
 @import '~~common/stylus/button.styl'
-.op-list
+.self-query
   padding 1em
+.op-list
+  // padding 1em
+  margin-top 20px
 table
   width 100%
   thead
@@ -192,6 +201,8 @@ table
       border-left 1px solid $color-a1
     tr:nth-of-type(2n+1)
       background #fafafa
+.table-select
+  position relative
 .tip-info p
   padding 25%
   text-align center
@@ -206,6 +217,4 @@ table
   width 40%
   .btn-sub
     font-size 2em
-.loading-wrapper
-  padding-top 25%
 </style>

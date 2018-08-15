@@ -115,11 +115,15 @@ const actions = {
     // 设置科室name, 获取科室可预约医生
     commit('setDepartName',item.name)
     commit('setDepartId',item.id)
-    getDepartmentDocs(item.id).then((res)=>{
-      if(res.code ==200) {
-        commit('setDoctorList',res.data)
-      }
-    })
+    if (item.id) {
+      getDepartmentDocs(item.id).then((res)=>{
+        if(res.code ==200) {
+          commit('setDoctorList',res.data)
+        }
+      })
+    }else {
+      commit('setDoctorList','')
+    }
   },
   // 预约医生详细信息
   getBookDoctorsInfo ({commit}, item) {
@@ -134,12 +138,17 @@ const actions = {
       numberType: item.numberType == '专家'? 2:1
     })
     // 获取预约医生详细信息
-    getBookDoctors({deptId:item.departId,hm:item.hm})
-    .then(function(res){
-      if (res.code == 200) {
-        commit('setDoctorInfo',res.data)
-      }
-    })
+    if (item.departId) {
+      getBookDoctors({deptId:item.departId,hm:item.hm})
+      .then(function(res){
+        if (res.code == 200) {
+          commit('setDoctorInfo',res.data)
+        }
+      })
+    }else {
+      commit('setDoctorInfo',res.data)
+    }
+
   },
   getUserInfo ({commit},item){
     commit('setUser',{name:item.name,jzId:item.jzId,cardNumber:item.cardNumber,sex:item.sex})
@@ -148,11 +157,15 @@ const actions = {
   getDayDocotorList({commit},item){
     commit('setDepartName',item.name)
     commit('setDepartId',item.id)
-    getDayDoctorList(item.id).then((res)=>{
-      if(res.code == 200) {
-        commit('setDayDoctorList',{ordinaryDocs:res.ordinaryDocs,expertDocs:res.expertDocs})
-      }
-    })  
+    if (item.id) {
+      getDayDoctorList(item.id).then((res)=>{
+        if(res.code == 200) {
+          commit('setDayDoctorList',{ordinaryDocs:res.ordinaryDocs,expertDocs:res.expertDocs})
+        }
+      })  
+    }else {
+      commit('setDayDoctorList','')
+    }
   }
 }
 export default {

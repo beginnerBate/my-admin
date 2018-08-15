@@ -180,6 +180,4 @@
   width 100%
   text-align center
   font-size 1.4em
-.loading-wrapper
-  padding-top 30%
 </style>

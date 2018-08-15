@@ -9,7 +9,6 @@
       <li  v-for="(item,index) in list" :key="index"><div><router-link tag="img" :to="item"  :src="require('./main_0'+(index+1)+'.png')"></router-link></div></li>
     </ul>
   </div>
- 
   <!-- footer-tip -->
   <footer-tip></footer-tip>
   </div>
@@ -29,8 +28,8 @@
     },
     methods: {
       close(){
-        if(typeof window.external.CloseThis == 'function') {
-          window.external.CloseThis()
+        if(typeof SharpForeign.CloseThis == 'function') {
+          SharpForeign.CloseThis()
         }
       }
     }

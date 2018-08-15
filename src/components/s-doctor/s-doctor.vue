@@ -221,6 +221,4 @@
       padding 0.35em 0.75em
       border-radius 4px
       display inline-block
-.loading-wrapper
-  padding-top 30%
 </style>

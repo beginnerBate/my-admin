@@ -145,6 +145,4 @@
   bottom 1.2em
   width 100%
   text-align center
-.loading-wrapper
-  padding-top 30%
 </style>

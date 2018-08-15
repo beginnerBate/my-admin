@@ -39,8 +39,8 @@
                         "payAmount":this.balance,
                         "flowNumber":this.orderNumber
                         };
-        if (typeof window.external.Print_SmallTicket_MZJF== 'function') {
-            var code = window.external.Print_SmallTicket_MZJF(JSON.stringify(postData))
+        if (typeof SharpForeign.Print_SmallTicket_MZJF== 'function') {
+            var code = SharpForeign.Print_SmallTicket_MZJF(JSON.stringify(postData))
         } 
       }
     }

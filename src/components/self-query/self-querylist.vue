@@ -13,19 +13,19 @@
       return {
         queryList: [
           {
-            value:"挂号查询",
+            value:"挂号记录查询",
             queryType:1
           },
           {
-            value:"缴费查询",
+            value:"缴费记录查询",
             queryType:2
           },          
           {
-            value:"充值查询",
+            value:"充值记录查询",
             queryType:3
           },
           {
-            value:"就诊查询",
+            value:"就诊记录查询",
             queryType:4
           }
         ]
@@ -45,10 +45,10 @@
             this.$router.push({name:"sqstepthree"}) 
           }else if(item ==2) {
             // 缴费查询
-            this.$router.push({name:"sqstepthree"}) 
+            this.$router.push({name:"sqstepfive"}) 
           }else if (item ==3) {
             // 充值查询
-            this.$router.push({name:"sqstepthree"}) 
+            this.$router.push({name:"sqstepsix"}) 
           }else {
             // 就诊查询
             this.$router.push({name:"sqstepfour"}) 
@@ -72,7 +72,7 @@
     display inline-block
     width 50%
     height 50%
-    font-size 1.8em
+    font-size 1.5em
     color #fff
     letter-spacing 2px
     text-align center

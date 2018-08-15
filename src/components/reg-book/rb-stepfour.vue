@@ -62,13 +62,13 @@ export default {
     toNext() {
       // 打印小票
       var postData = {"name": this.regUserInfo.name,"sex": this.regUserInfo.sex,"jiuzhenId":this.jzId};
-      if (typeof window.external.Print_SmallTicket_ZCJD == 'function') {
-          var code = window.external.Print_SmallTicket_ZCJD(JSON.stringify(postData))
+      if (typeof SharpForeign.Print_SmallTicket_ZCJD == 'function') {
+          var code = SharpForeign.Print_SmallTicket_ZCJD(JSON.stringify(postData))
       }      
     },
     makecard () {
-      if (typeof window.external.WriteMedicalM1Card == 'function') {
-          var res = JSON.parse(window.external.WriteMedicalM1Card(this.jzId))
+      if (typeof SharpForeign.WriteMedicalM1Card == 'function') {
+          var res = JSON.parse(SharpForeign.WriteMedicalM1Card(this.jzId))
           if (res.code == '200') {
             this.tipInfo = this.message
             this.flag = true
@@ -107,6 +107,4 @@ export default {
   width 100%
   text-align center
   font-size 1.4em
-.loading-wrapper
-  padding-top 18%
 </style>

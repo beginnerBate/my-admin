@@ -259,6 +259,4 @@
       border-radius 4px
     i.on
       background #d4d4d4
-.loading-wrapper
-  padding-top 30%
 </style>

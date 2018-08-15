@@ -111,6 +111,4 @@
 .department-content
   padding 1em 0.8em
   padding-top 0.2em
-.loading-wrapper
-  padding-top 30%
 </style>

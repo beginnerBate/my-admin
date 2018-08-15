@@ -28,7 +28,7 @@
                <th>{{item.numberType}}</th>
                <th>{{item.sumRegister}}</th>
                <th>{{item.vistTime}}</th>
-               <th>
+               <th class="table-select">
                  <input type="checkbox" 
                  :id="'checkbox'+index" 
                  class="checkbox" 
@@ -194,6 +194,8 @@ table
       border-left 1px solid $color-a1
     tr:nth-of-type(2n+1)
       background #fafafa
+.table-select
+  position relative
 .money-content
   position absolute
   bottom 10px
@@ -214,6 +216,4 @@ table
   font-size 1.8em
   letter-spacing 4px
   color $color-font 
-.loading-wrapper
-  padding-top 30%
 </style>

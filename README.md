@@ -51,7 +51,7 @@
 4. 预约页面 选择专家 修改 没有数据修改
 5. 读取身份证 成功之后修改
 6. code码修改 
-7. 添加语音接口 window.external.SpeechText("请放入身份证");
+7. 添加语音接口 SharpForeign.SpeechText("请放入身份证");
 
 ``` bash
 # install dependencies

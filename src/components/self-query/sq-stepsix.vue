@@ -1,38 +1,15 @@
 <template>
   <div class="op-stepthree">
-    <div class="op-content">
-       <div class="op-user-info">
-         <ul class="nav-btn">
-           <li v-for="(item,index) in tabs" 
-           :key="index" 
-           :class="{active: index == num}"
-           @click="tab(index)"><span>{{item.name}}</span></li>
-         </ul>
-       </div>
+    <div class="op-content"  v-if="!loadFlag">
+      <!-- 用户信息 -->
+      <div class="myuser-info info-wrapper">
+        <span><i>姓名:</i> <i>{{user.name}}</i> </span>
+        <span><i>就诊卡号:</i> <i>{{user.jzId}}</i></span>
+      </div>
        <div class="op-list">
-         <table >
+         <table v-if="tableData.length">
            <thead>
-             <tr v-if=" num==0">
-               <th>序号</th>
-               <th>医嘱内容</th>
-               <th>类别</th>
-               <th>单价</th>
-               <th>数量</th>
-               <th>金额</th>
-               <th>时间</th>
-               <!-- <th>操作</th> -->
-             </tr>  
-             <tr v-if="num==1">
-               <th>序号</th>
-               <th>项目</th>
-               <th>类别</th>
-               <th>单价</th>
-               <th>数量</th>
-               <th>金额</th>
-               <th>时间</th>
-               <!-- <th>操作</th> -->
-             </tr>
-             <tr v-show="num==2">
+             <tr>
                <th>序号</th>
                <th>单据号</th>
                <th>金额</th>
@@ -44,62 +21,44 @@
            <!-- 数据渲染 -->
            <tbody>
              <tr v-for='(item,index) in tableData' :key="index">
-               <th>{{(page-1)*rows +index+1}}</th>
-               <template v-if='num ==0 '>
-                  <th>{{item.orderInfo}}</th>
-                  <th>{{item.orderType}}</th>
-                  <th>{{item.price}}</th>
-                  <th>{{item.number}}</th>
-                  <th>{{item.amountReceivable}}</th>
-                  <th>{{item.occurrenceTime|formatDate}}</th>
-                   <div class="tip-info " v-if="item"><p>暂无数据</p></div>
-               </template>               
-               <template v-if='num ==1 '>
-                  <th>{{item.project}}</th>
-                  <th>{{item.orderType}}</th>
-                  <th>{{item.price}}</th>
-                  <th>{{item.number}}</th>
-                  <th>{{item.amountReceivable}}</th>
-                  <th>{{item.occurrenceTime|formatDate}}</th>
-                   <div class="tip-info " v-if="item"><p>暂无数据</p></div>
-               </template>               
-               <template v-if='num ==2 '>
+               <th>{{(page-1)*rows +index+1}}</th>              
+               <template>
                   <th>{{item.no}}</th>
                   <th>{{item.money}}</th>
                   <th>{{item.payType}}</th>
                   <th>{{item.settlementTime|formatDate}}</th>
-                   <div class="tip-info " v-if="item"><p>暂无数据</p></div>
                </template>
              </tr>
            </tbody>
          </table>
-         <page :total= 'total' :display='rows' @pagechange='pagechange($event)' class="page-wrapper" :currentPage='page'></page>
+         <page v-if="total>rows" :total= 'total' :display='rows' @pagechange='pagechange($event)' :currentPage='page'></page>
+          <!-- 没有数据 -->
+         <div class="tip-info " v-if="!tableData.length"><p>暂无充值记录</p></div>
        </div>
+    </div>
+    <!-- loading -->
+    <div class="loading-wrapper" v-if="loadFlag">
+      <loading :title="title"></loading>
     </div>
   </div>
 </template>
 
 <script>
   import Page from 'base/page/page'
-  import {hisPayRecord} from 'api/selfquery.js'
+  import Loading from 'base/loading/loading'
+  import {chongzhiRecord} from 'api/selfquery.js'
   import {formatDate} from 'common/js/date.js'
   export default {
     data() {
       return {
+        loadFlag:true,
+        title:"页面加载中...",
         rows:6,
         page:1,
         pageCount:1,
         total:0,
         list: [],
-        tableData:[],
-        ischecked:'',
-        checkedValue:[],
-        tabs:[{name:"医嘱缴费记录",type:"orderList"},{name:"挂号缴费记录",type:"regList"},{name:"预存金充值记录",type:"preDepositList"}],
-        tabContents:[],
-        num:0,
-        orderList:[],
-        preDepositList:[],
-        regList:[]
+        tableData:[]
       }
     },
     created() {
@@ -107,7 +66,8 @@
       this.getList()
     },
     components:{
-      Page
+      Page,
+      Loading
     },
     computed: {
       token() {
@@ -123,32 +83,30 @@
         return formatDate(mydate,'yyyy-MM-dd hh:mm:ss');
       }
     },
-    watch: {
-      num(value) { 
-        if (this.tabContents.length!=0) {
-          this.list = this.tabContents[value]
-          this.pageCount = Math.ceil(this.list.length/this.rows)
-          this.total = this.list.length
-          this.page = 1
-          this.getPageData() 
-        }      
-      }
-    },
     methods: {
+      toTipPage () {
+        this.$router.push({name:"sqtippage"}) 
+      },
       getList() {
-        hisPayRecord(this.token).then((res)=>{
-          if(res.code == "200"){
-            this.tabContents[0] = res.orderList
-            this.tabContents[1] = res.regList
-            this.tabContents[2] = res.preDeposits
-            // 根据类型判断
-            this.list = this.tabContents[this.num]
+        this.loadFlag = true
+        chongzhiRecord(this.token).then((res)=>{
+          if(res.code == '200'){
+            this.list = res.data
             this.pageCount = Math.ceil(this.list.length/this.rows)
             this.total = this.list.length
             this.getPageData() 
+          }else if (res.code == '404') {
+            // 没有数据
+            this.list = []
+          }else {
+            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            this.toTipPage()  
           }
+          this.loadFlag = false
         }).catch((err)=>{
-          console.log(err)
+          this.loadFlag = false
+          this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+          this.toTipPage()  
         })
       },
       pagechange($event) {
@@ -163,19 +121,8 @@
               return true
             }
           })
-      },
-      toNext() {
-        // 判断是否被选中
-        if(this.checkedValue.length==0) return false
-        var orderId = this.checkedValue.join(',')
-        this.$router.push({name:'bostepfour'})
-      },
-      tab(index) {
-        this.num = index
-        // 分页重置
-        this.page = 1
       }
-    },
+    }
   }
 </script>
 <style lang="stylus" scoped>
@@ -183,19 +130,9 @@
 @import '~~common/stylus/button.styl'
 @import '~~common/stylus/navbtn.styl'
 .op-stepthree
-  padding 1em 0.8em
-.op-user-info
-  padding 1em
-  color $color-font
-  border-radius 8px
-  overflow hidden
-  p>span 
-    padding-right 40px
-    letter-spacing 2px
-    font-size 1.4em
+  padding 1em 
 .op-list
-  padding 1em 0
-  margin-top: 1.4em;
+  margin-top 20px
 table
   width 100%
   thead
@@ -233,4 +170,10 @@ table
 .money-btn .btn-sub
   font-size 2em
   margin-left 50px
+.tip-info p
+  padding 20%
+  text-align center
+  font-size 1.8em
+  letter-spacing 4px
+  color $color-font 
 </style>
