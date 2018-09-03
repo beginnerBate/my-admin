@@ -1,7 +1,7 @@
 <template>
   <div class="loading">
-     <p class="desc">{{title}}</p>
-    <img src="./11.gif">
+    <img src="./loading.gif">
+    <p class="desc">{{title}}</p>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -20,7 +20,7 @@
     text-align: center
     .desc
       line-height: 20px
-      font-size: 1.6em
-      color: #fff
+      font-size: 1.2em
+      color: #666
       letter-spacing 4px
 </style>

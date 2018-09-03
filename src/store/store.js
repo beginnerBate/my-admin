@@ -45,6 +45,10 @@ const actions = {
       commit('setMenuIdx',arr[0])
       commit('setNavTxt', arr[1])
       commit('setLeftNav', arr[2])
+    },
+    childPage({commit},arr){
+       commit('setMenuIdx',arr[0])
+       commit('setNavTxt', arr[1]) 
     }
 }
 export default new Vuex.Store({

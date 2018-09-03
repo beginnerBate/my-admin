@@ -1,10 +1,12 @@
 <template>
   <div class="tip-page">
-    <div v-if="tipType == 'error'"><img src="./icon_error.png" width="60px" height="60px"></div>
-    <div v-if="tipType == 'info'"><img src="./icon_info.png" width="60px" height="60px"></div>
-    <div v-if="tipType == 'ok'"><img src="./icon_right.png" width="60px" height="60px"></div>
-    <div v-if="tipType == 'warning'"><img src="./icon_warning.png" width="60px" height="60px"></div>
+    <div><img src="./icon_error.png" width="100px" height="100px"></div>
+    <div v-if="tipType == 'info'"><img src="./icon_info.png" width="100px" height="100px"></div>
+    <div v-if="tipType == 'ok'"><img src="./icon_right.png" width="100px" height="100px"></div>
+    <!-- <div v-if="tipType == 'ok'"><span class="fa fa-ok"></span></div> -->
+    <div v-if="tipType == 'warning'"><img src="./icon_warning.png" width="100px" height="100px"></div>
     <p>{{tipInfo}}</p>
+    <p>提示信息</p>
   </div>
 </template>
 

@@ -54,26 +54,26 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
-$color-btn-bg = #95ca00     
+$color-btn-bg = #219df5     
 $color-btn-bg-g = #c7ccc6     
 $color-btn-font = #fff     
 $color-btn-boder = #90ab98   
 $color-btn-shadow = #82a6c6
 .my-btn
   display: inline-block
-  width: 196px
-  padding: 0.3em 0
+  width: 100px
+  padding: 0.6em 0
   text-align center
-  font-size: 2em
+  font-size: 1.2em
   color $color-btn-font
   background-color $color-btn-bg
-  border-radius: 12px
-  border-bottom: 3px solid $color-btn-boder
-  box-shadow: 0px 3px 0px $color-btn-shadow
+  border-radius: 8px
+  border-bottom: 1px solid $color-btn-boder
+  box-shadow: 0px 1px 0px $color-btn-shadow
 .my-btn.disabled
   background-color $color-btn-bg-g
-  box-shadow: 0px 3px 0px #6f6f6f
-  border-bottom: 3px solid #616161
+  box-shadow: 0px 1px 0px #6f6f6f
+  border-bottom: 1px solid #616161
 .list-footer
   padding-top: 1.5em;
   position: absolute

@@ -2,11 +2,10 @@
   <div  class="left-nav">
      <ul>
        <li v-for="(item,index) in list" :key="index">
-         <div>
-           <span :class="{'active': index==menuIdx, 'actived':index<menuIdx}">{{index+1}}</span>
-           <span>{{item.text}}</span>
+         <div>      
+           <span :class="{'active': index==menuIdx, 'actived':index<menuIdx}">{{item.text}}</span>
+           <span  v-if="!(index===list.length-1)">→</span>
          </div>
-         <div  v-if="index===3? false: true" class="line"></div>
        </li>
      </ul>
   </div>
@@ -27,53 +26,29 @@ export default {
 <style lang="stylus" scoped>
 @import '~~common/stylus/variables.styl'
 .left-nav
-  color $color-font
-  height 100%
+  color #cac9c9
+  position fixed
+  bottom:0
+  height 40px
+  line-height 40px
+  padding-left 20px
   ul
-    height 100%
+    height 40px
+    display flex
     li
-      height 25%
+      // flex:1
       position relative
     li>div:first-child
-      padding-left 1em
+      // padding-left 1em
       overflow hidden
-      &>span.active:first-child
+      &>span.active
         display inline-block
-        border-radius 50%
-        padding 0.36em 0.72em
-        font-size 1.5em
-        background-color $color-theme
-        border 2px solid $color-theme      
-      &>span.actived:first-child
-        display inline-block
-        border-radius 50%
-        padding 0.36em 0.72em
-        font-size 1.5em
-        background-color $color-theme
-        border 2px solid $color-theme
+        // font-size 1.5em
         color $color-theme
-        position relative
-        &:after
-          content '√'
-          position absolute
-          color $color-font
-          left 35%
-      &>span:first-child
-        display inline-block
-        border-radius 50%
-        padding 0.36em 0.72em
-        font-size 1.5em
-        border 2px solid $color-theme-l
-        background-color $color-theme-ll
+        // border 2px solid $color-theme      
       &>span:nth-child(2)
-        padding 0.36em 0.72em
         padding-left 0.2em
-        font-size 2em
+        padding-right 0.2em
+        // font-size 2em
         letter-spacing 2px
-    li>div.line
-      position absolute
-      width 2px
-      height 100%
-      left 42px
-      background-color $color-theme-l
 </style>

@@ -15,22 +15,22 @@ export default {
         {
           remark:"身份证",
           icon:require('./sfz.png'),
-          cardType:"1"
+          cardType:1
         },        
         {
           remark:"医保卡",
           icon:require("./ybk.png"),
-          cardType:"2"
+          cardType:2
         },        
         {
           remark:"居民健康卡",
           icon:require("./jkk.png"),
-          cardType:"3"
+          cardType:3
         },        
         {
           remark:"就诊卡",
           icon:require("./jzk.png"),
-          cardType:"4"
+          cardType:4
         }
       ]
     }

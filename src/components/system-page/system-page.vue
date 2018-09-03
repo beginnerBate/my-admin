@@ -1,14 +1,14 @@
 <template>
-<main-page>
+<last-page>
   <router-view></router-view>
-</main-page>
+</last-page>
 </template>
 
 <script>
-import MainPage from 'components/main-page/main-page'
+import LastPage from 'components/last-page/last-page'
   export default {
     components: {
-      MainPage
+      LastPage
     }
   }
 </script>

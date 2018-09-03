@@ -2,7 +2,7 @@
   <div class="header-tip">
     <p class="header-logo">
       <img src="./logo.png">
-      <span>南京医科大学第二附属医院</span>
+      <span @click="close">南京医科大学第二附属医院住院服务终端</span>
     </p>
     <p class="header-date">
       <span><i>{{sysDate}}</i> <i>{{sysWeek}}</i> <i>{{sysTime}}</i></span></p>
@@ -21,9 +21,13 @@ export default {
     this.getdate()
   },
   methods: {
+    close(){
+        if(typeof sharpForeign != 'undefined') {
+          sharpForeign.CloseThis()
+        }
+    },
     getdate() {
        setInterval(()=>{
-        // this.sysDate = new Date().toLocaleString()+' 星期'+'日一二三四五六'.charAt(new Date().getDay  ())
         var todayDate = new Date();
         var date = todayDate.getDate();
         var month= todayDate.getMonth() +1;
@@ -43,32 +47,6 @@ export default {
         this.sysTime = hour+':'+ minute +':'+second
       },1000)
     }
-  },
+  }
 }
 </script>
-
-<style lang="stylus" scoped>
-.header-tip
-  position fixed
-  top 0
-  width 100%
-  height 90px
-  overflow hidden
-  background #ffffff
-  padding 0 0.5em
-  box-sizing: border-box;
-  p
-    letter-spacing 2px
-    font-size 1.75em
-    color #003e92
-  .header-logo
-    float left
-    margin-top 13px
-    span 
-      vertical-align 50%
-  .header-date
-    float right
-    font-size 1.5em
-    letter-spacing 0px
-    line-height 90px
-</style>

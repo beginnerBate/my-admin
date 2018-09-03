@@ -2,13 +2,12 @@
   <div class="login">
     <div class="card-info" v-if='!flag'>
       <!-- 读取信息 -->
-      <section>
+      <section v-if="cardType ==3? false : true">
         <div class="sq-left-wrapper">
         <div class="sq-con">
         <h3>{{messageTip}}</h3>
         <div class="user-info"> 
           <img v-if="cardType ==1"  src="./card.png" alt="">
-          <img v-if="cardType ==3"  src="./card.png" alt="">
           <img v-if="cardType ==4" src="./card1.png" alt="">
           </div>
         </div>
@@ -45,6 +44,7 @@
         </div>
       </div>
       </section>
+
     </div>
     <div v-if='flag' class='loading-wrapper'>
       <loading :title="title"></loading>
@@ -96,7 +96,7 @@
           this.inputTip = '若未带身份证, 请输入身份证号'
         this.timer = setInterval(()=>{
           if (this.isCall == true){
-            this.getCardInfo(1)
+            this.getCardInfo()
           }else {
             clearInterval(this.timer)
           }
@@ -106,19 +106,11 @@
           myaudio.play()
           this.messageTip = '请将就诊卡证置于感应区!'
           this.inputTip = '若未带就诊卡, 请输入就诊卡号'
-          this.startCard(3)
+          this.startCard(4)
       }else if (this.cardType ==3) {
           var myaudio = this.$refs.myaudio1
           myaudio.play()
-           this.messageTip = '请将就诊卡证置于感应区!'
           this.inputTip = '请输入住院号'
-          this.timer = setInterval(()=>{
-          if (this.isCall == true){
-            this.getCardInfo(2)
-          }else {
-            clearInterval(this.timer)
-          }
-        },500)
       }
     },
     watch: {
@@ -139,7 +131,7 @@
       },
       getCardFlag(value) {
         if (value == -2) {
-          this.startCard(3)
+          this.startCard()
         }
       }
     },
@@ -158,8 +150,10 @@
     },
     methods: {
     tosub(){
+      console.log('dd',this.inputCardNumber)
         if (this.inputCardNumber) { 
-          this.cardNumber = this.inputCardNumber 
+          this.cardNumber = this.inputCardNumber
+          // this.toUserAuth()     
         }
       },
       toUserAuth() {
@@ -209,30 +203,26 @@
       tosystemError(){
         this.$emit('neterror')
       },
-      getCardInfo (cardNo) {
+      getCardInfo () {
         if  (typeof sharpForeign != 'undefined') {
              // 身份证 
-                this.cardInfo = JSON.parse(sharpForeign.GetCardInfoByType(cardNo))
+             if (this.cardType == 1) {
+                this.cardInfo = JSON.parse(sharpForeign.GetCardInfoByType(this.cardType))
                 if (this.cardInfo.code == '200') {
-                  this.isCall = false
-                  if (this.cardType == 1) {
-                            // 身份证                 
-                      this.cardNumber = this.cardInfo.data.IdNumber 
-                      this.$store.commit('setReguserinfo',
-                                                          {
-                                                            name:this.cardInfo.data.Name,
-                                                            sex:this.cardInfo.data.Sex,
-                                                            cardNumber:this.cardInfo.data.IdNumber,
-                                                            birthday:this.cardInfo.data.Birth
-                                                          }
-                      )
-                      this.message = '身份证读取成功!'
-                      }else if(this.cardType == 3){
-                        //  住院
-                          this.cardNumber = this.cardInfo.data
-                          this.message = '就诊卡号读取成功!'  
-                      }
-                }
+                this.isCall = false
+                      // 身份证                 
+                this.cardNumber = this.cardInfo.data.IdNumber 
+                this.$store.commit('setReguserinfo',
+                                                    {
+                                                      name:this.cardInfo.data.Name,
+                                                      sex:this.cardInfo.data.Sex,
+                                                      cardNumber:this.cardInfo.data.IdNumber,
+                                                      birthday:this.cardInfo.data.Birth
+                                                    }
+                )
+                this.message = '身份证读取成功!'
+              }
+             }
         }
       },
       startCard (cardNo) {
@@ -263,7 +253,7 @@
       },
       closeCard() {
         if (typeof sharpForeign != 'undefined'){
-          sharpForeign.StopReadCard(3)
+          sharpForeign.StopReadCard(4)
         }
       },
       submit(){
