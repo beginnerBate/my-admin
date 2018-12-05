@@ -25,7 +25,7 @@
           </li>          
         </ul>
         <!-- 分页 -->
-        <page :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
+        <page v-if="total>rows" :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
       </div>
     </div>
    <!-- loading -->
@@ -66,6 +66,14 @@
         this.getPageData()
       }
     },
+    beforeRouteLeave (to, from , next) {
+      if (this.backFlag === 'choosetwo') {
+        next()
+      } else {
+         next()
+         this.$router.push({name:"slsteptwo"})
+      }
+    },
     filters: {
       yh: function(value) {
         return value? '余号'+value : '不限号';
@@ -98,6 +106,9 @@
       },
       token () {
         return this.$store.state.bookReg.token
+      },
+      backFlag(){
+        return this.$store.state.bookReg.backFlag 
       }
     },
     methods: {
@@ -209,7 +220,7 @@
     width 20%
     &>i:first-child
       font-size 1.4em
-      padding-left 1em
+      padding-left 12px
     &>p
       padding-left 1.4em
     p>i:first-child

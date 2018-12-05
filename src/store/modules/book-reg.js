@@ -16,17 +16,25 @@
 // -------------------------预存金充值金额--------------------------------------
 // {pdtotalCost} 
 // {balance} 余额
+// {payTime} 充值时间
 // --------------------------创建订单模块--------------------------------
 // {orderId}
 // {payType}
 // {{orderNumber}} 流水号
 // -----------------------------预约取号-----------------------------------------
 // {{bookNumber}} 预约取号信息
+// -------------------------------订单答应----------------------------------------
+// {{printInfo}}
+// -------------------------------autoFlag--------------------------------------
+// {{bodyData}} 智能导诊
+// {{timeFlag}} 是否设置timer
+// -------------------------------backFlag--------------------------------------
 import { getDepartmentDocs, getBookDoctors,getDayDoctorList} from 'api/guahao.js'
 const state = {
   reguserinfo:"",
   pdtotalCost:"",
   balance:"",
+  payTime:"",
   departName:"" ,
   departId:"",
   doctorList:[],
@@ -43,7 +51,15 @@ const state = {
   cardType:"",
   jzId:"",
   orderNumber:"",
-  bookNumber:""
+  bookNumber:"",
+  printInfo:"",
+  autoFlag:"",
+  othersTime:"",
+  reactStatus:"",
+  no:"",
+  bodyData:'',
+  timeFlag:false,
+  backFlag:''
 }
 // mutations
 const mutations = {
@@ -58,6 +74,9 @@ const mutations = {
   },
   setBalance (state, code){
     state.balance = code
+  },
+  setpayTime (state, code) {
+    state.payTime = code
   },
   setDepartName (state, code) {
     state.departName = code
@@ -106,6 +125,30 @@ const mutations = {
   },
   setBookNumber (state, code) {
     state.bookNumber = code
+  },
+  setPrintInfo (state, code) {
+    state.printInfo = code
+  },
+  setAutoFlag (state, code) {
+    state.autoFlag = code
+  },
+  setOthersTime (state, code) {
+    state.othersTime = code
+  },
+  setReactStatus (state, code) {
+    state.reactStatus = code
+  },
+  setNo (state,code) {
+    state.no = code
+  },
+  setBodyData (state,code) {
+    state.bodyData = code
+  },
+  setTimeFlag (state,code){
+    state.timeFlag = code
+  },
+  setBackFlag (state,code) {
+    state.backFlag = code
   }
 }
 //acions 

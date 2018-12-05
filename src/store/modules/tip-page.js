@@ -1,6 +1,7 @@
 // 页面提示模块
 // ----------注册建档提示-----------
-// regbookTip
+// {regbookTip} 提示信息
+// {tipType} 提示类型
 const state = {
   regbookTip:"",
   tipType:""

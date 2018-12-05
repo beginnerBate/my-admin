@@ -20,7 +20,9 @@
       selectcard($event) {
         if($event == 2 || $event == 3) {
           // 提示只支持身份证注册建档
-          this.$store.commit('setRegbookTip','目前只支持身份证和就诊卡取号！')
+          // this.$store.commit('setRegbookTip','目前只支持身份证和就诊卡取号！')
+          this.$store.dispatch('setTipPage',['目前只支持身份证注册建档!','warning'])
+
           this.toTipPage()
         }else {
           // 1. 保存setCardType

@@ -8,19 +8,19 @@
         <span><i>就诊卡号</i>: <i>{{user.jzId}}</i></span>
         <span><i>充值金额</i>: <i>{{pdtotalCost}}元</i></span>
       </div>
-      <div class="payment">
-        <p>充值成功！</p>
-        <p>点击'打印'按钮， 可打印您的充值信息,请取走您的卡，谢谢！</p>
-      </div>
+      <!-- 提示信息 -->
+      <tip-page></tip-page>
       <!-- 打印按钮 -->
       <div class="button-wrapper">
-        <span class="btn-sub" @click="toPrint()" :class="{'disabled': disableFlag == -1}"><i>打 印</i></span>
+        <span class="btn-sub" @click="toPrint()" :class="{'disabled': disableFlag == -1}"><i>打 印 小 票</i></span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import TipPage from 'base/tip-page/tip-page'
+import {formatDate} from 'common/js/date.js'
   export default {
     data() {
       return {
@@ -29,6 +29,10 @@
     },
     created () {
       this.$store.commit('setMenuIdx',3)
+      this.$store.dispatch('setTipPage',['充 值 成 功!','ok'])
+    },
+    components:{
+      TipPage
     },
     computed: {
       pdtotalCost() {
@@ -37,9 +41,16 @@
       balance () {
         return this.$store.state.bookReg.balance
       },
+      payTime(){
+         var mydate = new Date(this.$store.state.bookReg.payTime)
+        return formatDate(mydate,'yyyy/MM/dd hh:mm:ss');
+      },
       user () {
         return this.$store.state.bookReg.user
       },
+      orderNumber() {
+        return this.$store.state.bookReg.orderNumber
+      }
     },
     methods: {
       toPrint() {
@@ -47,26 +58,25 @@
            this.disableFlag = -1
         }else {
           return
-        }
-        
+        }   
         // 调用打印接口
         var postData = {
-                        "rechargeAmount": this.pdtotalCost,
-                        "originalAmount":this.balance,
-                        "name":this.user.name,
-                        "flowNumber":""
+                        "rechargeAmount": this.pdtotalCost+'元',
+                        "originalAmount":this.balance+'元',
+                        "cardNo":this.user.jzId,
+                        "flowNumber":this.orderNumber,
+                        "rechargeTime":this.payTime
                         };
-        if (typeof SharpForeign.Print_SmallTicket_YCJCZ== 'function') {
-            var code = JSON.parse(SharpForeign.Print_SmallTicket_YCJCZ(JSON.stringify(postData)))
+        if (typeof sharpForeign != 'undefined') {
+            var code = JSON.parse(sharpForeign.Print_SmallTicket_YCJCZ(JSON.stringify(postData)))
             if (code.code==200) {
               this.disableFlag = -1
             }else {
               this.disableFlag = 1
-            }
-          
-        } 
+            }     
+        }
       }
-    },
+    }
   }
 </script>
 <style lang="stylus" scoped>
@@ -82,9 +92,8 @@
   text-align center
   p
     color $color-font
-    font-size 1.5em
+    font-size 1.8em
     letter-spacing 3px
-    padding-top 5em
 .button-wrapper
   position absolute
   bottom 1.2em

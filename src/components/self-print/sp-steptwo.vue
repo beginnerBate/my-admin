@@ -3,8 +3,8 @@
     <div v-if="(!loadflag) && (!printState)">
       <!-- 用户信息 -->
       <div class="myuser-info info-wrapper" v-if="tableData.length">
-        <span><i>姓名:</i> <i>{{tableData[0].name}}</i> </span>
-        <span><i>就诊卡号:</i> <i>{{tableData[0].visitId}}</i></span>
+        <span><i>姓名:</i> <i>{{name}}</i> </span>
+        <span><i>就诊卡号:</i> <i>{{visitId}}</i></span>
       </div>
       <div class="op-list" v-if="tableData.length">
          <table>
@@ -38,17 +38,22 @@
            </tbody>
          </table>
       </div>
-      <div class="tip-info" v-if="!tableData.length">
-         <p>暂无数据</p>
+      <div class="tip-info pd20" v-if="(!tableData.length) && visitId">
+         <p>暂无打印数据</p>
+       </div>
+      <div class="tip-info" v-if="!visitId">
+         <p> 就诊卡号不存在！</p>
        </div>
       <!-- button -->
          <div class="btn-content" v-if="tableData.length">
            <div class="btn-wrapper">
              <span @click="print()"><i class="btn-sub" :class="{'disabled':checkedValue.length==0}">打 印</i></span>
+             <span @click="getEbook()"><i class="btn-sub" :class="{'disabled':checkedValue.length==0}">电子报告</i></span>
            </div>
          </div>
          <!-- 分页 -->
          <page v-if="total>rows" :total= 'total' :display='rows' @pagechange='pagechange($event)' class="page-wrapper"></page>
+         <!-- <page :total= 'total' :display='rows' @pagechange='pagechange($event)' class="page-wrapper-print"></page> -->
     </div>
     <!-- tip -->
     <div v-if='loadflag'>
@@ -66,7 +71,7 @@
 <script>
 import Loading from 'base/loading/loading'
 import Page from 'base/page/page'
-import {ItemInfos} from 'api/print.js'
+import {ItemInfos, createQRCode} from 'api/print.js'
   export default {
     data() {
       return {
@@ -83,7 +88,10 @@ import {ItemInfos} from 'api/print.js'
         ischecked:'',
         checkedValue:[],
         isData:'',
-        nodata:'' 
+        nodata:'' ,
+        name:'',
+        visitId:'',
+        isUser:false
       }
     },
     created() {
@@ -119,18 +127,33 @@ import {ItemInfos} from 'api/print.js'
             this.list = res.listPrintInfos
             this.pageCount = Math.ceil(this.list.length/this.rows)
             this.total = this.list.length
-             this.getPageData()
+            this.getPageData()
+            this.name = res.name
+            this.visitId = res.visitId
+            this.$store.commit('setPrintInfo',{name:res.name,visitId:res.visitId})
+            this.$store.commit('setNo',res.no)
+            this.isUser = true
           }else if(res.code == 404) {
-            // 没有数据
+            // 有人没有数据
+            this.name = res.name
+            this.visitId = res.visitId
+            this.$store.commit('setPrintInfo',{name:res.name,visitId:res.visitId})
+            this.$store.commit('setNo',res.no)
+            this.isUser = true
+            that.tableData = []
+          }else if (res.code ==408){
+            // 系统错误
+            this.isUser = false
             that.tableData = []
           }else {
-            // 系统错误
-            that.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            this.isUser = false
+            this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
             that.toTipPage()
           }
         }).catch((err)=>{
+          this.isUser = false
           that.loadflag = false
-          that.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+          this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
           that.toTipPage()
         })
       },
@@ -152,20 +175,23 @@ import {ItemInfos} from 'api/print.js'
         var postData = JSON.stringify(this.checkedValue)
         var mydata;
         this.printState = true
-        if (typeof  SharpForeign.Print_ShenHuaCheckProject == 'function') {
-          var mydata = JSON.parse(SharpForeign.Print_ShenHuaCheckProject(postData)) 
+        if (typeof  sharpForeign != 'undefined') {
+          var mydata = JSON.parse(sharpForeign.Print_ShenHuaCheckProject(postData)) 
             if (mydata.code ==200) {
               // 打印完成
               this.printState = false
-              this.$store.commit('setRegbookTip','打印成功')
+              this.$store.dispatch('setTipPage',['打 印 成 功!','ok'])              
               this.toTipPage()
             }else{
               this.printState = false
-              this.$store.commit('setRegbookTip','打印失败')
+              this.$store.dispatch('setTipPage',['打 印 失 败!','ok'])
               this.toTipPage()
             }
-        }
-       
+        }    
+      },
+      getEbook() {
+        // 获取电子报告
+         this.$router.push({name:"spstepthree"})
       }
     },
   }
@@ -214,7 +240,9 @@ table
   position absolute
   bottom 15px
   right 0 
-  width 40%
+  width 50%
+  display flex
+  justify-content space-around
   .btn-sub
     font-size 2em
 </style>

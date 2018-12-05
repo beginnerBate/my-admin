@@ -15,6 +15,7 @@
                <th>科室名称</th>
                <th>挂号类别</th>
                <th>挂号费</th>
+               <th>创建时间</th>
                <th>就诊时间</th>
              </tr>
            </thead>
@@ -26,13 +27,14 @@
                <th>{{item.deptName}}</th>
                <th>{{item.numberType}}</th>
                <th>{{item.sumRegister}} 元</th>
-               <th>{{item.visitTime|formatDate}}</th>
+               <th>{{item.createTime|formatDate}}</th>
+               <th>{{item.visitTime|formatDate1}}</th>
              </tr>
            </tbody>
          </table>
          <!-- 分页 -->
          <page v-if="total>rows" :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
-          <div class="tip-info " v-if="!tableData.length"><p>暂无就诊记录</p></div>
+          <div class="tip-info " v-if="!tableData.length"><p>暂无挂号记录</p></div>
        </div>
     </div>
     <!-- loading -->
@@ -52,7 +54,7 @@
       return {
         loadFlag:true,
         title:"页面加载中...",
-        rows:6,
+        rows:7,
         page:1,
         pageCount:1,
         total:0,
@@ -80,6 +82,10 @@
       formatDate: function(value) {
         var mydate = new Date(value)
         return formatDate(mydate,'yyyy-MM-dd hh:mm:ss');
+      },
+      formatDate1: function(value) {
+        var mydate = new Date(value)
+        return formatDate(mydate,'yyyy-MM-dd');
       }
     },
     methods: {
@@ -95,14 +101,18 @@
             this.list = []
           }else {
             // 系统错误
-            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            // this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+        this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
+
             this.toTipPage()   
           }
           this.loadFlag = false
         }).catch((err)=>{
           // 系统错误
           this.loadFlag = false
-            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            // this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+           this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
+
             this.toTipPage()   
         })
       },

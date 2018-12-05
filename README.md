@@ -51,8 +51,8 @@
 4. 预约页面 选择专家 修改 没有数据修改
 5. 读取身份证 成功之后修改
 6. code码修改 
-7. 添加语音接口 SharpForeign.SpeechText("请放入身份证");
-
+7. 添加语音接口 sharpForeign.SpeechText("请放入身份证");
+8. 首页添加感应器,每秒钟调用一次 func, 根据返回值载入 广告页面 只在首页调用
 ``` bash
 # install dependencies
 npm install
@@ -68,3 +68,4 @@ npm run build --report
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+

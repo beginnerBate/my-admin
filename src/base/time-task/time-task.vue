@@ -16,18 +16,29 @@ export default {
       interval:""
     }
   },
+  computed:{
+    timeFlag () {
+        return this.$store.state.bookReg.timeFlag
+    },
+  },
   watch: {
       '$route'(value) {
-        this.time = 60
-        // 提示页面给5秒钟
-        if (value.name.indexOf('tippage') != -1) {
-          this.time = 15
+        if(!value.meta.timerPage){
+           this.$store.commit('setTimeFlag',false)
         }
-        if (value.meta.timer) {
-          this.time = value.meta.timer
+        if(value.meta.timerPage && this.timeFlag) {
+        }else{
+          this.time = 60
+          // 提示页面给5秒钟
+          if (value.name.indexOf('tippage') != -1) {
+            this.time = 15
+          }
+          if (value.meta.timer) {
+            this.time = value.meta.timer
+          }
+          clearInterval(this.interval)
+           this._countDown();
         }
-        clearInterval(this.interval)
-         this._countDown();
       }
     },
   created() {
@@ -35,7 +46,7 @@ export default {
   },
   methods: {
     _countDown() {
-      this.count = this.time
+      this.count = this.$route.meta.timer || this.time
      this.interval = setInterval(() => {
         this.count--;
         if (this.count == 0) {

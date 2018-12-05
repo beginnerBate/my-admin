@@ -8,17 +8,30 @@
         <span><i>就诊卡号:</i> <i>{{user.jzId}}</i></span>
       </div>
       <!-- 扫码支付 -->
-      <div class="payment">
-        <p>预约成功,请取走预约单号!</p>
+      <!-- 提示信息 -->
+      <tip-page></tip-page>
+      <!-- 打印按钮 -->
+      <div class="button-wrapper">
+        <span class="btn-sub" @click="toPrint()" :class="{'disabled': disableFlag == -1}"><i>打 印 小 票</i></span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import TipPage from 'base/tip-page/tip-page'
   export default {
+    data() {
+      return {
+        disableFlag: 1
+      }
+    },
     created () {
       this.$store.commit('setMenuIdx',3)
+      this.$store.dispatch('setTipPage',['预 约 成 功!','ok'])
+    },
+    components:{
+      TipPage
     },
     computed:{
       user () {
@@ -39,20 +52,30 @@
     },
     methods: {
       toPrint(){
+        if (this.disableFlag == 1) {
+           this.disableFlag = -1
+        }else {
+          return
+        }
         // 调用打印接口
         var postData = {
                         "name": this.user.name,
-                        "subscribeTime":this.booktime,
+                        "subscribeTime":this.booktime.date+ ' ' + this.booktime.week + ' '+ this.booktime.pb,
                         "departmentName":this.departmentName,
                         "doctorName":this.bookDoctor.ysxm,
-                        "guaHaoAmount":this.bookDoctor.sumRegister,
+                        "guaHaoAmount":this.bookDoctor.sumRegister+'元',
                         "flowNumber":this.orderNumber
                         };
-        if (typeof SharpForeign.Print_SmallTicket_YYGH== 'function') {
-            var code = SharpForeign.Print_SmallTicket_YYGH(JSON.stringify(postData))
+        if (typeof sharpForeign!= 'undefined') {
+            var code = JSON.parse(sharpForeign.Print_SmallTicket_YYGH(JSON.stringify(postData)))
+            if (code.code==200) {
+              this.disableFlag = -1
+            }else {
+              this.disableFlag = 1
+            }   
         } 
-      }
-    },
+    }
+    }
   }
 </script>
 <style lang="stylus" scoped>
@@ -75,7 +98,12 @@
   text-align center
   p
     color $color-font
-    font-size 2.5em
+    font-size 1.8em
     letter-spacing 3px
-    padding-top 4em
+.button-wrapper
+  position absolute
+  bottom 1.2em
+  width 100%
+  text-align center
+  font-size 1.4em
 </style>

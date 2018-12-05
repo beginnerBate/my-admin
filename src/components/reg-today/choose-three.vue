@@ -139,15 +139,15 @@ import Loading from 'base/loading/loading'
                 that.$router.push({name:"paymoney"})
             }
           }else if(res.code == '400') {
-              this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
-              this.toTipPage()  
+              that.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+              that.toTipPage()  
           }else {
-            this.$store.commit('setRegbookTip','订单创建失败,请到柜台处理!')
-            this.toTipPage()  
+            that.$store.commit('setRegbookTip','订单创建失败,请到柜台处理!')
+            that.toTipPage()  
           }
         }).catch(function(res){
-            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
-            this.toTipPage()  
+            that.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            that.toTipPage()  
         }) 
       }
     }

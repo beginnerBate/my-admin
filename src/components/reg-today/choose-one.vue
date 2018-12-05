@@ -6,7 +6,7 @@
         <!-- 列表 -->
         <reg-list v-if="pageList" :pageList='pageList' @selectreg='toSelectDoctor($event)'></reg-list>
         <!-- 分页 -->
-        <page :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
+        <page v-if="total>rows" :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
       </div>
     </div>
     <!-- loading -->
@@ -54,7 +54,7 @@
       getData() {
         var that = this
         this.flag = true
-        getOutpatients().then(function(data){
+        getOutpatients().then((data)=>{
           if (data.code == '200'){
             that.flag = false
             that.list = data.data
@@ -63,17 +63,21 @@
             that.getPageData()
           }else if (res.code == '404') {
             // 无数据
-            this.$store.commit('setRegbookTip','没有可挂号科室!')
+            // this.$store.commit('setRegbookTip','没有可挂号科室!')
+            this.$store.dispatch('setTipPage',['没有可挂号科室, 请到柜台处理!','warning'])            
             this.toTipPage()  
           }else {
             // 系统错误
-            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            // this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            this.$store.dispatch('setTipPage',['系统错误, 请到柜台处理!','error'])            
+
             this.toTipPage()  
           }
-        }).catch(function(err){
+        }).catch((err)=>{
           // 网络错误
-          this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
-          this.toTipPage()  
+          console.log(err)
+            this.$store.dispatch('setTipPage',['系统错误, 请到柜台处理!','error'])           
+            this.toTipPage()  
         }) 
       },
       pagechange($event) {
@@ -94,6 +98,7 @@
       toSelectDoctor ($event) {
         // 提交action 获取数据 提交action
         this.$store.dispatch('getDayDocotorList',$event)
+        this.$store.commit('setBackFlag','choosetwo')
         this.$router.push({ name: 'choosetwo'})
       },
     }

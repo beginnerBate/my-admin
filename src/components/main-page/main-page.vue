@@ -1,12 +1,10 @@
 <template>
-  <div class="home">
-  <header-tip></header-tip>
-  <!-- home-header -->
+  <div>
   <div class="home-header">
     <div class="home-btn"><span>当前页面-<i>{{$store.state.navTxt}}</i></span></div>
     <!-- 倒计时 -->
     <div class="home-timer">
-      <timer-task @outTime='outTime' ></timer-task>
+      <timer-task @outTime='outTime'></timer-task>
     </div>
   </div>
   <!-- home-middle -->
@@ -30,8 +28,6 @@
       <div><span class="back-exit" @click="close()"><i class="icon icon-back-exit"></i><i>退出</i></span></div>
     </div>
   </div>
-  <!-- footer-tip -->
-  <footer-tip></footer-tip>
   </div>
 </template>
 <script>
@@ -73,7 +69,6 @@
       clearData () {
         // 预存金充值金额清除
         this.$store.commit('setPdtotalCost','')
-
         // 当日挂号
         this.$store.dispatch('getDayDocotorList','')
         this.$store.commit('setDayDoctorInfo','')
@@ -87,12 +82,6 @@
 </script>
 <style lang="stylus" scoped>
 @import '~~common/stylus/variables.styl'
-.home
-  background url('./home_bg.png') no-repeat 
-  background-size cover
-  height 100%;
-  width 100%;
-  overflow hidden
 .home-header
   padding 1em 1.2em
   color $color-font

@@ -34,7 +34,7 @@
            </tbody>
          </table>
          <page  v-if="total>rows" :total= 'total' :display='rows' @pagechange='pagechange($event)' :currentPage='page'></page>
-         <div class="tip-info " v-if="!tableData.length"><p>暂无缴费记录</p></div>
+         <div class="tip-info " v-if="!tableData.length"><p>暂无医嘱缴费记录</p></div>
        </div>
     </div>
     <!-- loading -->
@@ -54,7 +54,7 @@
       return {
         loadFlag:true,
         title:"页面加载中...",
-        rows:6,
+        rows:7,
         page:1,
         pageCount:1,
         total:0,
@@ -100,13 +100,16 @@
             // 没有数据
             this.list = []
           }else {
-            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+           this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
+            // this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
             this.toTipPage()  
           }
           this.loadFlag = false
         }).catch((err)=>{
           this.loadFlag = false
-          this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+          // this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+           this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
+
           this.toTipPage()  
         })
       },

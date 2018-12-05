@@ -1,6 +1,8 @@
 <template>
 <div>
-  <div class="bo-four" v-if="flag">{{tipMsg}}</div>
+  <!-- 提示信息 -->
+  <tip-page v-if="flag"></tip-page>
+  <!-- <div class="bo-four" v-if="flag">{{tipMsg}}</div> -->
   <div v-if='!flag' class='loading-wrapper'>
     <loading :title="tipMsg"></loading>
   </div>
@@ -10,6 +12,8 @@
 <script>
   import {printingFetchNumber} from 'api/bookno'
   import Loading from 'base/loading/loading'
+  import TipPage from 'base/tip-page/tip-page'
+
   export default {
     created() {
       this.$store.commit('setMenuIdx',3)
@@ -22,7 +26,8 @@
       }
     },
     components:{
-      Loading
+      Loading,
+      TipPage
     },
     computed: {
       user () {
@@ -48,21 +53,23 @@
           "subscribeTime":data.vistTime,
           "departmentName":data.deptName,
           "doctorName": data.docName,
-          "guaHaoAmount": data.sumRegister
+          "guaHaoAmount": data.sumRegister+'元'
         };
-        if (typeof SharpForeign.Print_SmallTicket_ZZQH == 'function') {
-          mydata = JSON.parse(SharpForeign.Print_SmallTicket_ZZQH(JSON.stringify(postData)))
+        if (typeof sharpForeign != 'undefined') {
+          mydata = JSON.parse(sharpForeign.Print_SmallTicket_ZZQH(JSON.stringify(postData)))
           if (mydata.code == '200') {
             // 打印成功
              this.flag = true
-           printingFetchNumber({recordId:data.localRegRecordId}, this.token).then((res)=>{
+             printingFetchNumber({recordId:data.localRegRecordId}, this.token).then((res)=>{
           //  console.log(res)
            })
-            this.tipMsg = '打印成功,请取走您的小票和就诊卡'
+            // this.tipMsg = '打印成功,请取走您的小票和就诊卡'
+             this.$store.dispatch('setTipPage',['打印成功,请取走您的小票和卡!','ok'])
           }else {
              this.flag = true
             // 打印失败
-            this.tipMsg = '打印失败, 请到柜台处理'
+            // this.tipMsg = '打印失败, 请到柜台处理'
+            this.$store.dispatch('setTipPage',['打印失败, 请到柜台处理!','ok'])
           }
         }
       }

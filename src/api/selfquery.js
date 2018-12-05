@@ -66,3 +66,18 @@ export function hisMedicalRecord (token) {
     })
   })
 }
+// 1. 个人信息查询
+export function queryPatInfo (token) {
+  return getUrl().then((baseURL)=>{
+    var url = baseURL + 'ot/selfServiceQuery/queryPatInfo'
+    return axios.get(url,{
+      headers:{
+        token:token
+      }
+    }).then((res)=>{
+      return Promise.resolve(res.data)
+    }).catch((err)=>{
+      return Promise.reject(err)
+    })
+  })
+}

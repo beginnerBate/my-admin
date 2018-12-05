@@ -6,6 +6,7 @@ import App from './App'
 import router from './router'
 import store from './store/store'
 Vue.config.productionTip = false
+import 'font-awesome/css/font-awesome.css'
 import 'common/stylus/init.styl'
 /* eslint-disable no-new */
 new Vue({
@@ -15,3 +16,4 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+

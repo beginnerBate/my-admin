@@ -81,6 +81,8 @@ $color-btn-shadow = #82a6c6
   width: 100%
 .list-footer.page-wrapper
   width 60%
+.list-footer.page-wrapper-print
+  width 50%;  
 .list-footer>div
   display inline-block
   width: 40%

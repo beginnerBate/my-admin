@@ -14,10 +14,10 @@
         queryList: [
           {
             value:"挂号记录查询",
-            queryType:1
+            queryType:4
           },
           {
-            value:"缴费记录查询",
+            value:"医嘱缴费查询",
             queryType:2
           },          
           {
@@ -25,8 +25,8 @@
             queryType:3
           },
           {
-            value:"就诊记录查询",
-            queryType:4
+            value:"个人信息查询",
+            queryType:1
           }
         ]
       }
@@ -41,16 +41,16 @@
         if (this.token) {
           // 已验证信息
           if (item ==1) {
-            // 挂号查询
+            // 个人信息查询
             this.$router.push({name:"sqstepthree"}) 
           }else if(item ==2) {
-            // 缴费查询
+            // 医嘱缴费查询
             this.$router.push({name:"sqstepfive"}) 
           }else if (item ==3) {
             // 充值查询
             this.$router.push({name:"sqstepsix"}) 
           }else {
-            // 就诊查询
+            // 挂号记录查询
             this.$router.push({name:"sqstepfour"}) 
           }
         }else {

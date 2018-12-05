@@ -53,7 +53,7 @@
       return {
         loadFlag:true,
         title:"页面加载中...",
-        rows:6,
+        rows:7,
         page:1,
         pageCount:1,
         total:0,
@@ -99,13 +99,17 @@
             // 没有数据
             this.list = []
           }else {
-            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            // this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+        this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
+
             this.toTipPage()  
           }
           this.loadFlag = false
         }).catch((err)=>{
           this.loadFlag = false
-          this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+          // this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+        this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
+
           this.toTipPage()  
         })
       },

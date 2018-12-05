@@ -5,40 +5,14 @@
       <!-- 用户信息 -->
       <div class="myuser-info info-wrapper">
         <span><i>姓名:</i> <i>{{user.name}}</i> </span>
-        <span><i>就诊卡号:</i> <i>{{user.jzId}}</i></span>
+        <span><i>性别:</i> <i>{{user.sex}}</i></span>
+        <span><i>年龄:</i> <i>{{user.age}}</i></span>
+        <span><i>电话:</i> <i>{{user.phone}}</i></span>
+        <span><i>门诊号:</i> <i>{{user.mz}}</i></span>
+        <span><i>就诊卡号:</i> <i>{{user.jzkh}}</i></span>
+        <span><i>身份证号:</i> <i>{{user.idNumber}}</i></span>
+        <span><i>账户余额:</i> <i>{{user.balance}} 元</i></span>
       </div>
-       <div class="op-list">
-         <table v-if="tableData.length">
-           <thead>
-             <tr>
-               <th>序号</th>
-               <th>项目</th>
-               <th>类别</th>
-               <th>单价</th>
-               <th>数量</th>
-               <th>金额</th>
-               <th>时间</th>
-               <!-- <th>操作</th> -->
-             </tr>
-           </thead>         
-           <!-- 数据渲染 -->
-           <tbody>
-             <tr v-for='(item,index) in tableData' :key="index">
-               <th>{{(page-1)*rows +index+1}}</th>             
-               <template>
-                  <th>{{item.project}}</th>
-                  <th>{{item.orderType}}</th>
-                  <th>{{item.price}}</th>
-                  <th>{{item.number}}</th>
-                  <th>{{item.amountReceivable}}</th>
-                  <th>{{item.occurrenceTime|formatDate}}</th>
-               </template>               
-             </tr>
-           </tbody>
-         </table>
-         <page v-if="total>rows" :total= 'total' :display='rows' @pagechange='pagechange($event)' :currentPage='page'></page>
-         <div class="tip-info " v-if="!tableData.length"><p>暂无挂号记录</p></div>
-       </div>
     </div>
       <!-- loading -->
        <div class="loading-wrapper" v-if="loadFlag">
@@ -48,21 +22,15 @@
 </template>
 
 <script>
-  import Page from 'base/page/page'
   import Loading from 'base/loading/loading'
-  import {guahaoRecord} from 'api/selfquery.js'
+  import {queryPatInfo} from 'api/selfquery.js'
   import {formatDate} from 'common/js/date.js'
   export default {
     data() {
       return {
         loadFlag:true,
         title:"页面加载中...",
-        rows:6,
-        page:1,
-        pageCount:1,
-        total:0,
-        list: [],
-        tableData:[],
+        user:""
       }
     },
     created() {
@@ -70,21 +38,11 @@
       this.getList()
     },
     components:{
-      Page,
       Loading
     },
     computed: {
       token() {
         return this.$store.state.bookReg.token 
-      },
-      user() {
-        return this.$store.state.bookReg.user
-      }
-    },
-    filters: {
-      formatDate: function(value) {
-        var mydate = new Date(value)
-        return formatDate(mydate,'yyyy-MM-dd hh:mm:ss');
       }
     },
     methods: {
@@ -93,38 +51,26 @@
       },
       getList() {
         this.loadFlag = true
-        guahaoRecord(this.token).then((res)=>{
+        queryPatInfo(this.token).then((res)=>{
           if(res.code == '200'){
-            this.list = res.data
-            this.pageCount = Math.ceil(this.list.length/this.rows)
-            this.total = this.list.length
-            this.getPageData() 
+            this.user = res.data
           }else if (res.code == '404') {
             // 没有数据
  
           }else {
-            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            // this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+        this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
+
             this.toTipPage()  
           }
           this.loadFlag = false
         }).catch((err)=>{
           this.loadFlag = false
-          this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+          // this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+        this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
+
           this.toTipPage()  
         })
-      },
-      pagechange($event) {
-        this.page = $event
-        this.getPageData()
-      },
-      getPageData () {
-        var startIndex = (this.page-1)*this.rows
-        var endIndex = (this.page)*this.rows
-        this.tableData = this.list.filter((val,index)=>{
-            if(index<endIndex && index>=startIndex) {
-              return true
-            }
-          })
       }
     }
   }
@@ -133,33 +79,24 @@
 @import '~~common/stylus/variables.styl'
 @import '~~common/stylus/button.styl'
 @import '~~common/stylus/navbtn.styl'
-.op-list
-  margin-top 20px
-.op-stepthree
-  padding 1em 0.8em
-table
-  width 100%
-  thead
-    background-color $color-a1
-    font-size 1.4em
-    tr
-      border 2px solid $color-a5
-    tr>th
-      padding 0.4em 0
-      color $color-font
-      border-left 1px solid $color-a5
-  tbody
-    font-size 1.1em
-    color $color-a7
-    tr
-      border 1px solid $color-a1
-      background #fff
-    tr>th
-      padding 0.5em 0      
-      font-size 1.2em
-      border-left 1px solid $color-a1
-    tr:nth-of-type(2n+1)
-      background #fafafa
+.op-stepthree,.op-content
+   height 100%
+   overflow hidden
+.op-content
+  display flex
+  justify-content center
+  align-items center
+.info-wrapper>span
+  min-width: 540px;
+  display flex;
+  border-bottom 1px dashed #d6d6d6
+  height 60px;
+  line-height 60px;
+  i 
+    flex 1
+    display inline-block
+  i:first-child
+    flex 0 0 30%;  
 .money-content
   position absolute
   bottom 10px

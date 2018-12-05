@@ -123,12 +123,15 @@
             this.list = []
             this.nodata = '暂无挂号信息'
           }else {
-            this.$store.commit('setRegbookTip','系统错误, 请到柜台处理')
+            // this.$store.commit('setRegbookTip','系统错误, 请到柜台处理')
+            this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
+            
             this.toTipPage()
           }
         }).catch((err)=>{
           this.loadflag = false
-          this.$store.commit('setRegbookTip','系统错误, 请到柜台处理')
+          // this.$store.commit('setRegbookTip','系统错误, 请到柜台处理')
+          this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
           this.toTipPage()
         })
       },

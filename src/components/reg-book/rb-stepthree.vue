@@ -30,7 +30,7 @@ import Loading from 'base/loading/loading'
 export default {
   data() {
     return {
-      key: ['1','2','3','4','5','6','7','8','9','0','退格','清空'],
+      key: ['1','2','3','4','5','6','7','8','9','退格','0','清空'],
       myPhone:'',
       i:-1,
       flag:false,
@@ -92,22 +92,28 @@ export default {
       }
       this.flag = true
       regUser(mydata).then((res)=>{
+
+      this.flag = false
         if (res.code == '200') {
           // 保存就诊id === 就诊卡号
           this.$store.commit('setJzId',res.data)
           this.$router.push({name:"rbstepfour"})
         }else if (res.code == '400') {
-          this.$store.commit('setRegbookTip','注册失败, 请到柜台处理!')
+          // this.$store.commit('setRegbookTip','注册失败, 请到柜台处理!')
+          this.$store.dispatch('setTipPage',['注册失败, 请到柜台处理!','error'])
           this.toTipPage()
         }else if (res.code =='404') {
-          this.$store.commit('setRegbookTip','用户已存在!')
+          // this.$store.commit('setRegbookTip','用户已存在!')
+          this.$store.dispatch('setTipPage',['用户已存在!','info'])
           this.toTipPage()
         }else {
-          this.$store.commit('setRegbookTip','系统错误, 请到柜台处理!')
+          this.$store.dispatch('setTipPage',['系统错误, 请到柜台处理!','error'])
           this.toTipPage() 
         }
       }).catch((err)=>{
-          this.$store.commit('setRegbookTip','系统错误, 请到柜台处理!')
+          this.flag = false
+          // this.$store.commit('setRegbookTip','系统错误, 请到柜台处理!')
+          this.$store.dispatch('setTipPage',['系统错误, 请到柜台处理!','error'])
           this.toTipPage() 
       })
     }

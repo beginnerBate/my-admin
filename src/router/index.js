@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from 'components/home/home'
 // index-page 主页
+import HomePage from 'components/home-page/home-page'
 import IndexPage from 'components/index-page/index-page'
 // 注册建档
 import RegBook from 'components/reg-book/reg-book'
@@ -62,404 +63,439 @@ import SqStepsix from 'components/self-query/sq-stepsix'
 import SelfPrint from 'components/self-print/self-print'
 import SpStepone from 'components/self-print/sp-stepone'
 import SpSteptwo from 'components/self-print/sp-steptwo'
+import SpStepthree from 'components/self-print/sp-stepthree'
 // 智能导诊
 import SmartLeading from 'components/smart-leading/smart-leading'
 import SlStepone from 'components/smart-leading/sl-stepone'
+import SlSteptwo from 'components/smart-leading/sl-steptwo'
 // 提示页面
 import TipPage from 'base/tip-page/tip-page'
 Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path:"/indexpage",
-      name:'indexpage',
-      component:IndexPage
-    },
-    {
-      path: "/",
-      name: "home",
-      component: Home,
-      redirect:"/department",
+      path:"/",
+      name:'homepage',
+      component:HomePage,
+      redirect:"/indexpage",
       children:[
         {
-          path:'department',
-          name:"department",
-          component: SDepartment,
-          meta: { backpage: 'close'}
+          path:"indexpage",
+          name:'indexpage',
+          component:IndexPage
         },
         {
-          path:'doctor',
-          name:"doctor",
-          component: SDoctor,
-          meta: { backpage: 'department'}
+          path:"/regbook",
+          component:RegBook,
+          redirect:'/regbook/RbStepone',
+          children:[
+            {
+              path:"RbStepone",
+              name:"rbstepone",
+              component:RbStepone,
+              meta: { backpage: 'close'}
+            },        
+            {
+              path:"RbSteptwo",
+              name:"rbsteptwo",
+              component:RbSteptwo,
+              meta: { backpage: 'rbstepone'}
+            },
+            {
+              path:"RbStepthree",
+              name:"rbstepthree",
+              component:RbStepthree,
+              meta: { backpage: 'rbstepone'}
+            },
+            {
+              path:"RbStepfour",
+              name:"rbstepfour",
+              component:RbStepfour,
+              meta: { backpage: 'close',timer:10}          
+            },
+            {
+              path:'TipPage',
+              name:"rbtippage",
+              component:TipPage,
+              meta: { backpage: 'close'}
+            }
+          ]
         },
+        // 预存金充值
         {
-          path:'doctor-info',
-          name:"doctorInfo",
-          component: DoctorInfo,
-          meta: { backpage: 'doctor'}
+          path:"/predeposit",
+          component:PreDeposit,
+          redirect:'/predeposit/pdStepone',
+          children:[
+            {
+              path:"PdStepone",
+              name:"pdstepone",
+              component:PdStepone,
+              meta: { backpage: 'close'}
+            },        
+            {
+              path:"PdSteptwo",
+              name:"pdsteptwo",
+              component:PdSteptwo,
+              meta: { backpage: 'pdstepone'}
+            },
+            {
+              path:"PdStepthree",
+              name:"pdstepthree",
+              component:PdStepthree,
+              meta: { backpage: 'close'}
+            },
+            {
+              path:"PdStepfour",
+              name:"pdstepfour",
+              component:PdStepfour,
+              meta: { backpage: 'pdstepthree',timer:120}
+            },        
+            {
+              path:"PdStepfive",
+              name:"pdstepfive",
+              component:PdStepfive,
+              meta: { backpage: 'close',timer:15}
+            },        
+            {
+              path:'TipPage',
+              name:"pdtippage",
+              component:TipPage,
+              meta: { backpage: 'close'}
+            }
+          ]
         },
+        // 门诊缴费
         {
-          path:"select-card",
-          name:"dselectcard",
-          component:SelectCard,
-          meta: { backpage: 'doctorInfo'}
+          path:'/outpatient',
+          name:'outpatient',
+          component:OutPatient,
+          redirect:'/OutPatient/op-stepone',
+          children:[
+            {
+              path:"op-stepone",
+              component: OpStepone,
+              name:'opstepone',
+              meta: { backpage: 'close'}
+            },
+            {
+              path:'op-steptwo',
+              component: OpSteptwo,
+              name:'opsteptwo',
+              meta: { backpage: 'opstepone'}
+            },
+            {
+              path:'op-stepthree',
+              name:'opstepthree',
+              component: OpStepthree,
+              meta: { backpage: 'close'}
+            },
+            {
+              path:"op-stepfour",
+              component:OpStepfour,
+              name:'opstepfour',
+              meta: { backpage: 'opstepthree',timer:200,timerPage:true}
+            },
+            {
+              path:"op-stepfive",
+              component:OpStepfive,
+              name:'opstepfive',
+              meta: { backpage: 'opstepfour',timerPage:true}
+            },
+            {
+              path:"op-stepsix",
+              component:OpStepsix,
+              name:'opstepsix',
+              meta: { backpage: 'close',timer:10}
+            },
+            {
+              path:"op-tippage",
+              name:'optippage',
+              component:TipPage,
+              meta:{backpage:'close'}
+            }
+          ]
         },
+        // 当日挂号
         {
-          path:'user-info',
-          name:"userInfo",
-          component: UserInfo,
-          meta: { backpage: 'dselectcard'}
+          path:'/regtoday',
+          name:'regtoday',
+          component:RegToday,
+          redirect:'/regtoday/choose-one',
+          children:[
+            {
+              path:"choose-one",
+              name:"chooseone",
+              component: ChooseOne,
+              meta: { backpage: 'close'}
+            },
+            {
+              path:'ChooseTwo',
+              component: ChooseTwo,
+              name:'choosetwo',
+              meta: { backpage: 'chooseone'}
+            },
+            {
+              path:'select-card',
+              name:'regselectcard',
+              component: RegCardType,
+              meta: { backpage: 'choosetwo'}
+            },
+            {
+              path:'get-info',
+              name:'reggetinfo',
+              component: GetInfo,
+              meta: { backpage: 'regselectcard'}
+            },
+            {
+              path:"choose-three",
+              component:ChooseThree,
+              name:'choosethree',
+              meta: { backpage: 'choosetwo',timer:200,timerPage:true}
+            },
+            {
+              path:'pay-money',
+              component:PayMoney,
+              name:"paymoney",
+              meta: { backpage: 'choosethree',timerPage:true}
+            },
+            {
+              path:'finish-four',
+              component:FinishFour,
+              name:"finishfour",
+              meta: { backpage: 'close',timer:10}
+            },
+            {
+              path:"rttippage",
+              name:'rttippage',
+              component:TipPage,
+              meta: { backpage: 'close'}
+            }
+          ]
         },
+        // 预约挂号
         {
-          path:'info-confirm',
-          name:"infoConfirm",
-          component: InfoConfirm,
-          meta: { backpage: 'doctorInfo'}
+          path: "/home",
+          name: "home",
+          component: Home,
+          redirect:"/department",
+          children:[
+            {
+              path:'department',
+              name:"department",
+              component: SDepartment,
+              meta: { backpage: 'close'}
+            },
+            {
+              path:'doctor',
+              name:"doctor",
+              component: SDoctor,
+              meta: { backpage: 'department'}
+            },
+            {
+              path:'doctor-info',
+              name:"doctorInfo",
+              component: DoctorInfo,
+              meta: { backpage: 'doctor'}
+            },
+            {
+              path:"select-card",
+              name:"dselectcard",
+              component:SelectCard,
+              meta: { backpage: 'doctorInfo'}
+            },
+            {
+              path:'user-info',
+              name:"userInfo",
+              component: UserInfo,
+              meta: { backpage: 'dselectcard'}
+            },
+            {
+              path:'info-confirm',
+              name:"infoConfirm",
+              component: InfoConfirm,
+              meta: { backpage: 'doctorInfo'}
+            },
+            {
+              path:'payment-method',
+              name:"paymentMethod",
+              component: PaymentMethod,
+              meta: { backpage: 'infoConfirm',timer:200,timerPage:true}
+            },
+            {
+              path:'payment',
+              name:"payment",
+              component: Payment,
+              meta: { backpage: 'paymentMethod',timerPage:true}
+            },
+            {
+              path:'finish',
+              name:"finish",
+              component: Finish,
+              meta: { backpage: 'close',timer:10}
+            },
+            {
+              path:"dtippage",
+              name:'dtippage',
+              component:TipPage,
+              meta: { backpage: 'close'}
+            }
+          ]
         },
+        // 预约取号
         {
-          path:'payment-method',
-          name:"paymentMethod",
-          component: PaymentMethod,
-          meta: { backpage: 'infoConfirm'}
+          path:'/bookno',
+          name:'bookno',
+          component:BookNo,
+          redirect:'/bookno/bo-stepone',
+          children:[
+            {
+              path:"bo-stepone",
+              name:'bostepone',
+              component: BoStepone,
+              meta: { backpage: 'close'}
+            },
+            {
+              path:'bo-steptwo',
+              component: BoSteptwo,
+              name:'bosteptwo',
+              meta: { backpage: 'bostepone'}
+            },
+            {
+              path:'bo-stepthree',
+              name:'bostepthree',
+              component: BoStepthree,
+              meta: { backpage: 'bostepone'}
+            },
+            {
+              path:"bo-stepfour",
+              component:BoStepfour,
+              name:'bostepfour',
+              meta: { backpage: 'close',timer:10}
+            },
+            {
+              path:"botippage",
+              name:'botippage',
+              component:TipPage,
+              meta: { backpage: 'close'}
+            }
+          ]
         },
+        // 自助查询
         {
-          path:'payment',
-          name:"payment",
-          component: Payment,
-          meta: { backpage: 'paymentMethod'}
+          path:"/self-query",
+          component:SelfQuery,
+          redirect:'/self-query/SelfQuerylist',
+          children:[
+            {
+              path:"SelfQuerylist",
+              name:'selfquerylist',
+              component:SelfQuerylist,
+              meta: { backpage: 'close'}
+            },
+            {
+              path:"SqStepone",
+              name:'sqstepone',
+              component:SqStepone,
+              meta: { backpage: 'selfquerylist'}
+            },
+            {
+              path:"SqSteptwo",
+              name:'sqsteptwo',
+              component:SqSteptwo,
+              meta: { backpage: 'sqstepone'}
+            },
+            {
+              path:"SqStepthree",
+              name:'sqstepthree',
+              component:SqStepthree,
+              meta: { backpage: 'selfquerylist'}
+            },
+            {
+              path:"SqStepfour",
+              name:'sqstepfour',
+              component:SqStepfour,
+              meta: { backpage: 'selfquerylist'}
+            },
+            {
+              path:"SqStepfive",
+              name:'sqstepfive',
+              component:SqStepfive,
+              meta: { backpage: 'selfquerylist'}
+            },
+            {
+              path:"SqStepsix",
+              name:'sqstepsix',
+              component:SqStepsix,
+              meta: { backpage: 'selfquerylist'}
+            },
+            {
+              path:'sqtippage',
+              name:"sqtippage",
+              component:TipPage,
+              meta: { backpage: 'close'}
+            }
+          ]
         },
+        // 自助打印
         {
-          path:'finish',
-          name:"finish",
-          component: Finish,
-          meta: { backpage: 'close',timer:10}
-        },
+          path:"/self-print",
+          component:SelfPrint,
+          redirect:'/self-print/SpStepone',
+          children:[
+            {
+              path:"SpStepone",
+              name:'spstepone',
+              component:SpStepone,
+              meta: { backpage: 'close'}
+            },
+            {
+              path:"SpSteptwo",
+              name:'spsteptwo',
+              component:SpSteptwo,
+              meta: { backpage: 'spstepone'}   
+            },
+            {
+              path:"SpStepthree",
+              name:'spstepthree',
+              component:SpStepthree,
+              meta: { backpage: 'spsteptwo',timer:300}   
+            },
+            {
+              path:'sptippage',
+              name:"sptippage",
+              component:TipPage,
+              meta: { backpage: 'close'}
+            }
+          ]
+        },  
+        // 3D导诊
         {
-          path:"dtippage",
-          name:'dtippage',
-          component:TipPage,
-          meta: { backpage: 'close'}
-        }
-      ]
-    },
-    {
-      path:'/regtoday',
-      name:'regtoday',
-      component:RegToday,
-      redirect:'/regtoday/choose-one',
-      children:[
-        {
-          path:"choose-one",
-          name:"chooseone",
-          component: ChooseOne,
-          meta: { backpage: 'close'}
-        },
-        {
-          path:'ChooseTwo',
-          component: ChooseTwo,
-          name:'choosetwo',
-          meta: { backpage: 'chooseone'}
-        },
-        {
-          path:'select-card',
-          name:'regselectcard',
-          component: RegCardType,
-          meta: { backpage: 'choosetwo'}
-        },
-        {
-          path:'get-info',
-          name:'reggetinfo',
-          component: GetInfo,
-          meta: { backpage: 'regselectcard'}
-        },
-        {
-          path:"choose-three",
-          component:ChooseThree,
-          name:'choosethree',
-          meta: { backpage: 'choosetwo'}
-        },
-        {
-          path:'pay-money',
-          component:PayMoney,
-          name:"paymoney",
-          meta: { backpage: 'choosethree'}
-        },
-        {
-          path:'finish-four',
-          component:FinishFour,
-          name:"finishfour",
-          meta: { backpage: 'close',timer:10}
-        },
-        {
-          path:"rttippage",
-          name:'rttippage',
-          component:TipPage,
-          meta: { backpage: 'close'}
-        }
-      ]
-    },
-    {
-      path:'/outpatient',
-      name:'outpatient',
-      component:OutPatient,
-      redirect:'/OutPatient/op-stepone',
-      children:[
-        {
-          path:"op-stepone",
-          component: OpStepone,
-          name:'opstepone',
-          meta: { backpage: 'close'}
-        },
-        {
-          path:'op-steptwo',
-          component: OpSteptwo,
-          name:'opsteptwo',
-          meta: { backpage: 'opstepone'}
-        },
-        {
-          path:'op-stepthree',
-          name:'opstepthree',
-          component: OpStepthree,
-          meta: { backpage: 'close'}
-        },
-        {
-          path:"op-stepfour",
-          component:OpStepfour,
-          name:'opstepfour',
-          meta: { backpage: 'opstepthree'}
-        },
-        {
-          path:"op-stepfive",
-          component:OpStepfive,
-          name:'opstepfive',
-          meta: { backpage: 'opstepfour'}
-        },
-        {
-          path:"op-stepsix",
-          component:OpStepsix,
-          name:'opstepsix',
-          meta: { backpage: 'close',timer:10}
-        },
-        {
-          path:"op-tippage",
-          name:'optippage',
-          component:TipPage,
-          meta:{backpage:'close'}
-        }
-      ]
-    },
-    {
-      path:'/bookno',
-      name:'bookno',
-      component:BookNo,
-      redirect:'/bookno/bo-stepone',
-      children:[
-        {
-          path:"bo-stepone",
-          name:'bostepone',
-          component: BoStepone,
-          meta: { backpage: 'close'}
-        },
-        {
-          path:'bo-steptwo',
-          component: BoSteptwo,
-          name:'bosteptwo',
-          meta: { backpage: 'bostepone'}
-        },
-        {
-          path:'bo-stepthree',
-          name:'bostepthree',
-          component: BoStepthree,
-          meta: { backpage: 'bostepone'}
-        },
-        {
-          path:"bo-stepfour",
-          component:BoStepfour,
-          name:'bostepfour',
-          meta: { backpage: 'close',timer:10}
-        },
-        {
-          path:"botippage",
-          name:'botippage',
-          component:TipPage,
-          meta: { backpage: 'close'}
-        }
-      ]
-    },
-    {
-      path:"/self-query",
-      component:SelfQuery,
-      redirect:'/self-query/SelfQuerylist',
-      children:[
-        {
-          path:"SelfQuerylist",
-          name:'selfquerylist',
-          component:SelfQuerylist,
-          meta: { backpage: 'close'}
-        },
-        {
-          path:"SqStepone",
-          name:'sqstepone',
-          component:SqStepone,
-          meta: { backpage: 'selfquerylist'}
-        },
-        {
-          path:"SqSteptwo",
-          name:'sqsteptwo',
-          component:SqSteptwo,
-          meta: { backpage: 'sqstepone'}
-        },
-        {
-          path:"SqStepthree",
-          name:'sqstepthree',
-          component:SqStepthree,
-          meta: { backpage: 'selfquerylist'}
-        },
-        {
-          path:"SqStepfour",
-          name:'sqstepfour',
-          component:SqStepfour,
-          meta: { backpage: 'selfquerylist'}
-        },
-        {
-          path:"SqStepfive",
-          name:'sqstepfive',
-          component:SqStepfive,
-          meta: { backpage: 'selfquerylist'}
-        },
-        {
-          path:"SqStepsix",
-          name:'sqstepsix',
-          component:SqStepsix,
-          meta: { backpage: 'selfquerylist'}
-        },
-        {
-          path:'sqtippage',
-          name:"sqtippage",
-          component:TipPage,
-          meta: { backpage: 'close'}
-        }
-      ]
-    },
-    {
-      path:"/self-print",
-      component:SelfPrint,
-      redirect:'/self-print/SpStepone',
-      children:[
-        {
-          path:"SpStepone",
-          name:'spstepone',
-          component:SpStepone,
-          meta: { backpage: 'close'}
-        },
-        {
-          path:"SpSteptwo",
-          name:'spsteptwo',
-          component:SpSteptwo,
-          meta: { backpage: 'spstepone'}   
-        },
-        {
-          path:'sptippage',
-          name:"sptippage",
-          component:TipPage,
-          meta: { backpage: 'close'}
-        }
-      ]
-    },    
-    {
-      path:"/regbook",
-      component:RegBook,
-      redirect:'/regbook/RbStepone',
-      children:[
-        {
-          path:"RbStepone",
-          name:"rbstepone",
-          component:RbStepone,
-          meta: { backpage: 'close'}
-        },        
-        {
-          path:"RbSteptwo",
-          name:"rbsteptwo",
-          component:RbSteptwo,
-          meta: { backpage: 'rbstepone'}
-        },
-        {
-          path:"RbStepthree",
-          name:"rbstepthree",
-          component:RbStepthree,
-          meta: { backpage: 'rbstepone'}
-        },
-        {
-          path:"RbStepfour",
-          name:"rbstepfour",
-          component:RbStepfour,
-          meta: { backpage: 'close',timer:10}          
-        },
-        {
-          path:'TipPage',
-          name:"rbtippage",
-          component:TipPage,
-          meta: { backpage: 'close'}
-        }
-      ]
-    },
-    {
-      path:"/predeposit",
-      component:PreDeposit,
-      redirect:'/predeposit/pdStepone',
-      children:[
-        {
-          path:"PdStepone",
-          name:"pdstepone",
-          component:PdStepone,
-          meta: { backpage: 'close'}
-        },        
-        {
-          path:"PdSteptwo",
-          name:"pdsteptwo",
-          component:PdSteptwo,
-          meta: { backpage: 'pdstepone'}
-        },
-        {
-          path:"PdStepthree",
-          name:"pdstepthree",
-          component:PdStepthree,
-          meta: { backpage: 'close'}
-        },
-        {
-          path:"PdStepfour",
-          name:"pdstepfour",
-          component:PdStepfour,
-          meta: { backpage: 'pdstepthree'}
-        },        
-        {
-          path:"PdStepfive",
-          name:"pdstepfive",
-          component:PdStepfive,
-          meta: { backpage: 'close',timer:15}
-        },        
-        {
-          path:'TipPage',
-          name:"pdtippage",
-          component:TipPage,
-          meta: { backpage: 'close'}
-        }
-      ]
-    },
-    {
-      path:"/smartleading",
-      component:SmartLeading,
-      redirect:"/smartleading/slstepone",
-      children:[
-        {
-          name:'slstepone',
-          component:SlStepone,
-          path:'slstepone',
-          meta: { backpage: 'close'}
+          path:"/smartleading",
+          component:SmartLeading,
+          redirect:"/smartleading/slstepone",
+          children:[
+            {
+              name:'slstepone',
+              component:SlStepone,
+              path:'slstepone',
+              meta: {backpage: 'close',timer:200}
+            },
+            {
+              name:"slsteptwo",
+              component:SlSteptwo,
+              path:'slsteptwo',
+              meta:{backpage:'slstepone',timer:300}
+            },
+            {
+              path:'sltippage',
+              name:"sltippage",
+              component:TipPage,
+              meta: { backpage: 'close'}
+            }
+          ]
         }
       ]
     }
-
   ]
 })

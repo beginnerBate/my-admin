@@ -21,7 +21,8 @@
       topage200() {
         // 创建订单
         var mydata = {
-          docNumber: this.dayDoctorInfo.number
+          docNumber: this.dayDoctorInfo.number,
+          terminalNumber:MachineCode
         }
         var that = this
         createOrder(mydata,this.token).then(function(res){

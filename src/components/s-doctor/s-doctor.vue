@@ -28,7 +28,7 @@
           </li>          
         </ul>
         <!-- 分页 -->
-        <page :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
+        <page v-if="total>rows" :total= 'total' :display='rows' @pagechange='pagechange($event)'></page>
       </div>
     </div>
     <!-- loading -->
@@ -68,7 +68,14 @@
           this.flag = 2
         }
         this.getPageData()
-
+      }
+    },
+    beforeRouteLeave (to, from , next) {
+      if (this.backFlag === 'doctor') {
+        next()
+      } else {
+         next()
+         this.$router.push({name:"slsteptwo"})
       }
     },
     watch: {
@@ -95,9 +102,15 @@
       },
       list () {
         return this.$store.state.bookReg.doctorList
+      },
+      backFlag(){
+        return this.$store.state.bookReg.backFlag 
       }
     },
     methods: {
+      backPage(next){
+
+      },
       // 获取科室医生
       getPageData() {
         this.loadflag = false
@@ -146,7 +159,7 @@
         $event.departId = this.departId
         this.$store.commit('setDoctorInfo',[])
         this.$store.dispatch('getBookDoctorsInfo',$event)
-        this.$router.push({path:"/doctor-info"})
+        this.$router.push({name:"doctorInfo"})
       }
     }
   }
@@ -201,7 +214,7 @@
     display inline-block
   div>span:first-child
     width 20%
-    padding-left 40px
+    padding-left 20px
     &>i:first-child
       font-size 1.4em
     p>i:first-child

@@ -9,6 +9,7 @@
       </div>
       <!-- 扫码支付 -->
       <div class="payment">
+        <div style="padding-top:9em"><img src="./icon_right.png" width="100px" height="100px"></div>
         <p>挂号完成,请取走挂号单号!</p>
       </div>
     </div>
@@ -19,7 +20,6 @@
   export default {
     created () {
       this.$store.commit('setMenuIdx',3)
-      // this.getData()
     },
     mounted () {
       this.toPrint()
@@ -45,11 +45,11 @@
                         "name": this.user.name,
                         "departmentName":this.departmentName,
                         "doctorName":this.dayDoctorInfo.docName,
-                        "guaHaoAmount":this.dayDoctorInfo.sumRegister,
+                        "guaHaoAmount":this.dayDoctorInfo.sumRegister +'元',
                         "flowNumber":this.orderNumber
                         };
-        if (typeof SharpForeign.Print_SmallTicket_DRGH== 'function') {
-            var code = SharpForeign.Print_SmallTicket_DRGH(JSON.stringify(postData))
+        if (typeof sharpForeign != 'undefined') {
+            var code = sharpForeign.Print_SmallTicket_DRGH(JSON.stringify(postData))
         } 
       }
     },
@@ -75,7 +75,7 @@
   text-align center
   p
     color $color-font
-    font-size 2em
+    font-size 1.8em
     letter-spacing 3px
-    padding-top 5em
+    // padding-top 5em
 </style>

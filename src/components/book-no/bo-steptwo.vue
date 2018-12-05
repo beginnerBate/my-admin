@@ -18,15 +18,21 @@
       },
       // 用户不存在
       usernot() {
-        this.$store.commit('setRegbookTip','没有该用户,请先注册建档!')
+        // this.$store.commit('setRegbookTip','没有该用户,请先注册建档!')
+        this.$store.dispatch('setTipPage',['没有该用户,请先注册建档!','warning'])
+        
         this.toTipPage()
       },
       topage406() {
-        this.$store.commit('setRegbookTip','用户账号已锁定, 请到柜台处理!')
+        // this.$store.commit('setRegbookTip','用户账号已锁定, 请到柜台处理!')
+        this.$store.dispatch('setTipPage',['用户账号已锁定,请到柜台处理!','warning'])
+
         this.toTipPage() 
       },
       neterror() {
-        this.$store.commit('setRegbookTip','系统错误,请联系维修人员,维修电话 15865458562!')
+        // this.$store.commit('setRegbookTip','系统错误,请联系维修人员,维修电话 15865458562!')
+        this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
+
         this.toTipPage()        
       },
       toTipPage () {

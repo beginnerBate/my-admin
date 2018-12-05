@@ -16,15 +16,15 @@
         this.$router.push({name:"rbstepthree"}) 
       },
       topage406() {
-        this.$store.commit('setRegbookTip','用户账号已锁定, 请到柜台处理!')
+        this.$store.dispatch('setTipPage',['用户账号已锁定, 请到柜台处理!','warning'])
         this.toTipPage()
       },      
       topage200() {
-        this.$store.commit('setRegbookTip','用户已存在!')
+        this.$store.dispatch('setTipPage',['用户已存在!','info'])
         this.toTipPage()
       },
       neterror() {
-        this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+        this.$store.dispatch('setTipPage',['系统错误,请到柜台处理!','error'])
         this.toTipPage()        
       },
       toTipPage () {

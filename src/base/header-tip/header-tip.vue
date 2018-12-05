@@ -1,6 +1,6 @@
 <template>
   <div class="header-tip">
-    <p class="header-logo">
+    <p class="header-logo" @click="close()">
       <img src="./logo.png">
       <span>南京医科大学第二附属医院</span>
     </p>
@@ -21,6 +21,11 @@ export default {
     this.getdate()
   },
   methods: {
+    close(){
+        if(typeof sharpForeign != 'undefined') {
+          sharpForeign.CloseThis()
+        }
+      },
     getdate() {
        setInterval(()=>{
         // this.sysDate = new Date().toLocaleString()+' 星期'+'日一二三四五六'.charAt(new Date().getDay  ())

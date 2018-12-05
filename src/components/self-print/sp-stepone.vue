@@ -25,12 +25,13 @@
             </div>
           </div>
           <!-- button -->
-          <div class="button-wrapper">
-            <span class="btn-sq" @click="submit()" :class="{'disabled': disableFlag == -1}"><i>查 询</i></span>
+          <div class="button-wrapper" @click="submit()">
+            <span class="btn-sq"  :class="{'disabled': disableFlag == -1}"><i>查 询</i></span>
           </div>
         </div>
       </div>
     </div>
+    <audio src="static/mp3/jzk.mp3" ref="myaudio1"></audio>
   </div>
 </template>
 <script>
@@ -91,53 +92,32 @@
         this.$refs.myJzId.focus()
       },
       getCardInfo () {
-        if  (typeof SharpForeign.GetCardInfoByType == 'function') {
-              this.cardInfo = JSON.parse(SharpForeign.GetCardInfoByType(4))
+        if  (typeof sharpForeign != 'undefined') {
+              this.cardInfo = JSON.parse(sharpForeign.GetCardInfoByType(4))
               if (this.cardInfo.code == '200') {
                 this.isCall = false
                   // 就诊卡号
                 this.cardNumber = this.cardInfo.data
                 this.jzId = this.cardInfo.data
                 this.submit()
-              }else {
+              }else if(this.cardInfo.code=='300'){
                 this.isCall = true
+              }else{
+                this.isCall = false
               }
           }
         },
       speech() {
-        runAsync1()
-        .then(function(data){
-            return runAsync2();
-        })
-        .then(function(data){
-            return '直接返回数据';  //这里直接返回数据
-        })
-        var that = this
-        function runAsync1(){
-          var p = new Promise((resolve, reject)=>{
-              //做一些异步操作
-              var code
-              if (typeof SharpForeign.SpeechText == 'function') {
-               var code =  SharpForeign.SpeechText('请将,就诊卡,置于感应区',1)
-                resolve(code)
-              }
-          });
-          return p;            
-          }
-          function runAsync2(){
-              var p = new Promise((resolve, reject)=>{
-                  //做一些异步操作
-                  that.timer = setInterval(()=>{
-                    if (that.isCall == true){
-                      that.getCardInfo()
-                    }else {
-                      clearInterval(that.timer)
-                    }
-                  },500)
-                  resolve('dddd')
-              });
-              return p;            
-          }
+          var myaudio = this.$refs.myaudio1
+          myaudio.play()
+          var that = this
+          that.timer = setInterval(()=>{
+            if (that.isCall == true){
+              that.getCardInfo()
+            }else {
+              clearInterval(that.timer)
+            }
+          },500)
         }
     },
     directives: {

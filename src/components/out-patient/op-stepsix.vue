@@ -8,39 +8,69 @@
         <span><i>就诊卡号</i>: <i>{{user.jzId}}</i></span>
       </div>
       <!-- 扫码支付 -->
-      <div class="payment">
-        <p>支付成功,请取走您的卡和小票!</p>
+      <!-- 提示信息 -->
+      <tip-page></tip-page>
+      <!-- 打印按钮 -->
+      <div class="button-wrapper">
+        <span class="btn-sub" @click="toPrint()" :class="{'disabled': disableFlag == -1}"><i>打 印 小 票</i></span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import TipPage from 'base/tip-page/tip-page'
+import {formatDate} from 'common/js/date.js'
+
   export default {
+   data() {
+      return {
+        disableFlag: 1
+      }
+    },
     created () {
       this.$store.commit('setMenuIdx',3)
+      this.$store.dispatch('setTipPage',['缴 费 成 功!','ok'])
     },
+    components:{
+      TipPage
+    },    
     computed:{
       user () {
         return this.$store.state.bookReg.user
       },
+      payTime(){
+         var mydate = new Date(this.$store.state.bookReg.payTime)
+        return formatDate(mydate,'yyyy/MM/dd hh:mm:ss');
+      },
       orderNumber () {
         return this.$store.state.bookReg.orderNumber
+      },
+      totalCost() {
+        return this.$store.state.outPatient.totalCost
       }
-    },
-    mounted () {
-      this.toPrint()
     },
     methods: {
       toPrint(){
+        if (this.disableFlag == 1) {
+           this.disableFlag = -1
+        }else {
+          return
+        }   
         // 调用打印接口
         var postData = {
-                        "name": this.user.name,
-                        "payAmount":this.balance,
-                        "flowNumber":this.orderNumber
+                        "cardNo": this.user.jzId,
+                        "payAmount":this.totalCost + '元',
+                        "flowNumber":this.orderNumber,
+                        "rechargeTime":this.payTime
                         };
-        if (typeof SharpForeign.Print_SmallTicket_MZJF== 'function') {
-            var code = SharpForeign.Print_SmallTicket_MZJF(JSON.stringify(postData))
+        if (typeof sharpForeign != 'undefined') {
+            var code =  JSON.parse(sharpForeign.Print_SmallTicket_MZJF(JSON.stringify(postData)))
+            if (code.code==200) {
+              this.disableFlag = -1
+            }else {
+              this.disableFlag = 1
+            } 
         } 
       }
     }
@@ -69,4 +99,10 @@
     font-size 2em
     letter-spacing 3px
     padding-top 5em
+.button-wrapper
+  position absolute
+  bottom 1.2em
+  width 100%
+  text-align center
+  font-size 1.4em
 </style>

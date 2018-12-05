@@ -92,7 +92,8 @@
       createOrder() {
         var mydata = {
           visitTime: this.booktime.date,     
-          docNumber: this.bookDoctor.hm
+          docNumber: this.bookDoctor.hm,
+          terminalNumber:MachineCode
         }
         // 创建订单之前
         this.flag = true
@@ -104,14 +105,18 @@
             that.$store.commit('setorderId',res.orderId)
             that.$router.push({path:"payment-method"})
           }else if(res.code == '400') {
-              this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
-              this.toTipPage()  
+              // this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            this.$store.dispatch('setTipPage',['系统错误, 请到柜台处理!','error'])            
+
+            this.toTipPage()  
           }else {
-            this.$store.commit('setRegbookTip','订单创建失败,请到柜台处理!')
+            // this.$store.commit('setRegbookTip','订单创建失败,请到柜台处理!')
+            this.$store.dispatch('setTipPage',['订单创建失败, 请到柜台处理!','error'])            
             this.toTipPage()  
           }
         }).catch(function(res){
-            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            // this.$store.commit('setRegbookTip','系统错误,请到柜台处理!')
+            this.$store.dispatch('setTipPage',['系统错误, 请到柜台处理!','error'])            
             this.toTipPage()  
         }) 
       }
@@ -131,7 +136,7 @@
   padding 0.4em
   border-radius 4px
 .doctor-info>p
-  font-size 2em
+  font-size 1.6em
   margin 0.5em 0
   color $color-font
   padding-left 0.6em

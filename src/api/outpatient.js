@@ -22,10 +22,11 @@ export function payProjectList (token) {
 // 2.门诊缴费订单创建
 export function outpatientOrder (token) {
   return getUrl().then(function(baseURL){
-    var url = baseURL + 'ot/outpatientPayment/orders' 
-    return axios.get(url,{
+    var url = baseURL + 'ot/outpatientPayment/orders'
+    return axios.post(url,qs.stringify({terminalNumber:MachineCode}),{
       headers:{
-        token:token
+        token:token,
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     }).then(function(res){
       return Promise.resolve(res.data)

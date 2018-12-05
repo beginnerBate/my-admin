@@ -5,7 +5,7 @@
       <span><i>就诊卡号</i>: <i>{{patientInfo.jzId}}</i></span>
     </div>
     <div class="complete-info" v-if="!loadflag">
-      <div class="my-phone"><label> 充 值 金 额 : ￥ </label><input v-model="mymoney" readonly ></div>
+      <div class="my-phone"><label> 充 值 金 额 : ￥ </label><input v-model="mymoney" readonly ><span class="mon-tip">{{moneyTip}}</span></div>
       <!-- 键盘 -->
       <div class="mykey-wrapper">
         <ul class="my-key">
@@ -32,6 +32,7 @@
     <div v-if='loadflag' class='loading-wrapper'>
       <loading :title="title"></loading>
     </div>
+    <!-- 406 输入金额过大提示 -->
   </div>
 </template>
 <script>
@@ -43,6 +44,7 @@ export default {
       loadflag:false,
       title:"页面加载中...",
       mymoney:'',
+      moneyTip:"",
               list:[
           {
             text:'微信支付',
@@ -60,7 +62,7 @@ export default {
         i:-1,
         flag:-1,
         item:'',
-        key: ['1','2','3','4','5','6','7','8','9','0','退格','清空'],
+        key: ['1','2','3','4','5','6','7','8','9','退格','0','清空'],
     }
   },
   components:{
@@ -85,10 +87,15 @@ export default {
   },
   watch: {
     mymoney(value) {
+      if (value<=20000) {
+        this.moneyTip = '每笔充值最多20000元'
+      }else {
+        this.moneyTip = '输入金额过大,请重新输入'
+        // this.flag = -1
+      }
       if (value=='') {
         this.flag = -1
-      }else if(this.i !=-1){
-
+      }else if( this.i !=-1 && value<=20000){
         this.flag =1
       }
     }
@@ -101,16 +108,16 @@ export default {
       if (item == '退格') {
         if (this.mymoney<=0) return
         this.mymoney = this.mymoney.substring(0,this.mymoney.length-1)
-        console.log(this.mymoney)
       }else if (item == '清空') {
         this.mymoney = ''
       }else {
         if (this.mymoney == '' && item == 0) return
+        if (this.mymoney.length ==5 ) return
         this.mymoney += item
       }
     },
     selectItem(index,item) {
-      if (this.mymoney!=''){
+      if (this.mymoney!='' && this.mymoney<=20000){
           this.flag = 1
       }else {
         this.flag = -1
@@ -120,16 +127,19 @@ export default {
       },
       toNext() {
         if (this.i == -1 ) return
+        if (this.mymoney>20000) return
         this.createOrder()
       },
       createOrder() {
         var mydata = {
           paymentTypeId: this.item.paymentTypeId,
-          totalCost: this.mymoney    
+          totalCost: this.mymoney,
+          terminalNumber:MachineCode    
         }
         var that = this
         that.loadflag = true
         createPredeposit(mydata,this.token).then(function(res){
+          that.loadflag = false
           if (res.code == 200) {
             // 保存setPdtotalCost
             that.$store.commit('setPdtotalCost',mydata.totalCost)
@@ -137,18 +147,26 @@ export default {
             that.$store.commit('setPayInfo',{orderId:res.orderId,QRcode:res.QRcode})
             that.$router.push({name:"pdstepfour"})
           }else if(res.code == 'AF401') {
-            this.$store.commit('setRegbookTip','用户认证失败,请到柜台处理!') 
-            this.toTipPage()  
+            // this.$store.commit('setRegbookTip','用户认证失败,请到柜台处理!') 
+            that.$store.dispatch('setTipPage',['用户认证失败,请到柜台处理!','error'])
+            that.toTipPage()  
           }else if  (res.code =='400') {
-            this.$store.commit('setRegbookTip','订单创建失败,请到柜台处理!') 
-            this.toTipPage()  
+            // this.$store.commit('setRegbookTip','订单创建失败,请到柜台处理!') 
+            that.$store.dispatch('setTipPage',['订单创建失败,请到柜台处理!','error'])
+            that.toTipPage()  
+          }else if (res.code =='406'){
+            // this.$store.commit('setRegbookTip','系统错误,请到柜台处理!') 
+            that.$store.dispatch('setTipPage',['输入金额过大,每笔充值最多20000元','warning'])
+            that.toTipPage()  
           }else {
-            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!') 
-            this.toTipPage()  
+            that.$store.dispatch('setTipPage',['系统错误, 请到柜台处理!','error'])
+            that.toTipPage()  
           }
         }).catch(function(res){
-            this.$store.commit('setRegbookTip','系统错误,请到柜台处理!') 
-            this.toTipPage()  
+            that.loadflag = false
+            // this.$store.commit('setRegbookTip','系统错误,请到柜台处理!') 
+            that.$store.dispatch('setTipPage',['系统错误, 请到柜台处理!','error'])
+            that.toTipPage()  
         }) 
       }
   }
@@ -220,4 +238,7 @@ export default {
   width 100%
   text-align center
   font-size 1.4em
+.mon-tip
+  color:#f66
+  padding-left 10px
 </style>
