@@ -1,6 +1,6 @@
-export function getUrl () {
-  return Promise.resolve(baseURL)
-}
+// export function getUrl () {
+//   return Promise.resolve(baseURL)
+// }
 
 export function getUrlA () {
   return Promise.resolve(baseURLA)

@@ -1,0 +1,80 @@
+<template>
+    <div>
+      <p>
+        <span class="img-wrapper"><img src="./timer.png" alt=""></span>
+        <span class="title">操作倒计时</span>
+        <span class="count">{{count}}</span>
+      </p>
+    </div>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      count: '',
+      time: 60,
+      interval:""
+    }
+  },
+  computed:{
+    timeFlag () {
+        return this.$store.state.bookReg.timeFlag
+    },
+  },
+  watch: {
+      '$route'(value) {
+        if(!value.meta.timerPage){
+           this.$store.commit('setTimeFlag',false)
+        }
+        if(value.meta.timerPage && this.timeFlag) {
+        }else{
+          this.time = 60
+          // 提示页面给5秒钟
+          if (value.name.indexOf('tippage') != -1) {
+            this.time = 15
+          }
+          if (value.meta.timer) {
+            this.time = value.meta.timer
+          }
+          clearInterval(this.interval)
+           this._countDown();
+        }
+      }
+    },
+  created() {
+    this._countDown();
+  },
+  methods: {
+    _countDown() {
+      this.count = this.$route.meta.timer || this.time
+     this.interval = setInterval(() => {
+        this.count--;
+        if (this.count == 0) {
+          this.$emit('outTime')
+          clearInterval(this.interval);
+        }
+      }, 1000);
+    }
+  }
+};
+</script>
+<style lang="stylus" scoped>
+.img-wrapper
+  display inline-block
+  width 55px
+  img 
+    width 100%
+    height auto
+.title
+  vertical-align 0.6em
+  font-size 1.1em
+  letter-spacing 2px
+.count
+  vertical-align 0.4em
+  font-size 1.4em
+  letter-spacing 2px
+  color #ff6666 
+  font-weight 600
+  text-shadow: 1px 1px 4px #fff;
+</style>
+

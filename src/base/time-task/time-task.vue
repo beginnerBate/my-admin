@@ -2,34 +2,35 @@
     <div>
       <p>
         <span class="img-wrapper"><img src="./timer.png" alt=""></span>
-        <span class="title">操作倒计时</span>
+        <!-- <span class="title">关闭倒计时</span> -->
         <span class="count">{{count}}</span>
       </p>
     </div>
 </template>
 <script>
 export default {
+  props:['time'],
   data() {
     return {
       count: '',
-      time: 60,
       interval:""
     }
   },
   watch: {
-      '$route'(value) {
-        this.time = 60
-        // 提示页面给5秒钟
-        if (value.name.indexOf('tippage') != -1) {
-          this.time = 15
-        }
-        if (value.meta.timer) {
-          this.time = value.meta.timer
-        }
-        clearInterval(this.interval)
-         this._countDown();
-      }
-    },
+      // '$route'(value) {
+      //   console.log(value)
+      //   this.time = 15
+      //   // 提示页面给5秒钟
+      //   if (value.name.indexOf('tippage') != -1) {
+      //     this.time = 15
+      //   }
+      //   if (value.meta.timer) {
+      //     this.time = value.meta.timer
+      //   }
+      //   clearInterval(this.interval)
+      //    this._countDown();
+      // }
+  },
   created() {
     this._countDown();
   },
@@ -50,7 +51,7 @@ export default {
 <style lang="stylus" scoped>
 .img-wrapper
   display inline-block
-  width 55px
+  width 45px
   img 
     width 100%
     height auto
@@ -59,11 +60,11 @@ export default {
   font-size 1.1em
   letter-spacing 2px
 .count
-  vertical-align 0.4em
+  vertical-align 0.2em
   font-size 1.4em
   letter-spacing 2px
-  color #ff6666 
+  color #ffffff
   font-weight 600
-  text-shadow: 1px 1px 4px #013d8e;
+  text-shadow: 1px 1px 4px #ff6666 
 </style>
 

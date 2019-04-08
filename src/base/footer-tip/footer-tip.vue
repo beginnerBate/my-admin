@@ -1,6 +1,6 @@
 <template>
   <div class="footer-tip">
-    <p>温馨提示：欢迎使用医院自助服务系统，使用完毕后请取走您的物品!</p>
+    <p>温馨提示：欢迎使用自助签到系统，签到完成请取走您的小票！</p>
   </div>
 </template>
 <style lang="stylus" scoped>
@@ -10,7 +10,7 @@
   width 100%
   border-top-left-radius 40px
   border-top-right-radius 40px
-  background #e3e3e3
+  background #f3d9e0
   p
     padding 0.35em
     padding-left 2em

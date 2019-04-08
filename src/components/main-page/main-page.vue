@@ -1,22 +1,11 @@
 <template>
   <div class="home">
   <header-tip></header-tip>
-  <!-- home-header -->
-  <div class="home-header">
-    <div class="home-btn"><span><i>{{$store.state.navTxt}}</i></span></div>
-        <!-- 倒计时 -->
-    <div class="home-timer"  v-if="flag">
-      <time-task @outTime='outTime' ></time-task>
-    </div>
-
-  </div>
   <!-- home-middle -->
   <div class="home-middle">
     <!-- home-right -->
     <div class="home-right">
       <div class="home-right-content">
-        <!-- router-view -->
-        <!-- <router-view></router-view> -->
         <slot></slot>
       </div>
     </div>
@@ -59,7 +48,7 @@
       },
       // 清空数据
       clearData () {
-        // 自助打印
+        // 自助签到
         this.$store.commit('setJzId','')
       },
       outTime() {
@@ -71,8 +60,7 @@
 <style lang="stylus" scoped>
 @import '~~common/stylus/variables.styl'
 .home
-  // background url('./home_bg.png') no-repeat 
-  background-color: #517aa2
+  background-color: #F7A3BA
   background-size cover
   height 100%;
   width 100%;
@@ -81,7 +69,7 @@
   padding 1em 1.2em
   color $color-font
   overflow hidden
-  margin-top:90px
+  margin-top:145px
 .home-btn
   min-width 280px
   max-width 300px
@@ -108,28 +96,35 @@
     left 0px
   .home-right
     position fixed
-    top 200px
-    bottom 76px
+    top calc(15vh + 15px)
+    bottom 53px
     left 340px
     right:1em;
     .home-right-content
       width 100%
       height:100%
-      border 1px solid $color-theme-h
+      border 1px solid #e92266
       border-radius 8px
       overflow hidden
-.icon
-  display inline-block
-  width 38px
-  height 38px
-  background-size auto 
-  background-repeat no-repeat
-  vertical-align -10px
-  padding-right 20px
-.icon-back-pre
-  background-image url('~~common/icon/back-pre.png') 
-.icon-back-home
-  background-image url('~~common/icon/back-home.png') 
-.icon-back-exit
-  background-image url('~~common/icon/back-exit.png') 
+@media screen and (max-width:1000px)
+  .home
+    // background-color: #0066cc
+    background-size cover
+    height 100%;
+    width 100%;
+    overflow hidden
+  .home-middle
+    overflow hidden
+    .home-right
+      position fixed
+      top calc(10vh + 10px)
+      bottom 53px
+      left:0.5em !important
+      right:0.5em;
+      .home-right-content
+        width 100%
+        height:100%
+        border 1px solid #e92266
+        border-radius 8px
+        overflow hidden  
 </style>

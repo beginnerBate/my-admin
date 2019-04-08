@@ -1,74 +1,146 @@
 <template>
   <div class="header-tip">
-    <p class="header-logo">
-      <img src="./logo.png" width="60px" height="60px">
-      <span>兰考第一医院妇儿医院</span>
+    <p class="header-logo" @click="confirm">
+      <img src="./logo.png" class="logo-img">
     </p>
-    <p class="header-date">
-      <span><i>{{sysDate}}</i> <i>{{sysWeek}}</i> <i>{{sysTime}}</i></span></p>
+    <p class="header-date" v-if="$store.state.bookReg.timeFlag">
+      <span class="header-title">{{titleText}}</span>
+      <span class="header-servertime">{{serverTime}}</span>
+    </p>
+        <!-- 倒计时 -->
+    <div class="home-timer" v-if="!$store.state.bookReg.timeFlag">
+      <timer-task @outTime='outTime'></timer-task>
+    </div>
   </div>
 </template>
 <script>
+import {serverTime} from 'api/print'
+  import TimerTask from 'base/time-task/time-task1'
 export default {
+    components: {
+      TimerTask,
+    },
   data() {
     return {
-      sysDate:"",
-      sysWeek:"",
-      sysTime:""
+      serverTime:"",
+      titleText: "妇科门诊签到",
+      apiAdress:""
     }
   },
   created () {
-    this.getdate()
+    var that = this;
+    serverTime().then((res)=>{
+        if (res.code==200) {
+          that.serverTime =res.data
+        }
+      }).catch(()=>{})
+    that.getdate()
   },
   methods: {
+    confirm: function(){
+      var r = window.confirm("确定关闭程序吗？")
+       if (r==true){
+          if(typeof sharpForeign != 'undefined') {
+            sharpForeign.CloseThis()
+          }
+        }
+    },
+    outTime() {
+         this.$router.push({path:'/self-print/list'}) 
+    },
     getdate() {
        setInterval(()=>{
-        // this.sysDate = new Date().toLocaleString()+' 星期'+'日一二三四五六'.charAt(new Date().getDay  ())
-        var todayDate = new Date();
-        var date = todayDate.getDate();
-        var month= todayDate.getMonth() +1;
-        var year= todayDate.getYear();
-        if(navigator.appName == "Netscape")
-        {
-          this.sysDate = (1900+year) + "年" + month + "月" + date + "日 ";
-        }
-        if(navigator.appVersion.indexOf("MSIE") != -1)
-        {
-          this.sysDate = year + "年" + month + "月" + date + "日 ";
-        }
-        this.sysWeek = ' 星期'+'日一二三四五六'.charAt(new Date().getDay  ())
-        var hour = todayDate.getHours() < 10 ? "0" + todayDate.getHours() : todayDate.getHours();
-        var minute = todayDate.getMinutes() < 10 ? "0" + todayDate.getMinutes() : todayDate.getMinutes();
-        var second = todayDate.getSeconds() < 10 ? "0" + todayDate.getSeconds() : todayDate.getSeconds();
-        this.sysTime = hour+':'+ minute +':'+second
-      },1000)
+         serverTime().then((res)=>{
+           if (res.code==200) {
+             this.serverTime =res.data
+           }
+         }).catch(()=>{
+         })
+       },1000*5)
     }
   },
 }
 </script>
 
 <style lang="stylus" scoped>
+.home-timer
+  float right 
+  font-size 1.6em
+  padding 4vh
 .header-tip
   position fixed
   top 0
   width 100%
-  height 90px
+  height 15vh
   overflow hidden
   background #ffffff
   padding 0 0.5em
-  box-sizing: border-box;
+  box-sizing: border-box
+  display flex
   p
     letter-spacing 2px
     font-size 1.75em
-    color #006ab8
+    color #E91E63
   .header-logo
-    float left
-    margin-top 13px
+    flex 1
+    display flex
+    align-items center
     span 
       vertical-align 50%
   .header-date
     float right
     font-size 1.5em
     letter-spacing 0px
-    line-height 90px
+    display flex
+    flex-direction column
+    justify-content: center;
+    span
+      flex:1
+      align-items: center;
+      display:flex
+      justify-content: center;
+.logo-img
+  width  50vh
+  height  13vh
+  vertical-align  1.5vh
+.logo-title
+  width 50%
+  max-width 433px
+.header-title
+  font-size 1.2em
+  text-shadow: 1px 1px 5px #efecec;
+.header-servertime
+  font-size 0.95em
+@media screen and (max-width:1000px)
+  .header-tip
+    position fixed
+    top 0
+    width 100%
+    height 10vh
+    overflow hidden
+    background #ffffff
+    padding 0 0.5em
+    box-sizing: border-box
+    display flex
+    p
+      letter-spacing 2px
+      font-size 1.75em
+      color #0066cc
+    .header-logo
+      flex 1
+      display flex
+      align-items center
+      span 
+        vertical-align 50%
+    .header-date
+      float right
+      font-size 1.1em
+      letter-spacing 0px
+      line-height 10vh
+  .logo-img
+    width  40vh
+    height  8vh
+    vertical-align  1.5vh
+  .logo-title
+    width 47%
 </style>

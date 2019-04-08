@@ -5,7 +5,6 @@ import loS from '@/common/js/loStorage'
 //获取模块
 import bookReg from './modules/book-reg'
 import outPatient from './modules/out-patient'
-import selfQuery from './modules/self-query'
 import tipPage from './modules/tip-page'
 // 在使用vuex之前使用，先初始化相关数据
 const init = [
@@ -51,7 +50,6 @@ export default new Vuex.Store({
     modules: {
         bookReg,
         outPatient,
-        selfQuery,
         tipPage
     },
     state,

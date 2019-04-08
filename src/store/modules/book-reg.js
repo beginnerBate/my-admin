@@ -1,3 +1,5 @@
+import { stat } from "fs";
+
 // 预约挂号模块
 // {departName}科室名称 {doctorList} 可预约医生列表 {doctorInfo} 预约医生 
 // {deptId} 科室ID
@@ -22,6 +24,8 @@
 // {{orderNumber}} 流水号
 // -----------------------------预约取号-----------------------------------------
 // {{bookNumber}} 预约取号信息
+// ----------------------------------主页系统时间显示--------------------------------------------
+// {{timeFlag}}
 const state = {
   reguserinfo:"",
   pdtotalCost:"",
@@ -42,7 +46,8 @@ const state = {
   cardType:"",
   jzId:"",
   orderNumber:"",
-  bookNumber:""
+  bookNumber:"",
+  timeFlag:true
 }
 // mutations
 const mutations = {
@@ -105,6 +110,9 @@ const mutations = {
   },
   setBookNumber (state, code) {
     state.bookNumber = code
+  },
+  setTimeFlag (state,code){
+    state.timeFlag = code
   }
 }
 //acions 

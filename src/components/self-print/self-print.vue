@@ -11,17 +11,9 @@ import MainPage from 'components/main-page/main-page'
     components: {
       MainPage
     },
-    created() {
-      // 导航设置 这里适合action
-      var list = JSON.stringify([])
-      this.$store.dispatch('pageSet',[-1,'自助打印',list])
-    },
     methods: {
       setType(item) {
         //设置查询类型
-        // this.$store.commit('setQueryType',item)
-        // 选择卡号
-        // this.$router.push({name:'spstepone'})
       }
     }
   }

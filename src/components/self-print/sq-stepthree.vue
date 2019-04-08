@@ -1,27 +1,22 @@
 <template>
   <div class="self-query-alert">
     <div v-if="!loadflag" class="alert-wrapper">
-      <div class="alert-top">
-        <!-- alert-title 二级弹出框标题 -->
-        <div v-if="normalSign && !sinFlag" class="alert-title"><span>{{alertTitle}}</span></div>
-        <!-- 倒计时 -->
-        <div class="home-timer"  v-if="flag" :class="{'timer-signer':!(normalSign && !sinFlag)}">
-          <time-task @outTime='outTime' :time="time"></time-task>
+      <!-- 签到成功 -->
+      <div class="sign" v-if="isUser && !isPrint && !sinFlag">
+        <span><i class="fa fa-check-circle-o"></i><i>签到成功</i></span>
+      </div>
+      <!-- 倒计时 -->
+        <div class="home-timer"  v-if="flag">
+          <time-task @outTime='outTime' ></time-task>
         </div>
-      </div>
       <!-- 普通门诊 -->
-      <div class="normal-list" v-if="normalSign && !sinFlag">
-        <ul>
-          <li  v-for="(item,index) in normalData" :key="index" >
-            <div @click="goSign(item)">
-              <p><span>{{item.zjmc}}</span></p>
-              <p><span>医生:</span><span>{{item.ysmc}}</span></p>
-              <p><span>等待:</span><span>{{item.totalWait}}人</span></p>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <!-- 专家门诊 -->
+      <ul class="info-wrapper">
+        <li class="myuser-info">
+            <p><i style="letter-spacing: 18px;">科室名称:</i> <i>{{name}}</i> </p>
+            <p><i style="letter-spacing: 18px;">医生姓名:</i> <i>{{name}}</i> </p>
+            <p><i style="letter-spacing: 18px;">等待人数:</i> <i>{{waitcount}}</i> </p>
+        </li>
+      </ul>
       <div v-if="isPrint">      
          <p class="print-logo">
            <span class="fa fa-exclamation-triangle"></span>
@@ -30,27 +25,22 @@
         <div>
         </div>
        </div>
-       <!-- 用户不存在 -->
       <div class="tip-info" v-if="!isUser">
-        <p class="print-logo">
+         <p class="print-logo">
            <span class="fa fa-exclamation-triangle"></span>
            <span class="text">用户不存在!</span>
-        </p>
-      </div>
+           </p>
+       </div>
       <div class="tip-info" v-if="sinFlag">
-        <p  class="print-logo">
-          <span class="fa fa-exclamation-triangle"></span>
-          <span class="text">签到失败,请重新扫描!</span>
-        </p>
-      </div>
-            <!-- 签到成功 -->
-      <div class="sign" v-if="isUser && !isPrint && !sinFlag  && !normalSign">
-        <span><i class="fa fa-check-circle-o"></i><i>签到成功</i></span>
-      </div>
-      <!-- home-footer -->
-      <div class="home-footer" >
-        <div><span class="back-pre" @click="back()"><i class="icon icon-back-pre"></i><i>关闭</i></span></div>
-      </div>
+         <p  class="print-logo">
+           <span class="fa fa-exclamation-triangle"></span>
+           <span class="text">签到失败,请重新扫描!</span>
+           </p>
+       </div>
+           <!-- home-footer -->
+    <div class="home-footer" >
+      <div><span class="back-pre" @click="back()"><i class="icon icon-back-pre"></i><i>关闭</i></span></div>
+    </div>
     </div>
     <!-- tip -->
     <div v-if='loadflag'>
@@ -59,13 +49,17 @@
         <loading :title="title"></loading>
       </div> 
     </div>
+    <!-- printing -->
+      <div  class='loading-wrapper' v-if="printState">
+        <loading :title="printTxt"></loading>
+      </div> 
   </div>
 </template>
 <script>
 import Loading from 'base/loading/loading'
 import Page from 'base/page/page'
 import TimeTask from 'base/time-task/time-task'
-import {ItemInfos,goSign} from 'api/print.js'
+import {ItemInfos} from 'api/print.js'
   export default {
     data() {
       return {
@@ -73,22 +67,18 @@ import {ItemInfos,goSign} from 'api/print.js'
         title:'数据读取中...',
         printState:false,
         printTxt:"打印中,请稍等...",
+        name:'',
+        number:"",
+        mywin:"",
+        waitcount:'',
         isUser:true,
         flag:true,
         isPrint:false,
-        sinFlag:false,
-        alertTitle:"请选择诊室:",
-        normalSign:false,
-        expertSign:false,
-        apiAdress:"",
-        normalData:[],
-        time:3
+        sinFlag:false
       }
     },
     created() {
-      var that = this;
-      this.getdata()
-
+      // this.getdata()
     },
     components: {
       Loading,
@@ -97,9 +87,6 @@ import {ItemInfos,goSign} from 'api/print.js'
     computed:{
       jzId() {
         return this.$store.state.bookReg.jzId
-      },
-      cardType() {
-        return this.$store.state.bookReg.cardType
       }
     },
     methods: {
@@ -112,89 +99,54 @@ import {ItemInfos,goSign} from 'api/print.js'
       getdata() {
         this.loadflag = true
         var that = this
-        ItemInfos(this.jzId,this.cardType).then((res)=>{
+        ItemInfos(this.jzId).then((res)=>{
           that.loadflag = false
           if (res.code ==200) {
             // 请求成功
-            this.time = 3
+            this.name = res.data.patName
+            this.number = res.data.fzxh
+            this.mywin = res.data.ksmc
+            this.waitcount = res.data.totalWait
+            this.isUser = true
             this.print(res.data)
-          }else if (res.code == 201){
-            // 门诊列表
-            this.time = 15
-            this.normalSign = true
-            this.normalData = res.data
           }else if(res.code == 404) {
             // 该用户不存在
             this.isUser = false
           }else if (res.code ==405){
             // 用户已打印
-            this.isPrint = true
-          }else {
-            this.sinFlag = true
-          }
-        }).catch((err)=>{
-          that.loadflag = false
-          this.sinFlag = true
-        })
-      },
-      goSign(item){
-        this.loadflag = true
-        var that = this
-        var mydata = {
-          patId:item.patId,
-          zjdm:item.zjdm,
-          ksdm:item.ksdm,
-          yshm:item.yshm,
-          zjmc:item.zjmc,
-          ysmc:item.ysmc
-        }
-        goSign(mydata).then((res)=>{
-          that.loadflag = false
-          that.normalSign = false
-          if (res.code ==200) {
-            // 请求成功
-            this.time = 3
             this.isUser = true
-            this.print(res.data)
+            this.isPrint = true
+            this.number = res.data.fzxh
+            this.mywin = res.data.ksmc
+            this.name = res.data.patName
           }else {
+            this.isUser = false
             this.sinFlag = true
           }
         }).catch((err)=>{
-          that.normalSign = false
           that.loadflag = false
           this.sinFlag = true
         })
       },
       print(item) {
         var postData = {
-          printTitle:'福能集团总医院',
-          checkInName:'门诊签到',
+          printTitle:'天长市人民医院',
+          checkInName:'药房签到',
           name:item.patName,
           number:item.fzxh,
           roomNumber:item.ksmc,
-          zjmc:item.zjmc,
-          docName:item.ysmc,
-          hb:`(${item.hb})`,
           waitingNumber:item.totalWait,
           checkInTime:item.signTime
         }
-        var printData = [
-                {"context":postData.printTitle,"x":70,"y":22},
-                {"context":postData.checkInName,"x":90,"y":40},
-                {"context":postData.hb,"x":90,"y":55},
-                {"context":"--------------------------------------------","x":5,"y":70,fontName:"黑体"},
-                {"context":'姓　　名：'+postData.name,"x":5,"y":90},
-                {"context":'号　　码：'+postData.number,"x":5,"y":110},
-                {"context":'科　　室：'+postData.roomNumber,"x":5,"y":130},
-                {"context":'诊　　室：'+postData.zjmc,"x":5,"y":150},
-                {"context":'医　　生：'+postData.docName,"x":5,"y":170},
-                {"context":'等待人数：'+postData.waitingNumber,"x":5,"y":190},
-                {"context":'签到时间：'+postData.checkInTime,"x":5,"y":210},
-                {"context":"--------------------------------------------","x":5,"y":230,fontName:"黑体"}
-          ]; 
-          if(sharpForeign !='undefined'){
-            sharpForeign.Print_SmallTicket(JSON.stringify(printData));
-          }
+        if (typeof  window.cefQuery != 'undefined') {
+            window.cefQuery({
+            // request: 'print:{"hName":"'+postData.printTitle+'","checkInName":"'+postData.checkInName+'","name":"'+postData.name+'","number":"'+postData.number+'","roomNumber":"'+postData.roomNumber+'","waitingNumber":"'+postData.waitingNumber+'","checkInTime":"'+postData.checkInTime+'"}',
+             request: 'print:[{"info":"'+postData.printTitle+'","x":50,"y":22},{"info":"'+postData.checkInName+'","x":70,"y":40},{"info":"--------------------------------------------","x":5,"y":55},{"info":"姓　　名：'+postData.name+'","x":5,"y":75},{"info":"号　　码：'+postData.number+'","x":5,"y":95},{"info":"诊　　室：'+postData.roomNumber+'","x":5,"y":115},{"info":"等待人数：'+postData.waitingNumber+'","x":5,"y":135},{"info":"签到时间：'+postData.checkInTime+'","x":5,"y":155},{"info":"--------------------------------------------","x":5,"y":175}]',
+            onSuccess: function(response) {
+            },
+            onFailure: function(error_code, error_message) {alert(error_message);}
+          });
+        }  
       },
       back() {
          this.$emit('close')
@@ -213,50 +165,16 @@ import {ItemInfos,goSign} from 'api/print.js'
 .self-query-alert
   padding: 1em;
   position: fixed;
-  background: rgba(233, 30, 99,0.93);
+  background: rgba(0,102,204,0.93);
   top: calc(15vh + 30px)
   // left: calc(40% + 2.3em);
-  left: 2.3em;
-  // left: calc(30% + 2.3em);
+  left: calc(30% + 2.3em);
   border-radius: 8px;
   bottom: 73px
   right: 41px;
-  -webkit-box-shadow: 1px 1px 5px #f66;
-  box-shadow: 1px 1px 5px #f66;
+  -webkit-box-shadow: 1px 1px 5px #00366d;
+  box-shadow: 1px 1px 5px #00366d;
   border: 3px solid #fff;
-.alert-top
-  display flex;
-  font-size 1.5em
-.alert-title
-  flex:1;
-  color: #fff;
-  letter-spacing: 3px;
-  padding-left: 8px
-  font-size 1.1em
-.normal-list>ul
-  display flex;
-  flex:wrap;
-  flex-wrap:wrap
-  li
-    padding:0.4em 0.5em
-    flex 1 1 20%
-    max-width 20%
-    box-sizing border-box
-    div
-      background: #fff;
-      color: #666 ;
-      padding: 0.2em 0.4em;
-      border-radius: 6px;
-      box-shadow: 1px 1px 6px #f66;
-      p:first-child
-        color: #f66;
-        font-size: 1.1em;
-        font-weight: 600;
-        border-bottom 1px solid #999
-      p
-       padding 0.1em
-       span:first-child
-         padding-right 7px
 .tip-info.pd20 p
   padding-top 20%
 .btn-wrapper
@@ -284,11 +202,15 @@ import {ItemInfos,goSign} from 'api/print.js'
     padding 0.4em 0
     border-radius 8px
     text-align center
-    border-bottom 3px solid #fafafa
-    box-shadow  0px 3px 0px #f3f3f3
+    border-bottom 3px solid #da3030
+    box-shadow  0px 3px 0px #c53434
     &.back-pre
-      background: #fff;
-      color: #eb2e6e;
+      background #f66
+      color $color-font
+.home-timer
+  float right 
+  font-size 1.6em
+  color: #fff
 .info-wrapper
   margin-top:128px;
 .alert-wrapper
@@ -325,24 +247,20 @@ import {ItemInfos,goSign} from 'api/print.js'
   font-size 2.2em
   letter-spacing 4px
   width: 100%
-.timer-signer{
-  flex: 1;
-  text-align: right;
-}
 @media screen and (max-width:1000px)
   .self-query-alert
     padding: 1em;
     position: fixed;
-    background: rgba(233, 30, 99,0.93);
+    background: rgba(0,102,204,0.93);
     top: calc(10vh + 30px)
-    left:1.3em
+    // left: calc(40% + 2.3em);
+    left: calc(30% + 1.3em);
     border-radius: 8px;
     bottom: 60px
     right: 25px;
-    -webkit-box-shadow: 1px 1px 5px #f66;
-    box-shadow: 1px 1px 5px #f66;
+    -webkit-box-shadow: 1px 1px 5px #00366d;
+    box-shadow: 1px 1px 5px #00366d;
     border: 3px solid #fff;
-    font-size: 0.8em;
   .tip-info p
     padding 25% 0
     text-align center
@@ -381,6 +299,10 @@ import {ItemInfos,goSign} from 'api/print.js'
       &.back-pre
         background #f66
         color $color-font
+  .home-timer
+    float right 
+    font-size 1.6em
+    color: #fff
   .info-wrapper
     margin-top: 102px;
     font-size: 0.9em;

@@ -23,4 +23,7 @@
       font-size: 1.6em
       color: #fff
       letter-spacing 4px
+    img
+      width: 345px;
+      margin-top: -45px;
 </style>

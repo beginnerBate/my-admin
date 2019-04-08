@@ -7,6 +7,7 @@ import router from './router'
 import store from './store/store'
 Vue.config.productionTip = false
 import 'common/stylus/init.styl'
+import 'font-awesome/css/font-awesome.css'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
